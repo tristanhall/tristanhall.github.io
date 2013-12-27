@@ -1,0 +1,89 @@
+@charset "UTF-8";
+
+@import "normalize", "foundation";
+@import url('http://fonts.googleapis.com/css?family=News+Cycle:400,700|Raleway:400,700');
+
+//Mixins!
+@mixin gradient($start, $end) {
+   
+   background: -moz-linear-gradient(top, $start 0%, $end 100%); /* FF3.6+ */
+   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end)); /* Chrome,Safari4+ */
+   background: -webkit-linear-gradient(top, $start 0%, $end 100%); /* Chrome10+,Safari5.1+ */
+   background: -o-linear-gradient(top, $start 0%, $end 100%); /* Opera 11.10+ */
+   background: -ms-linear-gradient(top, $start 0%, $end 100%); /* IE10+ */
+   background: linear-gradient(to bottom, $start 0%, $end 100%); /* W3C */
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end',GradientType=0 ); /* IE6-8 */
+}
+
+//General Page Structure
+html, body { height:100%; width:100%; font-size:16px; }
+header, #wrapper, footer {
+   @include grid-row();
+}
+
+//Colors
+$white : #fbfbfb; //Off-White
+$gray : #393939; //Gray
+$light-gray : #dedede;
+$tundora : #433d41; //Grayish Purple
+$matterhorn : #333; //Dark Purple
+
+//Typography
+$news-cycle : 'News Cycle', sans-serif;
+$raleway : 'Raleway', sans-serif;
+
+h1 {
+   font-size:36px;
+}
+h2 {
+   font-size:32px;
+}
+h3 {
+   font-size:28px;
+   color:$matterhorn;
+}
+h4 {
+   font-size:24px;
+}
+h5 {
+   font-size:20px;
+}
+h6 {
+   font-size:16px;
+}
+
+/*
+Standard for Primary Buttons
+*/
+.button {
+   background: #4e3d49; /* Old browsers */
+   /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRlM2Q0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0MzMyM2QiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+   @include gradient(#4e3d49, #43323d);
+   border-bottom:1px solid #2a2027;
+   html.ie9 &, html.ie10 {
+      filter: none;
+   }
+   &:hover {
+      background: #4e3d49; /* Old browsers */
+      /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+      background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRlM2Q0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0MzMyM2QiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+      @include gradient(#43323d, #4e3d49);
+      border-top:1px solid #2a2027;
+      border-bottom:0px;
+   }
+   &.secondary {
+      @include gradient($white, #f6f6f6);
+      html.ie9 &, html.ie10 {
+         filter: none;
+      }
+      &:hover {
+         @include gradient(#f6f6f6, $white);
+         
+      }
+   }
+}
+//IE9 Support for button gradients
+html.ie9 .primary-button {
+   filter: none;
+}
