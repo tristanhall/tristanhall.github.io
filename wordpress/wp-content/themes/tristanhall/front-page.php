@@ -5,7 +5,6 @@
  */
 get_header(); ?>
 <div data-type="sprite" data-speed=".3" class="banner-container">
-   <?php get_template_part('loop', 'banner'); ?>
 </div>
 <div id="container">
    <div id='component'>

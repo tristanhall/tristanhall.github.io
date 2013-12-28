@@ -30,33 +30,33 @@ class wordpress::install {
   }
 
   # Import a MySQL database for a basic wordpress site.
-  file { '/tmp/wordpress-db.sql':
-    source => 'puppet:///modules/wordpress/wordpress-db.sql'
-  }
+#  file { '/tmp/wordpress-db.sql':
+#    source => 'puppet:///modules/wordpress/wordpress-db.sql'
+#  }
 
-  exec { 'load-db':
-    command => '/usr/bin/mysql -u wordpress -pwordpress wordpress < /tmp/wordpress-db.sql && touch /home/vagrant/db-created',
-    creates => '/home/vagrant/db-created',
-  }
+#  exec { 'load-db':
+#    command => '/usr/bin/mysql -u wordpress -pwordpress wordpress < /tmp/wordpress-db.sql && touch /home/vagrant/db-created',
+#    creates => '/home/vagrant/db-created',
+#  }
 
   # Copy a working wp-config.php file for the vagrant setup.
-  file { '/vagrant/wordpress/wp-config.php':
-    source => 'puppet:///modules/wordpress/wp-config.php'
-  }
+#  file { '/vagrant/wordpress/wp-config.php':
+#    source => 'puppet:///modules/wordpress/wp-config.php'
+#  }
   
    # Create the Wordpress Unit Tests database
-  exec { 'create-tests-database':
-    unless  => '/usr/bin/mysql -u root -pvagrant wp_tests',
-    command => '/usr/bin/mysql -u root -pvagrant --execute=\'create database wp_tests\'',
-  }
+#  exec { 'create-tests-database':
+#    unless  => '/usr/bin/mysql -u root -pvagrant wp_tests',
+#    command => '/usr/bin/mysql -u root -pvagrant --execute=\'create database wp_tests\'',
+# }
 
-  exec { 'create-tests-user':
-    unless  => '/usr/bin/mysql -u wordpress -pwordpress',
-    command => '/usr/bin/mysql -u root -pvagrant --execute="GRANT ALL PRIVILEGES ON wp_tests.* TO \'wordpress\'@\'localhost\' IDENTIFIED BY \'wordpress\'"',
-  }
+#  exec { 'create-tests-user':
+#    unless  => '/usr/bin/mysql -u wordpress -pwordpress',
+#    command => '/usr/bin/mysql -u root -pvagrant --execute="GRANT ALL PRIVILEGES ON wp_tests.* TO \'wordpress\'@\'localhost\' IDENTIFIED BY \'wordpress\'"',
+#  }
 
   # Copy a working wp-tests-config.php file for the vagrant setup.
-  file { '/vagrant/wordpress/wp-tests-config.php':
-    source => 'puppet:///modules/wordpress/wp-tests-config.php'
-  }
+#  file { '/vagrant/wordpress/wp-tests-config.php':
+#    source => 'puppet:///modules/wordpress/wp-tests-config.php'
+#  }
 }

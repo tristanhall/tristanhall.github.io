@@ -21,6 +21,14 @@ function handle_errors($errno, $errstr, $errfile, $errline) {
     }
     exit;
 }
+/**
+ * Discover the body class
+ * @return string
+ */
+function bodyClass() {
+   $class = '';
+   return $class;
+}
 
 $global_config = new stdClass(); //Create our config object
 $global_config->has_banners = true; //Determines if home page banners are to be used or not.
@@ -30,6 +38,8 @@ $global_config->use_phone = true; //Does this site display a phone number?
 $global_config->use_email = true; //Does this site display an email address?
 $global_config->social_channels = array('facebook', 'twitter', 'google_plus'); //Define an array of identifiers for each social media channel this site supports.
 $global_config->jquery_version = '1.10.2';
+$global_config->bodyClass = bodyClass();
+
 
 require_once('libraries/class.html.php'); //HTML element class
 require_once('libraries/class.ui.php'); //Foundation short code class

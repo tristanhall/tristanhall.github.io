@@ -7,9 +7,11 @@
 ?>
    </div><!--endContent-->
 </div><!--endWrapper-->
-<footer>
-   <div id='copyright'>&copy; <?php echo date('Y').' '.get_bloginfo('name'); ?>. All Rights Reserved. Site Design &copy; <?php echo date('Y'); ?> <?php echo HTML::link( 'http://tristanhall.com', 'Tristan Hall', array('alt' => 'Detroit Web Developer Tristan Hall', 'title' => 'Detroit Web Developer Tristan Hall', 'target' => '_blank', 'class' => 'promolink') ) ?></div>
-</footer>
+<div id="footerWrapper">
+   <footer>
+      <div id='copyright'>&copy; <?php echo date('Y').' '.get_bloginfo('name'); ?>. All Rights Reserved. Site Design &copy; <?php echo date('Y'); ?> <?php echo HTML::link( 'http://tristanhall.com', 'Tristan Hall', array('alt' => 'Detroit Web Developer Tristan Hall', 'title' => 'Detroit Web Developer Tristan Hall', 'target' => '_blank', 'class' => 'promolink') ) ?></div>
+   </footer>
+</div>
       <?php wp_footer(); ?>
       <?php echo HTML::script(get_template_directory_uri().'/js/vendor/custom.modernizr.js') ?>
       <?php echo HTML::script(get_template_directory_uri().'/js/foundation/foundation.js') ?>

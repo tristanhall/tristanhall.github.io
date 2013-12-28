@@ -22,7 +22,7 @@ global $global_config;
       <script src="<?php echo get_template_directory_uri(); ?>/js/html5shiv.js"></script>
       <![endif]-->
    </head>
-   <body <?php if(is_front_page()) : echo 'class="front-page"'; endif; ?>>
+   <body <?php echo 'class="'.body_class($global_config->bodyClass).'"'; ?>>
       <nav class="top-bar show-for-small" id='mobile-nav'>
          <ul class="title-area">
             <li class="name">
@@ -36,18 +36,18 @@ global $global_config;
             <?php wp_nav_menu( array('theme_location' => 'mobile_nav', 'container' => false, 'menu_id' => 'mobile_nav') ); ?>
          </section>
       </nav>
-      <header>
-         <a href="<?php echo home_url() ?>" title="<?php bloginfo( 'name' ); ?>" id="logo">
-            <img alt="<?php bloginfo( 'name' ); ?>" title="<?php bloginfo( 'name' ); ?>" width="100" src="http://placehold.it/150x150">
-         </a>
-         <nav id="main-nav">
-            <?php wp_nav_menu( array('theme_location' => 'main_nav', 'container' => false, 'menu_id' => 'main_nav') ); ?>
-         </nav>
-         <div id="contact-info">
-            <?php foreach($global_config->social_channels as $channel) {
-               echo '<a title="Follow '.get_bloginfo( 'name' ).' on '.ucwords(str_replace('_', '&nbsp;', $channel)).'" class="'.$channel.'" rel="external" href="'.get_option("social_".$channel).'"></a>';
-            } ?>
-         </div>
-      </header>
+      <div id="headerWrapper">
+         <header>
+            <nav id="main-nav">
+               <a id="logo" href="<?php echo home_url() ?>" title="<?php bloginfo( 'name' ); ?>"></a>
+               <?php wp_nav_menu( array('theme_location' => 'main_nav', 'container' => false, 'menu_id' => 'main_nav') ); ?>
+            </nav>
+            <div id="contact-info">
+               <?php foreach($global_config->social_channels as $channel) {
+                  echo '<a title="Follow '.get_bloginfo( 'name' ).' on '.ucwords(str_replace('_', '&nbsp;', $channel)).'" class="'.$channel.'" rel="external" href="'.get_option("social_".$channel).'"></a>';
+               } ?>
+            </div>
+         </header>
+      </div>
       <div id="wrapper">
          <div id="content">
