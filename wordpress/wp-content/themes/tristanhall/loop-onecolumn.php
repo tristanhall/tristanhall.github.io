@@ -1,4 +1,3 @@
-<div id='content' class="no-sidebar">
 <?php
 /**
  * Author: Tristan Hall
@@ -19,5 +18,3 @@ else:
    echo '<h1 class="page-title">No Results Found</h1>';
    echo '<div class="post-content"><p>'._e('Sorry, no posts matched your criteria.').'</p></div>';
 endif;
-?>
-</div>

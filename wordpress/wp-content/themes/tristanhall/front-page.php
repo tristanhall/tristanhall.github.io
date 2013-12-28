@@ -4,22 +4,17 @@
  * Copyright 2013 Tristan Hall
  */
 get_header(); ?>
-<div data-type="sprite" data-speed=".3" class="banner-container">
-</div>
-<div id="container">
-   <div id='component'>
-<?php get_template_part('loop', 'onecolumn'); ?>
-      <div class="home-widget-container">
-         <?php
-         if (is_active_sidebar('home_widget_1')): 
-            dynamic_sidebar('home_widget_1');
-         endif;
-         if (is_active_sidebar('home_widget_2')): 
-            dynamic_sidebar('home_widget_2');
-         endif;
-         if (is_active_sidebar('home_widget_3')): 
-            dynamic_sidebar('home_widget_3');
-         endif;
-         ?>
-      </div>
-<?php get_footer(); ?>
+<?php
+if (have_posts()): 
+   while (have_posts()):
+       the_post();
+       for($i = 1; $i <= $global_config->homepagePanels; $i++) {
+          $panelContent = get_post_meta( get_the_ID(), 'home_panel_'.$i, true );
+          echo '<div data-type="background" data-speed="4.2" class="panel" id="panel-'.$i.'">';
+          echo $panelContent;
+          echo '</div>';
+       }
+   endwhile;
+endif;
+?>
+<?php get_footer();

@@ -39,6 +39,7 @@ $global_config->use_email = true; //Does this site display an email address?
 $global_config->social_channels = array('facebook', 'twitter', 'google_plus'); //Define an array of identifiers for each social media channel this site supports.
 $global_config->jquery_version = '1.10.2';
 $global_config->bodyClass = bodyClass();
+$global_config->homepagePanels = 4;
 
 
 require_once('libraries/class.html.php'); //HTML element class
@@ -48,8 +49,8 @@ require_once('libraries/theme-update-checker.php'); //Theme Update library
 
 //Check for updates
 $updateChecker = new ThemeUpdateChecker(
-   'thbase', //Theme slug. Usually the same as the name of its directory.
-   'http://example.com/wp-update-server/?action=get_metadata&slug=thbase' //Metadata URL.
+   'tristanhall', //Theme slug. Usually the same as the name of its directory.
+   'http://wpupdate.tristanhall.com/?action=get_metadata&slug=tristanhall' //Metadata URL.
 );
 
 //All Foundation UI functions are available as short codes too :)
@@ -196,6 +197,52 @@ function save_homepage_banners() {
    }
 }
 
+
+//Allows banners to be uploaded to the home page
+function homepage_panels() {
+   global $global_config;
+   global $post;
+   //Can't do anything without a $post variable
+   if(!$post) {
+      return;
+   }
+   if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+      return $post->ID;
+   }
+   $custom = get_post_custom($post->ID);
+   $output = '';
+   for($i = 1; $i <= $global_config->homepagePanels; $i++) {
+      $panelContent = (array_key_exists('home_panel_'.$i, $custom) ? $custom['home_panel_'.$i][0] : '');
+      
+      $output .= '<p><strong>Panel #'.$i.'</strong></p>';
+      $output .= '<p>Content: <br/>';
+      $output .= '<textarea name="home_panel_'.$i.'" style="width:100%; min-height:80px; padding:10px;">'.$panelContent.'</textarea></p>';
+   }
+   wp_nonce_field( basename(__FILE__), 'th_noncename' );
+   echo $output;
+}
+//Save the banners we upload 
+add_action('save_post', 'save_homepage_panels');
+function save_homepage_panels() {
+   global $global_config;
+   global $post;
+   if(!$post) {
+      return;
+   }
+   if($post->ID !== $global_config->front_page_id) {
+      return $post->ID;
+   }
+   if (!wp_verify_nonce( $_POST['th_noncename'], basename(__FILE__))) {
+      return $post->ID;
+   }
+   if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+      return $post->ID;
+   }
+   for($i = 1; $i <= $global_config->homepagePanels; $i++) {
+      update_post_meta($post->ID, 'home_panel_'.$i, $_POST['home_panel_'.$i]);
+   }
+}
+
 //Instantiate banner uploading ONLY on the home page
 add_action('admin_init', 'admin_init_callback');
 function admin_init_callback() {
@@ -208,9 +255,13 @@ function admin_init_callback() {
       } else {
          $post_id = null;
       }
+   } else {
+      return;
    }
    if ($post_id == $global_config->front_page_id) {
-      add_meta_box('homepage-banners', 'Home Page Baners', 'homepage_banners', 'page', 'normal', 'high');
+      remove_post_type_support('page', 'editor');
+      //add_meta_box('homepage-banners', 'Home Page Baners', 'homepage_banners', 'page', 'normal', 'high');
+      add_meta_box('homepage-panels', 'Home Page Panel Content', 'homepage_panels', 'page', 'normal', 'high');
    }
 }
 
@@ -228,3 +279,9 @@ function frontend_scripts() {
    wp_enqueue_script('jquery');
 }
 add_action('wp_enqueue_scripts', 'frontend_scripts');
+
+//Support post thumbnails
+add_theme_support( 'post-thumbnails' );
+
+//Pull in our custom post type library
+include_once(__DIR__.'/libraries/portfolio.php');

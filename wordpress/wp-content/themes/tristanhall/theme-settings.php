@@ -44,7 +44,7 @@ echo HTML::style('//fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600'
         <?php endforeach; ?>
         <br>
         <label for="banner_count">Number of Home Page Banners</label>
-        <input type="number" min="1" step="1" value="<?php echo get_option("banner_count"); ?>" name="banner_count" id="banner_count">
+        <input type="number" min="0" step="1" value="<?php echo get_option("banner_count"); ?>" name="banner_count" id="banner_count">
         <br>
         <br>
         <input type="submit" name="save_settings" id="save_settings" class="button button-primary" value="Save Settings">
