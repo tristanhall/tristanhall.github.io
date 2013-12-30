@@ -21,6 +21,7 @@ global $global_config;
       <script src="<?php echo get_template_directory_uri(); ?>/js/respond.js"></script>
       <script src="<?php echo get_template_directory_uri(); ?>/js/html5shiv.js"></script>
       <![endif]-->
+      <script type="text/javascript">var _gaq=_gaq||[];_gaq.push(['_setAccount','UA-17578082-1']);_gaq.push(['_trackPageview']);(function(){var ga=document.createElement('script');ga.type='text/javascript';ga.async=true;ga.src=('https:'==document.location.protocol?'https://':'http://')+'stats.g.doubleclick.net/dc.js';var s=document.getElementsByTagName('script')[0];s.parentNode.insertBefore(ga,s);})();</script>
    </head>
    <body <?php echo 'class="'.body_class($global_config->bodyClass).'"'; ?>>
       <nav data-topbar class="top-bar show-for-small" id='mobile-nav'>

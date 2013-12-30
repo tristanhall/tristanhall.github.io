@@ -479,6 +479,77 @@ body.single-th-portfolio {
       @include grid-column(9);
    }
 }
+body.page-id-9 {
+   div.wpcf7 {
+      @include grid-column(6);
+      padding-left:0px;
+      margin-bottom:30px;
+      span.wpcf7-not-valid-tip {
+         @include alert(#B30000);
+         font-family:$news-cycle;
+         font-size:13px;
+         text-transform:uppercase;
+         padding:12px;
+      }
+      .hideOnSubmit {
+         @include grid-column(12);
+         padding-left:0px;
+         &.half {
+            @include grid-column(6);
+            padding-left:0px;
+         }
+         label {
+            @include grid-column(12);
+            text-align:left;
+            text-transform:uppercase;
+            color:$matterhorn;
+            padding-left:0px;
+            span.required {
+               font-size: 80%;
+               vertical-align: top;
+            }
+         }
+      }
+      label {
+         font-weight:700;
+      }
+      textarea {
+         min-height: 100px;
+         @include box-shadow(0px, 0px, 0px, #fff);
+         border-radius:3px;
+         -moz-border-radius:3px;
+         -webkit-border-radius:3px;
+         border:1px solid $matterhorn;
+         &:focus {
+            border:1px solid $tundora;
+         }
+      }
+      input[type="text"], input[type="email"] {
+         @include box-shadow(0px, 0px, 0px, #fff);
+         border-radius:3px;
+         -moz-border-radius:3px;
+         -webkit-border-radius:3px;
+         border:1px solid $matterhorn;
+         &:focus {
+            border:1px solid $tundora;
+         }
+      }
+      div.wpcf7-response-output {
+         @include grid-column(12);
+         float:left;
+         @include alert(#B30000);
+         font-family:$news-cycle;
+         font-size:12px;
+         text-transform:uppercase;
+         &.wpcf7-display-none {
+            display:none;
+         }
+         &.mail-sent-ok {
+            @include alert(#009900);
+         }
+      }
+   }
+}
 
 //Sidebar styles
 #sidebar {
@@ -519,6 +590,10 @@ body.single-th-portfolio {
    &:active {
       position:relative;
       top:2px;
+      outline:0px;
+   }
+   &:focus {
+      outline:0px;
    }
    &.secondary {
       @include gradient($white, #f6f6f6);
@@ -689,6 +764,11 @@ html.ie9 .primary-button {
          figure {
             @include grid-column(12);
          }
+      }
+   }
+   body.page-id-9 {
+      div.wpcf7 {
+         width:100% !important;
       }
    }
 }

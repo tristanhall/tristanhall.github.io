@@ -134,5 +134,8 @@ jQuery(document).ready(function($) {
       evt.preventDefault();
       var nextPanel = $(this).attr('href');
       $("html, body").animate({ scrollTop: $(nextPanel).offset().top }, 650);
+      if(nextPanel === '#panel-4') {
+         $('input#yourName').focus();
+      }
    });
 });
