@@ -23,14 +23,12 @@ global $global_config;
       <![endif]-->
    </head>
    <body <?php echo 'class="'.body_class($global_config->bodyClass).'"'; ?>>
-      <nav class="top-bar show-for-small" id='mobile-nav'>
+      <nav data-topbar class="top-bar show-for-small" id='mobile-nav'>
          <ul class="title-area">
             <li class="name">
-               <a href="<?php echo home_url() ?>" title="<?php bloginfo( 'name' ); ?>">
-                  <img alt="<?php bloginfo( 'name' ); ?>" title="<?php bloginfo( 'name' ); ?>" width="100" src="http://placehold.it/100x50">
-               </a>
+               <a href="<?php echo home_url() ?>" title="<?php bloginfo( 'name' ); ?>"><?php bloginfo( 'name' ); ?></a>
             </li>
-            <li class="toggle-topbar menu-icon"><a href="#"><span>Menu</span></a></li>
+            <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
          </ul>
          <section class="top-bar-section">
             <?php wp_nav_menu( array('theme_location' => 'mobile_nav', 'container' => false, 'menu_id' => 'mobile_nav') ); ?>

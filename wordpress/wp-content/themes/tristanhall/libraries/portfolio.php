@@ -42,6 +42,7 @@ function create_post_type() {
    set_post_thumbnail_size( 270, 170, true );
    add_theme_support( 'post-thumbnails' );
    add_post_type_support( 'th-portfolio', 'thumbnail' );
+   add_post_type_support( 'th-portfolio', 'excerpt' );
 }
 add_action( 'init', 'create_post_type' );
 
@@ -90,7 +91,7 @@ function portfolio_redirect() {
 		// Let's look for the property.php template file in the current theme
 		if (have_posts())
 		{
-			include(TEMPLATEPATH . '/single-portfolio.php');
+			include(__DIR__ . '/../single-th_portfolio.php');
 			die();
 		}
 		else

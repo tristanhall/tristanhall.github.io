@@ -14,4 +14,5 @@ while ( $loop->have_posts() ) : $loop->the_post();
 	the_content();
 	echo '</div>';
 endwhile;
+get_sidebar();
 get_footer();

@@ -3,8 +3,7 @@
  * Author: Tristan Hall
  * Copyright 2013 Tristan Hall
  */
-get_header(); ?>
-<?php
+get_header();
 if (have_posts()): 
    while (have_posts()):
        the_post();
@@ -19,5 +18,4 @@ if (have_posts()):
        }
    endwhile;
 endif;
-?>
-<?php get_footer();
+get_footer();

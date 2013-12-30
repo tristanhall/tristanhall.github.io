@@ -130,4 +130,9 @@ jQuery(document).ready(function($) {
    }, function() {
       $(this).text( $(this).attr('data-text') );
    });
+   $('body.home a.button').click(function(evt) {
+      evt.preventDefault();
+      var nextPanel = $(this).attr('href');
+      $("html, body").animate({ scrollTop: $(nextPanel).offset().top }, 650);
+   });
 });
