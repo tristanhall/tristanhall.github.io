@@ -172,15 +172,15 @@ function homepage_banners() {
    wp_nonce_field( basename(__FILE__), 'th_noncename' );
    echo $output;
 }
-//Save the banners we upload 
-add_action('save_post', 'save_homepage_banners');
-function save_homepage_banners() {
+//Save the homepage banners and panels
+add_action('save_post', 'save_homepage');
+function save_homepage() {
    global $global_config;
    global $post;
    if(!$post) {
       return;
    }
-   if($post->ID !== $global_config->front_page_id) {
+   if($post->post_title !== 'Home') {
       return $post->ID;
    }
    if (!wp_verify_nonce( $_POST['th_noncename'], basename(__FILE__))) {
@@ -189,12 +189,15 @@ function save_homepage_banners() {
    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
       return $post->ID;
    }
-   for($i = 1; $i <= $global_config->banner_count; $i++) {
-      update_post_meta($post->ID, 'banner_img_src_'.$i, $_POST['banner_img_src_'.$i]);
-      update_post_meta($post->ID, 'banner_title_'.$i, $_POST['banner_title_'.$i]);
-      update_post_meta($post->ID, 'banner_caption_'.$i, $_POST['banner_caption_'.$i]);
-      update_post_meta($post->ID, 'banner_link_'.$i, $_POST['banner_link_'.$i]);
+   for($i = 1; $i <= $global_config->homepagePanels; $i++) {
+      update_post_meta($post->ID, 'home_panel_'.$i, $_POST['home_panel_'.$i]);
    }
+//   for($i = 1; $i <= $global_config->banner_count; $i++) {
+//      update_post_meta($post->ID, 'banner_img_src_'.$i, $_POST['banner_img_src_'.$i]);
+//      update_post_meta($post->ID, 'banner_title_'.$i, $_POST['banner_title_'.$i]);
+//      update_post_meta($post->ID, 'banner_caption_'.$i, $_POST['banner_caption_'.$i]);
+//      update_post_meta($post->ID, 'banner_link_'.$i, $_POST['banner_link_'.$i]);
+//   }
 }
 
 
@@ -209,10 +212,9 @@ function homepage_panels() {
    if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
       return $post->ID;
    }
-   $custom = get_post_custom($post->ID);
    $output = '';
    for($i = 1; $i <= $global_config->homepagePanels; $i++) {
-      $panelContent = (array_key_exists('home_panel_'.$i, $custom) ? $custom['home_panel_'.$i][0] : '');
+      $panelContent = get_post_meta( $post->ID, 'home_panel_'.$i, true );
       
       $output .= '<p><strong>Panel #'.$i.'</strong></p>';
       $output .= '<p>Content: <br/>';
@@ -221,28 +223,6 @@ function homepage_panels() {
    wp_nonce_field( basename(__FILE__), 'th_noncename' );
    echo $output;
 }
-//Save the banners we upload 
-add_action('save_post', 'save_homepage_panels');
-function save_homepage_panels() {
-   global $global_config;
-   global $post;
-   if(!$post) {
-      return;
-   }
-   if($post->ID !== $global_config->front_page_id) {
-      return $post->ID;
-   }
-   if (!wp_verify_nonce( $_POST['th_noncename'], basename(__FILE__))) {
-      return $post->ID;
-   }
-   if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-      return $post->ID;
-   }
-   for($i = 1; $i <= $global_config->homepagePanels; $i++) {
-      update_post_meta($post->ID, 'home_panel_'.$i, $_POST['home_panel_'.$i]);
-   }
-}
-
 //Instantiate banner uploading ONLY on the home page
 add_action('admin_init', 'admin_init_callback');
 function admin_init_callback() {

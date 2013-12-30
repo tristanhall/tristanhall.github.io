@@ -84,7 +84,7 @@ jQuery(document).ready(function($) {
                yPos += $self.data('offsetY');
             }
             // Put together our final background position
-            var coords = '0 '+ yPos + 'px';
+            var coords = 'center '+ ( yPos - 270 ) + 'px';
             // Move the background
             $self.css({ backgroundPosition: coords });
             // Check for other sprites in this section	
@@ -93,7 +93,7 @@ jQuery(document).ready(function($) {
                var $sprite = $(this);
                // Use the same calculation to work out how far to scroll the sprite
                var yPos = -($window.scrollTop() / $sprite.data('speed'));					
-               var coords = '0 ' + (yPos + $sprite.data('offsetY')) + 'px';
+               var coords = 'center ' + (yPos + $sprite.data('offsetY') - 270) + 'px';
                $sprite.css({ backgroundPosition: coords });													
                
             }); // sprites
@@ -118,10 +118,16 @@ jQuery(document).ready(function($) {
                yPos += $self.data('offsetY');
             }
             // Put together our final background position
-            var coords = yPos + 'px';
+            var coords = ( yPos - 270 ) + 'px';
             // Move the background
-            $self.css({ backgroundPosition: '0px' + coords });
+            $self.css({ backgroundPosition: 'center' + coords });
          }; // in view
       }); // window scroll
    });	// each data-type
+   $('body.home a.button').hover(function() {
+      var orig = $(this).text();
+      $(this).attr('data-text', orig).text( $(this).attr('data-alt') );
+   }, function() {
+      $(this).text( $(this).attr('data-text') );
+   });
 });
