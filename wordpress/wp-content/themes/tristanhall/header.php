@@ -49,4 +49,3 @@ global $global_config;
          </header>
       </div>
       <div id="wrapper">
-         <div id="content">

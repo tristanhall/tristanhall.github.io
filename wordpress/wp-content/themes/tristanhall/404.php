@@ -19,15 +19,14 @@ register_sidebar(array(
 get_header();
 ?>
 <div id="content">
+   <p><img src="http://www.reactiongifs.com/wp-content/uploads/2013/09/Dwight-Schrute-Shakes-Head-and-Rolls-Eyes.gif" class="alignleft" style="margin-right:10px;margin-bottom:10px;"></p>
    <h1 class="post-title">404: Page Not Found</h1>
    <div class="post-content">
-      <h2>Our Apologies</h2>
+      <h2>My Apologies</h2>
       <p>The page you have requested could not be found.<br/>
-         Try searching our website using the search form on the right, or go back to the <a href="http://localhost/wordpress">home page</a>.
+         But you could try <a title="Tristan's Portfolio" href="http://tristanhall.com/portfolio/">this page</a>.
       </p>
    </div>
 </div>
 <?php
-get_sidebar();
 get_footer();
-?>

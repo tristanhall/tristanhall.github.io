@@ -62,6 +62,9 @@ header, #wrapper, footer {
 header {
    height:280px;
 }
+#content {
+   padding:15px 0px;
+}
 footer {
    height:135px;
 }
@@ -70,6 +73,9 @@ footer {
 h1 {
    font-size:36px;
    font-family:$raleway;
+   text-transform:uppercase;
+   color:$matterhorn;
+   font-weight:700;
 }
 h2 {
    font-size:32px;
@@ -171,6 +177,12 @@ nav#main-nav {
          }
          & + li + li + li {
             margin-left:0px;
+         }
+         &.current-menu-item {
+            background:$tundora;
+            a {
+               color:$white;
+            }
          }
       }
    }
@@ -343,6 +355,8 @@ body.home {
                   }
                   &.mail-sent-ok {
                      @include alert(#009900);
+                     background-color: #009900 !important;
+                     border-color: #009900 !important;
                   }
                }
             }
@@ -392,6 +406,33 @@ body.page {
 
 //Portfolio Page Styles
 body.page-template-archive-th_portfolio-php {
+   ul#portfolioFilter {
+      list-style-type:none;
+      text-align:left;
+      width:100%;
+      margin:10px 0px;
+      height:40px;
+      li {
+         border-radius:3px;
+         -moz-border-radius:3px;
+         -webkit-border-radius:3px;
+         display:block;
+         float:left;
+         margin-right:10px;
+         background:$matterhorn;
+         color:#fff;
+         font-family:$raleway;
+         font-weight:700;
+         text-transform:uppercase;
+         padding:5px 10px;
+         @include transition(background, 450ms, linear);
+         &:hover, &.active {
+            cursor:pointer;
+            color:$matterhorn;
+            background:$white;
+         }
+      }
+   }
    div.portfolio-entries {
       @include grid-column(12);
       padding-left:0px;
@@ -400,11 +441,16 @@ body.page-template-archive-th_portfolio-php {
       -webkit-perspective: 1000;
       -moz-perspective: 1000;
       figure {
+         opacity:0;
+         filter:alpha(opacity=0);
          @include grid-column(4);
-         display:block;
-         height:210px;
+         width:32%;
+         display:none;
+         height:230px;
          margin-right:10px;
          padding:0px;
+         float:none;
+         margin-bottom: 10px;
          &:hover {
             figcaption {
                -webkit-transform: rotateY(180deg);
@@ -475,8 +521,33 @@ body.page-template-archive-th_portfolio-php {
    }
 }
 body.single-th-portfolio {
-   article {
+   #content {
       @include grid-column(9);
+      padding-top:15px;
+      ul.clearing-thumbs {
+         margin-bottom:10px;
+         li {
+            margin-bottom:5px;
+            width:18%;
+            &:first-child {
+               width:50%;
+            }
+         }
+      }
+      div.clearing-blackout {
+         div.visible-img {
+            img {
+               width: 800px;
+               height: auto;
+            }
+         }
+         .carousel ul.clearing-thumbs {
+            li {
+               width:120px !important;
+               margin-bottom:auto !important;
+            }
+         }
+      }
    }
 }
 body.page-id-9 {
@@ -546,6 +617,8 @@ body.page-id-9 {
          }
          &.mail-sent-ok {
             @include alert(#009900);
+            background-color: #009900 !important;
+            border-color: #009900 !important;
          }
       }
    }
@@ -553,10 +626,32 @@ body.page-id-9 {
 
 //Sidebar styles
 #sidebar {
-   @include grid-column(9);
+   @include grid-column(3);
    > ul {
       list-style-type:none;
       margin-left:0px;
+      li {
+         padding-top:20px;
+         h3.widget-title {
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size:21px;
+            margin-bottom:0px;
+         }
+      }
+   }
+   blockquote {
+      border-left:0px;
+      padding-left:0px;
+      margin-bottom:15px;
+      font-family:$news-cycle;
+      font-weight:bold;
+      color:$gray;
+      cite {
+         float:right;
+         font-size:13px;
+         display:block;
+      }
    }
 }
 
@@ -763,12 +858,42 @@ html.ie9 .primary-button {
       div.portfolio-entries {
          figure {
             @include grid-column(12);
+            display:block;
+            min-height:250px;
+            height:auto;
+            &:hover {
+               figcaption {
+                  -webkit-transform: rotateY(0deg) !important;
+                  -moz-transform: rotateY(0deg) !important;
+                  transform: rotateY(0deg) !important;
+               }
+            }
+            .portfolio-desc {
+               position:relative !important;
+               -webkit-transform: rotateY(0deg) !important;
+               -moz-transform: rotateY(0deg) !important;
+               transform: rotateY(0deg) !important;
+            }
+            a.portfolio-link {
+               display:none !important;;
+            }
          }
       }
    }
    body.page-id-9 {
       div.wpcf7 {
          width:100% !important;
+      }
+   }
+   body.single-th-portfolio {
+      #content {
+         width:100%;
+         ul.clearing-thumbs li {
+            width:45% !important;
+         }
+      }
+      #sidebar {
+         width:100%;
       }
    }
 }

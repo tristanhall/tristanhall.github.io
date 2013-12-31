@@ -6,4 +6,4 @@ Copyright 2013 Tristan Hall
 */
 get_header();
 get_template_part('loop', 'onecolumn');
-get_footer(); ?>
+get_footer();

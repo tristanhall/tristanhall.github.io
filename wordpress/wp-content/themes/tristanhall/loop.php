@@ -1,9 +1,5 @@
-<div id='content'>
+<div id="content">
 <?php
-/**
- * Author: Tristan Hall
- * Copyright 2013 Tristan Hall
- */
 if (have_posts()): 
    while (have_posts()):
        the_post();

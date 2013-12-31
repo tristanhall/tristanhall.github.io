@@ -3,6 +3,7 @@
  * Author: Tristan Hall
  * Copyright 2013 Tristan Hall
  */
+echo '<div id="content">';
 get_header();
 if (have_posts()): 
    while (have_posts()):
@@ -18,4 +19,5 @@ if (have_posts()):
        }
    endwhile;
 endif;
+echo '</div>';
 get_footer();

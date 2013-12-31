@@ -5,22 +5,6 @@
  * Copyright 2013 Tristan Hall
  */
 
-//Prettier error handling
-set_error_handler('handle_errors');
-function handle_errors($errno, $errstr, $errfile, $errline) {
-   $trace = array_reverse(debug_backtrace());
-   array_pop($trace);
-   include_once(__DIR__.'/php_error.php');
-   if(ini_get('log_errors')) {
-      $items = array();
-      foreach($trace as $item) {
-         $items[] = (isset($item['file']) ? $item['file'] : '<unknown file>') . ' ' . (isset($item['line']) ? $item['line'] : '<unknown line>') . ' calling ' . $item['function'] . '()';
-         $message = 'Backtrace from '. $errstr . ' at ' . $errfile . ' ' . $errline . ': ' . join(' | ', $items);
-         error_log($message);
-      }
-    }
-    exit;
-}
 /**
  * Discover the body class
  * @return string
@@ -265,3 +249,6 @@ add_theme_support( 'post-thumbnails' );
 
 //Pull in our custom post type library
 include_once(__DIR__.'/libraries/portfolio.php');
+
+//Pull in the clearing gallery functions to rewrite Wordpress's gallery output
+include_once(__DIR__.'/libraries/clearing.php');

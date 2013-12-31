@@ -4,14 +4,24 @@ Template Name: Portfolio Archive
 Author: Tristan Hall
 Copyright 2013 Tristan Hall
  */
+$taxonomy = 'portfolio_categories';
+$tax_terms = get_terms($taxonomy);
 $paged = (get_query_var('paged')) ? get_query_var('paged') : 1;
 $args = array( 'post_type' => 'th-portfolio', 'posts_per_page' => get_option('posts_per_page'), 'paged' => $paged );
 $loop = new WP_Query( $args );
 get_header();
+echo '<div id="content">';
 echo '<h1>Select Clients</h1>';
-echo '<div class="portfolio-entries">';
+echo '<ul id="portfolioFilter">';
+echo '<li class="active">Filter:</li><li class="filter active" data-filter="mix">All</li>';
+foreach ($tax_terms as $tax_term) {
+   echo '<li class="filter" data-filter="'.$tax_term->name.'">'.$tax_term->name.'</li>';
+}
+echo '</ul>';
+echo '<div class="portfolio-entries" id="grid">';
 while ( $loop->have_posts() ) : $loop->the_post();
-   echo '<figure>';
+   $taxonomy = strip_tags( get_the_term_list(get_the_ID(), 'portfolio_categories') );
+   echo '<figure class="mix '.$taxonomy.'">';
       echo '<figcaption>';
          echo '<a title="'.get_the_title().'" class="portfolio-link" href="/portfolio/'.get_the_ID().'/">';
          the_post_thumbnail();
@@ -28,5 +38,6 @@ while ( $loop->have_posts() ) : $loop->the_post();
       echo '</figcaption>';
    echo '</figure>';
 endwhile;
+echo '</div>';
 echo '</div>';
 get_footer();
