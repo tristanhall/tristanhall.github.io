@@ -23,7 +23,7 @@ while ( $loop->have_posts() ) : $loop->the_post();
    $taxonomy = strip_tags( get_the_term_list(get_the_ID(), 'portfolio_categories') );
    echo '<figure class="mix '.$taxonomy.'">';
       echo '<figcaption>';
-         echo '<a title="'.get_the_title().'" class="portfolio-link" href="/portfolio/'.get_the_ID().'/">';
+         echo '<a title="'.get_the_title().'" class="portfolio-link" href="'.get_permalink().'">';
          the_post_thumbnail();
          echo '</a>';
          echo '<div class="portfolio-desc">';
