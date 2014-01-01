@@ -3,8 +3,8 @@
  * Author: Tristan Hall
  * Copyright 2013 Tristan Hall
  */
-echo '<div id="content">';
 get_header();
+echo '<div id="content">';
 if (have_posts()): 
    while (have_posts()):
        the_post();
