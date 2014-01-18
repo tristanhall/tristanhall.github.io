@@ -354,7 +354,7 @@ body.home {
                   &.wpcf7-display-none {
                      display:none;
                   }
-                  &.mail-sent-ok {
+                  &.wpcf7-mail-sent-ok {
                      @include alert(#009900);
                      background-color: #009900 !important;
                      border-color: #009900 !important;
@@ -617,7 +617,7 @@ body.page-id-9 {
          &.wpcf7-display-none {
             display:none;
          }
-         &.mail-sent-ok {
+         &.wpcf7-mail-sent-ok {
             @include alert(#009900);
             background-color: #009900 !important;
             border-color: #009900 !important;
