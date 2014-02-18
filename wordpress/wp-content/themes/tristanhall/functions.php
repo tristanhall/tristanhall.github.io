@@ -21,7 +21,7 @@ $global_config->front_page_id = get_option('page_on_front'); //Retrieve the fron
 $global_config->use_phone = true; //Does this site display a phone number?
 $global_config->use_email = true; //Does this site display an email address?
 $global_config->social_channels = array('facebook', 'twitter', 'google_plus'); //Define an array of identifiers for each social media channel this site supports.
-$global_config->jquery_version = '1.10.2';
+$global_config->jquery_version = '1.11.0';
 $global_config->bodyClass = bodyClass();
 $global_config->homepagePanels = 4;
 

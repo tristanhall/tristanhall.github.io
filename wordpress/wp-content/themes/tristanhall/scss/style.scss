@@ -645,6 +645,35 @@ body.page-template-login-php {
    }
 }
 
+//Invoice page
+body.page-id-70 {
+   .text-input {
+      &.small {
+         width: 52px !important;
+         padding: 9px;
+         float: left;
+         margin-left: 13px;
+         position:relative;
+         &:first-child {
+            margin-left:0px;
+         }
+      }
+   }
+   #sidebar {
+      display:none;
+   }
+}
+
+//Firefox fix
+html.firefox {
+   .wpcf7 {
+      span.wpcf7-form-control-wrap {
+         float: left;
+         width: 100%;
+      }
+   }
+}
+
 //Sidebar styles
 #sidebar {
    @include grid-column(3);
