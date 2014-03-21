@@ -8,8 +8,6 @@ class Note {
       //Set a new ID
       $this->id = uniqid('site.', true).'.'.time();
       $this->website_id = '';
-      $note = new Note();
-      return $note;
    }
    
    public function __get($name) {

@@ -9,6 +9,10 @@
  */
 
 require_once(__DIR__.'/includes/encryption.php');
+require_once(__DIR__.'/models/website.php');
+require_once(__DIR__.'/models/ftp_credential.php');
+require_once(__DIR__.'/models/db_credential.php');
+require_once(__DIR__.'/models/note.php');
 
 class WebsiteManager {
    

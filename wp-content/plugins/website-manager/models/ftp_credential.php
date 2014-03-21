@@ -9,8 +9,6 @@ class Ftp_Credential {
       //Set a new ID
       $this->id = uniqid('site.', true).'.'.time();
       $this->website_id = '';
-      $ftp_credential = new Ftp_Credential();
-      return $ftp_credential;
    }
    
    public function __get($name) {

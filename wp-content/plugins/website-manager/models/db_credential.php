@@ -20,8 +20,6 @@ class Db_Credential {
       $this->username = 'root';
       $this->password = '';
       $this->phpmyadmin_url = '';
-      $db_credential = new Db_Credential();
-      return $db_credential;
    }
    
    public function __get($name) {

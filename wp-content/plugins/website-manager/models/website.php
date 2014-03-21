@@ -20,8 +20,6 @@ class Website {
       $this->login_url = '';
       $this->username = '';
       $this->password = '';
-      $website = new Website();
-      return $website;
    }
    
    public function __get($name) {
