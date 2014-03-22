@@ -1,0 +1,9 @@
+/* 
+    Created on : Mar 21, 2014, 9:22:09 PM
+    Author     : tristan
+*/
+
+form.wm_form label {
+   display: inline-block;
+   width: 50px;
+}

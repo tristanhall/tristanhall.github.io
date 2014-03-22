@@ -8,7 +8,10 @@
  * License: Commercial
  */
 
+define('LOGGING', false);
+
 require_once(__DIR__.'/includes/encryption.php');
+require_once(__DIR__.'/models/log.php');
 require_once(__DIR__.'/models/website.php');
 require_once(__DIR__.'/models/ftp_credential.php');
 require_once(__DIR__.'/models/db_credential.php');
@@ -22,7 +25,7 @@ class WebsiteManager {
       
    }
    
-   public function wm_install() {
+   public function install() {
       global $wpdb;
       $installed_version = get_option('_wm_db_version_');
       $sql = array();
@@ -80,9 +83,119 @@ class WebsiteManager {
             dbDelta( $query );
          }
          update_option('_wm_db_version_', 1.0);
+         Log::info('Database updated to v'.self::db_version.'.');
       }
+   }
+
+   public function register_menu_page() {
+       add_menu_page( 'TH Admin', 'TH Admin', 'manage_options', 'wm-dashboard', array('WebsiteManager', 'init'), plugins_url( 'website-manager/images/icon.png' ), 3 );
+      add_submenu_page( 'wm-dashboard', 'Websites', 'Websites', 'manage_options', 'wm-websites', array('WebsiteManager', 'websites') );
+      add_submenu_page( 'wm-dashboard', 'FTP Credentials', 'FTP Credentials', 'manage_options', 'wm-ftp-credentials', array('WebsiteManager', 'ftp_credentials') );
+      add_submenu_page( 'wm-dashboard', 'DB Credentials', 'DB Credentials', 'manage_options', 'wm-db-credentials', array('WebsiteManager', 'db_credentials') );
+      add_submenu_page( 'wm-dashboard', 'Security Log', 'Security Log', 'manage_options', 'wm-log', array('WebsiteManager', 'log') );
+   }
+      
+   public function init() {
+      Log::info('Accessed the dashboard.');
+      include(__DIR__.'/views/dashboard.php');
+   }
+   
+   public function websites() {
+      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && !empty( filter_input( INPUT_GET, 'id' ) ) ) {
+         
+      } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
+         if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
+            Log::warning('Failed to authorize form submission.');
+            exit('Failed to authorize form submission. Please try again.');
+         } else {
+            $action = filter_input(INPUT_POST, 'id');
+            if( !empty( $action ) ) {
+               $id = filter_input(INPUT_POST, 'id');
+               $website = new Website( $id );
+            } else {
+               $website = new Website;
+            }
+            $website->domain_name = filter_input(INPUT_POST, 'domain_name');
+            $website->registrar = filter_input(INPUT_POST, 'registrar');
+            $website->expiration_date = filter_input(INPUT_POST, 'expiration_date');
+            $website->login_url = filter_input(INPUT_POST, 'login_url');
+            $website->username = filter_input(INPUT_POST, 'username');
+            $website->password = filter_input(INPUT_POST, 'password');
+            $website->save();
+         }
+      } else {
+         Log::info('Accessed list of websites.');
+         include(__DIR__.'/views/list_websites.php');
+      }
+   }
+   
+   public function ftp_credentials() {
+      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && !empty( filter_input( INPUT_GET, 'id' ) ) ) {
+         
+      } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
+         if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
+            Log::warning('Failed to authorize form submission.');
+            exit('Failed to authorize form submission. Please try again.');
+         } else {
+            $action = filter_input(INPUT_POST, 'id');
+            if( !empty( $action ) ) {
+               $id = filter_input(INPUT_POST, 'id');
+               $ftp_credentials = new Ftp_Credential( $id );
+            } else {
+               $ftp_credentials = new Ftp_Credential;
+            }
+            $ftp_credentials->host = filter_input(INPUT_POST, 'domain_name');
+            $ftp_credentials->username = filter_input(INPUT_POST, 'username');
+            $ftp_credentials->password = filter_input(INPUT_POST, 'password');
+            $ftp_credentials->type = filter_input(INPUT_POST, 'type');
+            $ftp_credentials->save();
+         }
+      } else {
+         Log::info('Accessed list of FTP credentials.');
+         include(__DIR__.'/views/list_ftp_credentials.php');
+      }
+   }
+   
+   public function db_credentials() {
+      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && !empty( filter_input( INPUT_GET, 'id' ) ) ) {
+         
+      } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
+         if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
+            Log::warning('Failed to authorize form submission.');
+            exit('Failed to authorize form submission. Please try again.');
+         } else {
+            $action = filter_input(INPUT_POST, 'id');
+            if( !empty( $action ) ) {
+               $id = filter_input(INPUT_POST, 'id');
+               $db_credentials = new Db_Credential( $id );
+            } else {
+               $db_credentials = new Db_Credential;
+            }
+            $db_credentials->host = filter_input(INPUT_POST, 'domain_name');
+            $db_credentials->database = filter_input(INPUT_POST, 'database');
+            $db_credentials->username = filter_input(INPUT_POST, 'username');
+            $db_credentials->password = filter_input(INPUT_POST, 'password');
+            $db_credentials->phpmyadmin_url = filter_input(INPUT_POST, 'phpmyadmin_url');
+            $db_credentials->save();
+         }
+      } else {
+         Log::info('Accessed list of database credentials.');
+         include(__DIR__.'/views/list_db_credentials.php');
+      }
+   }
+   
+   public function log() {
+      $year = filter_input(INPUT_POST, 'year') == '' ? date('Y') : filter_input(INPUT_POST, 'year');
+      $month = filter_input(INPUT_POST, 'month') == '' ? date('m') : filter_input(INPUT_POST, 'month');
+      $date = filter_input(INPUT_POST, 'date') == '' ? date('d') : filter_input(INPUT_POST, 'date');
+      $log_contents = Log::read($year, $month, $date);
+      $directories = glob(__DIR__.'/logs/*' , GLOB_ONLYDIR);
+      $dir = __DIR__.'/logs/';
+      Log::info('Accessed the security log for '.$year.'-'.$month.'-'.$date.'.');
+      include(__DIR__.'/views/list_log.php');
    }
    
 }
 
-register_activation_hook( __FILE__, array('WebsiteManager', 'wm_install') );
+register_activation_hook( __FILE__, array('WebsiteManager', 'install') );
+add_action( 'admin_menu', array('WebsiteManager', 'register_menu_page') );

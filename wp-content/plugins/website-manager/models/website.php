@@ -2,24 +2,40 @@
 
 class Website {
    
-   private $id;
-   private $domain_name;
-   private $registrar;
-   private $exiration_date;
-   private $login_url;
-   private $username;
-   private $password;
-   private $last_modified;
+   protected $id;
+   protected $domain_name;
+   protected $registrar;
+   protected $exiration_date;
+   protected $login_url;
+   protected $username;
+   protected $password;
+   protected $last_modified;
+   private $new = true;
    
-   public function __construct() {
-      //Set a new ID
-      $this->id = uniqid('site.', true).'.'.time();
-      $this->domain_name = '';
-      $this->registrar = '';
-      $this->expiration_date = '';
-      $this->login_url = '';
-      $this->username = '';
-      $this->password = '';
+   public function __construct( $id = null ) {
+      global $wpdb;
+      if($id === null) {
+         //Set a new ID if we aren't given one.
+         $this->id = uniqid('site.', true).'.'.time();
+         $this->domain_name = '';
+         $this->registrar = '';
+         $this->expiration_date = '';
+         $this->login_url = '';
+         $this->username = '';
+         $this->password = '';
+         $this->last_modified = current_time( 'mysql' );
+      } else {
+         $website = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `".$wpdb->prefix."wm_websites` WHERE `id` = '".$id."'" ) );
+         $this->new = false;
+         $this->id = $id;
+         $this->domain_name = $website->domain_name;
+         $this->registrar = $website->registrar;
+         $this->expiration_date = $website->expiration_date;
+         $this->login_url = $website->login_url;
+         $this->username = $website->username;
+         $this->password = $website->password;
+         $this->last_modified = $website->last_modified;
+      }
    }
    
    public function __get($name) {
@@ -61,13 +77,41 @@ class Website {
       
    }
    
-   public static function get_all() {
-      global $wpdb;
+   public function get_all() {
       
    }
    
-   public static function save() {
-      
+   public function save() {
+      if( $this->new === true ) {
+         $wpdb->insert( 
+            'wm_websites', 
+            array( 
+               'id' => $this->id,
+               'domain_name' => $this->domain_name,
+               'domain_name' => $this->domain_name,
+               'registrar' => $this->registrar,
+               'expiration_date' => $this->expiration_date,
+               'login_url' => $this->login_url,
+               'username' => $this->username,
+               'password' => $this->password
+            )
+         );
+      } else {
+         $wpdb->update( 
+            'wm_websites', 
+            array( 
+               'id' => $this->id,
+               'domain_name' => $this->domain_name,
+               'domain_name' => $this->domain_name,
+               'registrar' => $this->registrar,
+               'expiration_date' => $this->expiration_date,
+               'login_url' => $this->login_url,
+               'username' => $this->username,
+               'password' => $this->password
+            ), 
+            array( 'id' => $this->id )
+         );
+      }
    }
    
    
