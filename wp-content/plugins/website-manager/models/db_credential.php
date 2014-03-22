@@ -2,15 +2,15 @@
 
 class Db_Credential {
    
-   private $id;
-   private $website_id;
-   private $host;
-   private $db_name;
-   private $username;
-   private $password;
-   private $phpmyadmin_url;
-   private $last_modified;
-   private $new = true;
+   public $id;
+   public $website_id;
+   public $host;
+   public $db_name;
+   public $username;
+   public $password;
+   public $phpmyadmin_url;
+   public $last_modified;
+   public $new = true;
    
    public function __construct( $id = null ) {
       global $wpdb;
@@ -51,6 +51,10 @@ class Db_Credential {
          case 'last_modified':
             return $this->$name;
             break;
+         case 'associated_domain_name':
+            $domain_name = $wpdb->get_var('SELECT `domain_name` FROM `'.$wpdb->prefix.'wm_websites` WHERE `website_id` = "'.$this->website_id.'"');
+            return Encryption::decrypt($domain_name);
+            break;
       }
    }
    
@@ -71,9 +75,16 @@ class Db_Credential {
       }
    }
    
+   public static function get_all() {
+      global $wpdb;
+      $db_credentials = $wpdb->get_col('SELECT `id`, `website_id` FROM `'.$wpdb->prefix.'wm_db_credentials`');
+      return $db_credentials;
+   }
+   
    public static function get_by_website( $website_id ) {
       global $wpdb;
-      
+      $db_credentials = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_db_credentials` WHERE `website_id` = "'.$website_id.'"');
+      return $db_credentials;
    }
    
    public function save() {

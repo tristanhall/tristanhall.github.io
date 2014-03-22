@@ -2,13 +2,13 @@
 
 class Ftp_Credential {
    
-   private $id;
-   private $website_id;
-   private $host;
-   private $username;
-   private $password;
-   private $type;
-   private $new = true;
+   public $id;
+   public $website_id;
+   public $host;
+   public $username;
+   public $password;
+   public $type;
+   public $new = true;
    
    public function __construct( $id = null ) {
       global $wpdb;
@@ -45,6 +45,10 @@ class Ftp_Credential {
          case 'last_modified':
             return $this->$name;
             break;
+         case 'associated_domain_name':
+            $domain_name = $wpdb->get_var('SELECT `domain_name` FROM `'.$wpdb->prefix.'wm_websites` WHERE `website_id` = "'.$this->website_id.'"');
+            return Encryption::decrypt($domain_name);
+            break;
       }
    }
    
@@ -65,9 +69,17 @@ class Ftp_Credential {
       }
    }
    
+   public static function get_all() {
+      global $wpdb;
+      $ftp_credentials = $wpdb->get_col('SELECT `id`, `website_id` FROM `'.$wpdb->prefix.'wm_ftp_credentials`');
+      return $ftp_credentials;
+   }
+   
    public static function get_by_website( $website_id ) {
       global $wpdb;
-      
+      global $wpdb;
+      $ftp_credentials = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_ftp_credentials` WHERE `website_id` = "'.$website_id.'"');
+      return $ftp_credentials;
    }
    
    public function save() {

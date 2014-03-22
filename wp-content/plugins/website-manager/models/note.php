@@ -2,11 +2,11 @@
 
 class Note {
    
-   private $id;
-   private $website_id;
-   private $author_id;
-   private $note_contents;
-   private $new = true;
+   public $id;
+   public $website_id;
+   public $author_id;
+   public $note_contents;
+   public $new = true;
    
    public function __construct( $id = null ) {
       global $wpdb;
@@ -56,7 +56,8 @@ class Note {
    
    public static function get_by_website( $website_id ) {
       global $wpdb;
-      
+      $notes = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_notes` WHERE `website_id` = "'.$website_id.'"');
+      return $notes;
    }
    
    public function save() {

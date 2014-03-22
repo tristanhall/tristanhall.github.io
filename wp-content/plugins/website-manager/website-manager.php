@@ -94,6 +94,12 @@ class WebsiteManager {
       add_submenu_page( 'wm-dashboard', 'DB Credentials', 'DB Credentials', 'manage_options', 'wm-db-credentials', array('WebsiteManager', 'db_credentials') );
       add_submenu_page( 'wm-dashboard', 'Security Log', 'Security Log', 'manage_options', 'wm-log', array('WebsiteManager', 'log') );
    }
+   
+   
+   public function load_admin_style() {
+      wp_register_style( 'wm_styles', plugins_url( 'website-manager/css/website_manager.css' ), false, '1.0' );
+      wp_enqueue_style( 'wm_styles' );
+   }
       
    public function init() {
       Log::info('Accessed the dashboard.');
@@ -101,19 +107,25 @@ class WebsiteManager {
    }
    
    public function websites() {
-      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && !empty( filter_input( INPUT_GET, 'id' ) ) ) {
-         
+      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
+         if( filter_input(INPUT_POST, 'id') == '') {
+            $site = new Website;
+         } else {
+            $site = new Website( filter_input(INPUT_POST, 'id') );
+         }
+         include(__DIR__.'/views/edit_website.php');
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
          if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
             Log::warning('Failed to authorize form submission.');
             exit('Failed to authorize form submission. Please try again.');
          } else {
-            $action = filter_input(INPUT_POST, 'id');
-            if( !empty( $action ) ) {
-               $id = filter_input(INPUT_POST, 'id');
+            $action = filter_input(INPUT_POST, 'action');
+            $id = filter_input(INPUT_POST, 'id');
+            if( $action == 'update' ) {
                $website = new Website( $id );
             } else {
                $website = new Website;
+               $website->id = $id;
             }
             $website->domain_name = filter_input(INPUT_POST, 'domain_name');
             $website->registrar = filter_input(INPUT_POST, 'registrar');
@@ -125,13 +137,19 @@ class WebsiteManager {
          }
       } else {
          Log::info('Accessed list of websites.');
+         $websites = Website::get_all();
          include(__DIR__.'/views/list_websites.php');
       }
    }
    
    public function ftp_credentials() {
-      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && !empty( filter_input( INPUT_GET, 'id' ) ) ) {
-         
+      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
+         if( filter_input(INPUT_POST, 'id') == '') {
+            $site = new Ftp_Credential();
+         } else {
+            $site = new Ftp_Credential( filter_input(INPUT_POST, 'id') );
+         }
+         include(__DIR__.'/views/edit_ftp_credential.php');
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
          if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
             Log::warning('Failed to authorize form submission.');
@@ -152,13 +170,19 @@ class WebsiteManager {
          }
       } else {
          Log::info('Accessed list of FTP credentials.');
+         $ftp_credential_ids = Ftp_Credential::get_all();
          include(__DIR__.'/views/list_ftp_credentials.php');
       }
    }
    
    public function db_credentials() {
-      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && !empty( filter_input( INPUT_GET, 'id' ) ) ) {
-         
+      if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
+         if( filter_input(INPUT_POST, 'id') == '') {
+            $site = new Db_Credential();
+         } else {
+            $site = new Db_Credential( filter_input(INPUT_POST, 'id') );
+         }
+         include(__DIR__.'/views/edit_db_credential.php');
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
          if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
             Log::warning('Failed to authorize form submission.');
@@ -180,18 +204,19 @@ class WebsiteManager {
          }
       } else {
          Log::info('Accessed list of database credentials.');
+         $db_credential_ids = Db_Credential::get_all();
          include(__DIR__.'/views/list_db_credentials.php');
       }
    }
    
    public function log() {
+      Log::info('Accessed the security log for '.$year.'-'.$month.'-'.$date.'.');
       $year = filter_input(INPUT_POST, 'year') == '' ? date('Y') : filter_input(INPUT_POST, 'year');
       $month = filter_input(INPUT_POST, 'month') == '' ? date('m') : filter_input(INPUT_POST, 'month');
       $date = filter_input(INPUT_POST, 'date') == '' ? date('d') : filter_input(INPUT_POST, 'date');
-      $log_contents = Log::read($year, $month, $date);
-      $directories = glob(__DIR__.'/logs/*' , GLOB_ONLYDIR);
+      $log_contents = explode( "\n", Log::read($year, $month, $date, false) );
+      $directories = glob( __DIR__.'/logs/*' , GLOB_ONLYDIR );
       $dir = __DIR__.'/logs/';
-      Log::info('Accessed the security log for '.$year.'-'.$month.'-'.$date.'.');
       include(__DIR__.'/views/list_log.php');
    }
    
@@ -199,3 +224,4 @@ class WebsiteManager {
 
 register_activation_hook( __FILE__, array('WebsiteManager', 'install') );
 add_action( 'admin_menu', array('WebsiteManager', 'register_menu_page') );
+add_action( 'admin_enqueue_scripts', array('WebsiteManager', 'load_admin_style') );

@@ -2,15 +2,15 @@
 
 class Website {
    
-   protected $id;
-   protected $domain_name;
-   protected $registrar;
-   protected $exiration_date;
-   protected $login_url;
-   protected $username;
-   protected $password;
-   protected $last_modified;
-   private $new = true;
+   public $id;
+   public $domain_name;
+   public $registrar;
+   public $exiration_date;
+   public $login_url;
+   public $username;
+   public $password;
+   public $last_modified;
+   public $new = true;
    
    public function __construct( $id = null ) {
       global $wpdb;
@@ -67,18 +67,16 @@ class Website {
             break;
          case 'id':
          case 'last_modified':
+         case 'new':
             $this->$name = $value;
             break;
       }
    }
    
-   public static function find( $id ) {
-      global $wpdb;
-      
-   }
-   
    public function get_all() {
-      
+      global $wpdb;
+      $website_ids = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_websites`');
+      return $website_ids;
    }
    
    public function save() {

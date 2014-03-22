@@ -7,3 +7,63 @@ form.wm_form label {
    display: inline-block;
    width: 50px;
 }
+
+.wm-container.dashboard .shortcut {
+   background-color: #fefefe;
+   background-repeat: no-repeat;
+   border: 1px solid #ededed;
+   -webkit-box-shadow: 0px 0px 3px 0px #333;
+   -moz-box-shadow: 0px 0px 3px 0px #333;
+   box-shadow: 0px 0px 3px 0px #333;
+   box-sizing: border-box;
+   color: #e14d43;
+   display: block;
+   float: left;
+   font-size: 20px;
+   height: 230px;
+   line-height: 400px;
+   margin-right: 25px;
+   margin-bottom: 25px;
+   padding: 5px;
+   text-align: center;
+   text-decoration: none;
+   -webkit-transition: all 450ms linear;
+   -moz-transition: all 450ms linear;
+   -o-transition: all 450ms linear;
+   -ms-transition: all 450ms linear;
+   transition: all 450ms linear;
+   width: 230px;
+}
+
+.wm-container.dashboard .shortcut:hover {
+   -webkit-box-shadow: 0px 0px 5px 0px #333;
+   -moz-box-shadow: 0px 0px 5px 0px #333;
+   box-shadow: 0px 0px 5px 0px #333;
+   border-color: #4d4d4d;
+}
+
+.wm-container.dashboard .shortcut.websites {
+   background-image: url('../images/icon-website.png');
+   background-position: center top;
+   background-size: 150px;
+}
+
+.wm-container.dashboard .shortcut.db-credentials {
+   background-image: url('../images/icon-database.png');
+   background-position: center 25px;
+   background-size: 130px;
+}
+
+.wm-container.dashboard .shortcut.ftp-credentials {
+   background-image: url('../images/icon-upload.png');
+   background-position: center 20px;
+   background-size: 150px;
+}
+
+.wm-container.dashboard .shortcut.log {
+   background-image: url('../images/icon-security-log.png');
+   background-position: center top;
+   background-size: 150px;
+   background-position: center 20px;
+   background-size: 130px;
+}
