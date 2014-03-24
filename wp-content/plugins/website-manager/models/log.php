@@ -2,6 +2,11 @@
 
 class Log {
    
+   /**
+    * 
+    * @param string $message
+    * @return boolean
+    */
    public static function debug( $message ) {
       $current_user = wp_get_current_user();
       $log_message = 'DEBUG - '.date('Y-m-d H:i:s').' - '.$current_user->user_login.' - '.$message."\n";
@@ -13,6 +18,11 @@ class Log {
       }
    }
    
+   /**
+    * 
+    * @param string $message
+    * @return boolean
+    */
    public static function error( $message ) {
       $current_user = wp_get_current_user();
       $log_message = 'ERRPR - '.date('Y-m-d H:i:s').' - '.$current_user->user_login.' - '.$message."\n";
@@ -24,6 +34,11 @@ class Log {
       }
    }
    
+   /**
+    * 
+    * @param string $message
+    * @return boolean
+    */
    public static function info( $message ) {
       $current_user = wp_get_current_user();
       $log_message = 'INFO - '.date('Y-m-d H:i:s').' - '.$current_user->user_login.' - '.$message."\n";
@@ -35,6 +50,11 @@ class Log {
       }
    }
    
+   /**
+    * 
+    * @param string $message
+    * @return boolean
+    */
    public static function warning( $message ) {
       $current_user = wp_get_current_user();
       $log_message = 'WARNING - '.date('Y-m-d H:i:s').' - '.$current_user->user_login.' - '.$message."\n";
@@ -46,6 +66,11 @@ class Log {
       }
    }
    
+   /**
+    * 
+    * @param string $message
+    * @return void
+    */
    private static function write( $message ) {
       //Do we have logging enabled?
       if( !defined('LOGGING') || LOGGING === false ) {
@@ -76,6 +101,14 @@ class Log {
       fclose( $fh );
    }
    
+   /**
+    * 
+    * @param integer $year
+    * @param integer $month
+    * @param integer $date
+    * @param boolean $nl2br
+    * @return string
+    */
    public static function read( $year, $month, $date, $nl2br = true ) {
       $filename = __DIR__.'/../logs/'.$year.'/'.$month.'/'.$date.'.txt';
       if( file_exists( $filename ) ) {

@@ -10,6 +10,11 @@ class Ftp_Credential {
    public $type;
    public $new = true;
    
+   /**
+    * 
+    * @global object $wpdb
+    * @param string $id
+    */
    public function __construct( $id = null ) {
       global $wpdb;
       if($id === null) {
@@ -32,6 +37,11 @@ class Ftp_Credential {
       }
    }
    
+   /**
+    * 
+    * @param string $name
+    * @return string
+    */
    public function __get($name) {
       switch($name) {
          case 'host':
@@ -52,6 +62,11 @@ class Ftp_Credential {
       }
    }
    
+   /**
+    * 
+    * @param string $name
+    * @param mixed $value
+    */
    public function __set($name, $value) {
       switch($name) {
          case 'host':
@@ -69,19 +84,32 @@ class Ftp_Credential {
       }
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    * @return array
+    */
    public static function get_all() {
       global $wpdb;
       $ftp_credentials = $wpdb->get_col('SELECT `id`, `website_id` FROM `'.$wpdb->prefix.'wm_ftp_credentials`');
       return $ftp_credentials;
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    * @param string $website_id
+    * @return array
+    */
    public static function get_by_website( $website_id ) {
-      global $wpdb;
       global $wpdb;
       $ftp_credentials = $wpdb->get_col('SELECT * FROM `'.$wpdb->prefix.'wm_ftp_credentials` WHERE `website_id` = "'.$website_id.'"');
       return $ftp_credentials;
    }
    
+   /**
+    * 
+    */
    public function save() {
       if( $this->new === true ) {
          $wpdb->insert( 

@@ -21,10 +21,17 @@ class WebsiteManager {
    
    const db_version = 1.0;
    
+   /**
+    * 
+    */
    public function __construct() {
       
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    */
    public function install() {
       global $wpdb;
       $installed_version = get_option('_wm_db_version_');
@@ -87,6 +94,9 @@ class WebsiteManager {
       }
    }
 
+   /**
+    * 
+    */
    public function register_menu_page() {
        add_menu_page( 'TH Admin', 'TH Admin', 'manage_options', 'wm-dashboard', array('WebsiteManager', 'init'), plugins_url( 'website-manager/images/icon.png' ), 3 );
       add_submenu_page( 'wm-dashboard', 'Websites', 'Websites', 'manage_options', 'wm-websites', array('WebsiteManager', 'websites') );
@@ -95,7 +105,9 @@ class WebsiteManager {
       add_submenu_page( 'wm-dashboard', 'Security Log', 'Security Log', 'manage_options', 'wm-log', array('WebsiteManager', 'log') );
    }
    
-   
+   /**
+    * 
+    */
    public function load_admin_assets() {
       wp_register_style( 'wm_styles', plugins_url( 'website-manager/css/website_manager.css' ), false, '1.0' );
       wp_enqueue_style( 'wm_styles' );
@@ -103,11 +115,17 @@ class WebsiteManager {
       wp_enqueue_script( 'wm_scripts' );
    }
       
+   /**
+    * 
+    */
    public function init() {
       Log::info('Accessed the dashboard.');
       include(__DIR__.'/views/dashboard.php');
    }
    
+   /**
+    * 
+    */
    public function websites() {
       if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
          if( filter_input(INPUT_POST, 'id') == '') {
@@ -151,6 +169,9 @@ class WebsiteManager {
       }
    }
    
+   /**
+    * 
+    */
    public function ftp_credentials() {
       if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
          if( filter_input(INPUT_POST, 'id') == '') {
@@ -184,6 +205,9 @@ class WebsiteManager {
       }
    }
    
+   /**
+    * 
+    */
    public function db_credentials() {
       if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
          if( filter_input(INPUT_POST, 'id') == '') {
@@ -218,6 +242,9 @@ class WebsiteManager {
       }
    }
    
+   /**
+    * 
+    */
    public function log() {
       Log::info('Accessed the security log for '.$year.'-'.$month.'-'.$date.'.');
       $year = filter_input(INPUT_POST, 'year') == '' ? date('Y') : filter_input(INPUT_POST, 'year');

@@ -12,6 +12,11 @@ class Db_Credential {
    public $last_modified;
    public $new = true;
    
+   /**
+    * 
+    * @global object $wpdb
+    * @param string $id
+    */
    public function __construct( $id = null ) {
       global $wpdb;
       if($id === null) {
@@ -37,6 +42,11 @@ class Db_Credential {
       }
    }
    
+   /**
+    * 
+    * @param string $name
+    * @return string
+    */
    public function __get($name) {
       switch($name) {
          case 'host':
@@ -58,6 +68,11 @@ class Db_Credential {
       }
    }
    
+   /**
+    * 
+    * @param string $name
+    * @param mixed $value
+    */
    public function __set($name, $value) {
       switch($name) {
          case 'host':
@@ -75,18 +90,32 @@ class Db_Credential {
       }
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    * @return array
+    */
    public static function get_all() {
       global $wpdb;
       $db_credentials = $wpdb->get_col('SELECT `id`, `website_id` FROM `'.$wpdb->prefix.'wm_db_credentials`');
       return $db_credentials;
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    * @param string $website_id
+    * @return array
+    */
    public static function get_by_website( $website_id ) {
       global $wpdb;
       $db_credentials = $wpdb->get_col('SELECT * FROM `'.$wpdb->prefix.'wm_db_credentials` WHERE `website_id` = "'.$website_id.'"');
       return $db_credentials;
    }
    
+   /**
+    * 
+    */
    public function save() {
       if( $this->new === true) {
          $wpdb->insert( 
