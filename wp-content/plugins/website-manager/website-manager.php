@@ -96,9 +96,11 @@ class WebsiteManager {
    }
    
    
-   public function load_admin_style() {
+   public function load_admin_assets() {
       wp_register_style( 'wm_styles', plugins_url( 'website-manager/css/website_manager.css' ), false, '1.0' );
       wp_enqueue_style( 'wm_styles' );
+      wp_register_script( 'wm_scripts', plugins_url( 'website-manager/js/jquery.functions.js' ), false, '1.0' );
+      wp_enqueue_script( 'wm_scripts' );
    }
       
    public function init() {
@@ -110,8 +112,15 @@ class WebsiteManager {
       if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
          if( filter_input(INPUT_POST, 'id') == '') {
             $site = new Website;
+            $db_credentials = array();
+            $ftp_credentials = array();
+            $notes = array();
          } else {
-            $site = new Website( filter_input(INPUT_POST, 'id') );
+            $id = filter_input(INPUT_POST, 'id');
+            $site = new Website( $id );
+            $db_credentials = Db_Credential::get_by_website( $id );
+            $ftp_credentials = Ftp_Credential::get_by_website( $id );
+            $notes = Note::get_by_website( $id );
          }
          include(__DIR__.'/views/edit_website.php');
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
@@ -224,4 +233,7 @@ class WebsiteManager {
 
 register_activation_hook( __FILE__, array('WebsiteManager', 'install') );
 add_action( 'admin_menu', array('WebsiteManager', 'register_menu_page') );
-add_action( 'admin_enqueue_scripts', array('WebsiteManager', 'load_admin_style') );
+add_action( 'admin_enqueue_scripts', array('WebsiteManager', 'load_admin_assets') );
+
+//AJAX Routes
+add_action( 'wp_ajax_', 'my_action_callback' );

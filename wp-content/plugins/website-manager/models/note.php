@@ -56,7 +56,7 @@ class Note {
    
    public static function get_by_website( $website_id ) {
       global $wpdb;
-      $notes = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_notes` WHERE `website_id` = "'.$website_id.'"');
+      $notes = $wpdb->get_col('SELECT * FROM `'.$wpdb->prefix.'wm_notes` WHERE `website_id` = "'.$website_id.'"');
       return $notes;
    }
    

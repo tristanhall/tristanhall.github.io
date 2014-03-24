@@ -67,3 +67,21 @@ form.wm_form label {
    background-position: center 20px;
    background-size: 130px;
 }
+
+.wm-container.edit-website fieldset.display .display {
+   display: block;
+}
+.wm-container.edit-website fieldset.display .input {
+   display: none;
+}
+
+.wm-container.edit-website fieldset.input .display {
+   display: none;
+}
+.wm-container.edit-website fieldset.input .input {
+   display: block;
+}
+
+.wm-container.edit-website form#new-db-credentials {
+   display: none;
+}

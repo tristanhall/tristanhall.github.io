@@ -83,7 +83,7 @@ class Db_Credential {
    
    public static function get_by_website( $website_id ) {
       global $wpdb;
-      $db_credentials = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_db_credentials` WHERE `website_id` = "'.$website_id.'"');
+      $db_credentials = $wpdb->get_col('SELECT * FROM `'.$wpdb->prefix.'wm_db_credentials` WHERE `website_id` = "'.$website_id.'"');
       return $db_credentials;
    }
    
