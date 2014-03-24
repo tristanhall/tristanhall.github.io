@@ -42,13 +42,13 @@ class Website {
       switch($name) {
          case 'domain_name':
          case 'registrar':
-         case 'expiration_date':
          case 'login_url':
          case 'username':
          case 'password':
             return Encryption::decrypt($this->$name);
             break;
          case 'id':
+         case 'expiration_date':
          case 'last_modified':
             return $this->$name;
             break;
@@ -59,13 +59,13 @@ class Website {
       switch($name) {
          case 'domain_name':
          case 'registrar':
-         case 'expiration_date':
          case 'login_url':
          case 'username':
          case 'password':
             $this->$name = Encryption::encrypt($value);
             break;
          case 'id':
+         case 'expiration_date':
          case 'last_modified':
          case 'new':
             $this->$name = $value;
@@ -85,13 +85,13 @@ class Website {
             'wm_websites', 
             array( 
                'id' => $this->id,
-               'domain_name' => $this->domain_name,
-               'domain_name' => $this->domain_name,
-               'registrar' => $this->registrar,
-               'expiration_date' => $this->expiration_date,
-               'login_url' => $this->login_url,
-               'username' => $this->username,
-               'password' => $this->password
+               'domain_name' => Encryption::encrypt( $this->domain_name ),
+               'domain_name' => Encryption::encrypt( $this->domain_name ),
+               'registrar' => Encryption::encrypt( $this->registrar ),
+               'expiration_date' => Encryption::encrypt( $this->expiration_date ),
+               'login_url' => Encryption::encrypt( $this->login_url ),
+               'username' => Encryption::encrypt( $this->username ),
+               'password' => Encryption::encrypt( $this->password )
             )
          );
       } else {

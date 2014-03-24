@@ -41,7 +41,7 @@ class WebsiteManager {
          id varchar(50) NOT NULL,
          domain_name varbinary(255) NOT NULL,
          registrar varbinary(255) NOT NULL,
-         expiration_date varbinary(255) NOT NULL,
+         expiration_date date NOT NULL,
          login_url varbinary(255) NOT NULL,
          username varbinary(255) NOT NULL,
          password varbinary(255) NOT NULL,
