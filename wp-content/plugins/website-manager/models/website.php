@@ -14,6 +14,7 @@ class Website {
    
    public function __construct( $id = null ) {
       global $wpdb;
+      $this->encryption_key = get_option('_wm_private_key_');
       if($id === null) {
          //Set a new ID if we aren't given one.
          $this->id = uniqid('site.', true).'.'.time();
@@ -25,51 +26,17 @@ class Website {
          $this->password = '';
          $this->last_modified = current_time( 'mysql' );
       } else {
-         $website = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `".$wpdb->prefix."wm_websites` WHERE `id` = '".$id."'" ) );
+         $query = sprintf('SELECT AES_DECRYPT(domain_name, "%1$s"), AES_DECRYPT(registrar, "%1$s"), AES_DECRYPT(expiration_date, "%1$s"), AES_DECRYPT(login_url, "%1$s"), AES_DECRYPT(username, "%1$s"), AES_DECRYPT(password, "%1$s"), last_modified FROM `%2$s` WHERE `id` = "%3$s"', $this->encryption_key, $wpdb->prefix.'wm_websites', $id);
+         $website = $wpdb->get_row( $query, ARRAY_A );
          $this->new = false;
          $this->id = $id;
-         $this->domain_name = $website->domain_name;
-         $this->registrar = $website->registrar;
-         $this->expiration_date = $website->expiration_date;
-         $this->login_url = $website->login_url;
-         $this->username = $website->username;
-         $this->password = $website->password;
+         $this->domain_name = $website['AES_DECRYPT(domain_name, "'.$this->encryption_key.'")'];
+         $this->registrar =$website['AES_DECRYPT(registrar, "'.$this->encryption_key.'")'];
+         $this->expiration_date = $website['AES_DECRYPT(expiration_date, "'.$this->encryption_key.'")'];
+         $this->login_url = $website['AES_DECRYPT(login_url, "'.$this->encryption_key.'")'];
+         $this->username = $website['AES_DECRYPT(username, "'.$this->encryption_key.'")'];
+         $this->password = $website['AES_DECRYPT(password, "'.$this->encryption_key.'")'];
          $this->last_modified = $website->last_modified;
-      }
-   }
-   
-   public function __get($name) {
-      switch($name) {
-         case 'domain_name':
-         case 'registrar':
-         case 'login_url':
-         case 'username':
-         case 'password':
-            return Encryption::decrypt($this->$name);
-            break;
-         case 'id':
-         case 'expiration_date':
-         case 'last_modified':
-            return $this->$name;
-            break;
-      }
-   }
-   
-   public function __set($name, $value) {
-      switch($name) {
-         case 'domain_name':
-         case 'registrar':
-         case 'login_url':
-         case 'username':
-         case 'password':
-            $this->$name = Encryption::encrypt($value);
-            break;
-         case 'id':
-         case 'expiration_date':
-         case 'last_modified':
-         case 'new':
-            $this->$name = $value;
-            break;
       }
    }
    
@@ -80,35 +47,35 @@ class Website {
    }
    
    public function save() {
+      global $wpdb;
+      $wpdb->show_errors();
       if( $this->new === true ) {
-         $wpdb->insert( 
-            'wm_websites', 
-            array( 
-               'id' => $this->id,
-               'domain_name' => Encryption::encrypt( $this->domain_name ),
-               'domain_name' => Encryption::encrypt( $this->domain_name ),
-               'registrar' => Encryption::encrypt( $this->registrar ),
-               'expiration_date' => Encryption::encrypt( $this->expiration_date ),
-               'login_url' => Encryption::encrypt( $this->login_url ),
-               'username' => Encryption::encrypt( $this->username ),
-               'password' => Encryption::encrypt( $this->password )
-            )
+         $query = sprintf('INSERT INTO `%1$s` (id, domain_name, registrar, expiration_date, login_url, username, password, last_modified) VALUES ("%9$s", AES_ENCRYPT("%2$s", "%8$s"), AES_ENCRYPT("%3$s", "%8$s"), AES_ENCRYPT("%4$s", "%8$s"), AES_ENCRYPT("%5$s", "%8$s"), AES_ENCRYPT("%6$s", "%8$s"), AES_ENCRYPT("%7$s", "%8$s"), "%10$s")',
+           $wpdb->prefix.'wm_websites',
+           $this->domain_name,
+           $this->registrar,
+           $this->expiration_date,
+           $this->login_url,
+           $this->username,
+           $this->password,
+           $this->encryption_key,
+           $this->id,
+           date('Y-m-d H:i:s')
          );
+         $wpdb->query( $query );
       } else {
-         $wpdb->update( 
-            'wm_websites', 
-            array( 
-               'id' => $this->id,
-               'domain_name' => $this->domain_name,
-               'domain_name' => $this->domain_name,
-               'registrar' => $this->registrar,
-               'expiration_date' => $this->expiration_date,
-               'login_url' => $this->login_url,
-               'username' => $this->username,
-               'password' => $this->password
-            ), 
-            array( 'id' => $this->id )
+         $query = sprintf('UPDATE `%1$s` SET `domain_name` = AES_ENCRYPT("%2$s", "%8$s"), `registrar` = AES_ENCRYPT("%3$s", "%8$s"), `expiration_date` = AES_ENCRYPT("%4$s", "%8$s"), `login_url` = AES_ENCRYPT("%5$s", "%8$s"), `username` = AES_ENCRYPT("%6$s", "%8$s"), `password` = AES_ENCRYPT("%7$s", "%8$s") WHERE `id` = "%9$s"',
+           $wpdb->prefix.'wm_websites',
+           $this->domain_name,
+           $this->registrar,
+           $this->expiration_date,
+           $this->login_url,
+           $this->username,
+           $this->password,
+           $this->encryption_key,
+           $this->id
          );
+         $wpdb->query( $query );
       }
    }
    

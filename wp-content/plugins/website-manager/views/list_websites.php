@@ -30,8 +30,8 @@
             <td><?php echo $site->domain_name; ?></td>
             <td><?php echo $site->expiration_date; ?></td>
             <td><?php echo $site->registrar; ?></td>
-            <td><?php echo $site->login_url; ?></td>
-            <td></td>
+            <td><a href="<?php echo $site->login_url; ?>" target="_blank"><?php echo $site->login_url; ?></a></td>
+            <td><a class="button" href="admin.php?page=wm-websites&action=edit&id=<?php echo $id; ?>">Edit</a></td>
          </tr>
          <?php } ?>
       </tbody>

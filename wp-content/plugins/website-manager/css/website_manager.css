@@ -85,3 +85,19 @@ form.wm_form label {
 .wm-container.edit-website form#new-db-credentials {
    display: none;
 }
+
+#website_details_meta #poststuff h3,
+#website_details_meta .metabox-holder h3 {
+   cursor: default;
+}
+
+#wpfooter {
+   display: none;
+}
+
+p.no_auth {
+   color: red;
+   display: none;
+   float: right;
+   margin-top: -5px;
+}

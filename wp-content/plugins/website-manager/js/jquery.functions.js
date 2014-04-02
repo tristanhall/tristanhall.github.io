@@ -1,4 +1,5 @@
 jQuery(function() {
+   
    jQuery('form.mimic input').each(function() {
       var name = jQuery(this).attr('name');
       if(jQuery('[data-role="'+name+'"]').length > 0) {
@@ -8,6 +9,16 @@ jQuery(function() {
          });
       }
    });
+   
+   jQuery('form.mimic select').each(function() {
+      var name = jQuery(this).attr('name');
+      if(jQuery('[data-role="'+name+'"]').length > 0) {
+         jQuery(this).on('change', function() {
+            jQuery('[data-role="'+name+'"]').first().val( jQuery(this).val() );
+         });
+      }
+   });
+   
    jQuery('.toggleEdit').click(function(evt) {
       var fieldset = jQuery(this).attr('rel');
       evt.preventDefault();
@@ -15,10 +26,31 @@ jQuery(function() {
          jQuery('fieldset#'+fieldset).removeClass('display').addClass('input');
          jQuery(this).text('Done');
       } else {
-         jQuery('fieldset#'+fieldset).addClass('display').removeClass('input');
-         jQuery(this).text('Edit');
+         if(jQuery('#title').val() === '') {
+            alert('Please enter a domain name first.');
+         } else {
+            var post_data = jQuery('#website-details').serialize();
+            jQuery(this).text('Saving...');
+            var $button = jQuery(this);
+            jQuery.post(ajaxurl, post_data, function(d) {
+               if(d === 'success') {
+                  if(jQuery('input[name="new"]').val() === 'yes') {
+                     jQuery('input[name="new"]').val('no');
+                  }
+                  jQuery('#website-details p.no_auth').slideUp();
+                  jQuery('fieldset#'+fieldset).removeClass('input').addClass('display');
+               } else {
+                  jQuery('#website-details p.no_auth').slideDown();
+               }
+               $button.html('Done');
+            }).fail(function() {
+               $button.html('Done');
+               jQuery('#website-details p.no_auth').slideDown();
+            });
+         }
       }
    });
+   
    jQuery('.toggleNewDb').click(function(evt) {
       evt.preventDefault();
       if(jQuery('form#new-db-credentials').is(':visible')) {
@@ -28,5 +60,9 @@ jQuery(function() {
          jQuery('form#new-db-credentials').slideDown();
          jQuery(this).text('Cancel');
       }
+   });
+   
+   jQuery('#website_details_meta form').submit(function() {
+      
    });
 });
