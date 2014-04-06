@@ -135,6 +135,7 @@ class WebsiteManager {
          } else {
             $id = filter_input(INPUT_GET, 'id');
             $site = new Website( $id );
+            Log::info('Accessed website records for '.$site->domain_name.'.');
             $db_credentials = Db_Credential::get_by_website( $id );
             $ftp_credentials = Ftp_Credential::get_by_website( $id );
             $notes = Note::get_by_website( $id );
@@ -160,6 +161,7 @@ class WebsiteManager {
             $website->username = filter_input(INPUT_POST, 'username');
             $website->password = filter_input(INPUT_POST, 'password');
             $website->save();
+            Log::info('Modified website information for '.$website->domain_name.'.');
          }
       } else {
          Log::info('Accessed list of websites.');
@@ -276,6 +278,7 @@ class WebsiteManager {
          $website->username = filter_input(INPUT_POST, 'username');
          $website->password = filter_input(INPUT_POST, 'password');
          $website->save();
+         Log::info('Modified website information for '.$website->domain_name.'.');
          $response = 'success';
       }
       //header('Content-type: text/json');

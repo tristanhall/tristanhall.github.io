@@ -27,7 +27,7 @@
          <?php foreach($website_ids as $id) { 
          $site = new Website( $id ); ?>
          <tr>
-            <td><?php echo $site->domain_name; ?></td>
+            <td><a href="admin.php?page=wm-websites&action=edit&id=<?php echo $id; ?>"><?php echo $site->domain_name; ?></a></td>
             <td><?php echo $site->expiration_date; ?></td>
             <td><?php echo $site->registrar; ?></td>
             <td><a href="<?php echo $site->login_url; ?>" target="_blank"><?php echo $site->login_url; ?></a></td>

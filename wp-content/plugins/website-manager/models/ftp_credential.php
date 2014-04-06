@@ -24,6 +24,7 @@ class Ftp_Credential {
          $this->host = '127.0.0.1';
          $this->username = '';
          $this->password = '';
+         $this->type = '';
          $this->last_modified = current_time( 'mysql' );
       } else {
          $ftp_credential = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `".$wpdb->prefix."wm_ftp_credentials` WHERE `id` = '".$id."'" ) );
@@ -33,6 +34,7 @@ class Ftp_Credential {
          $this->host = $ftp_credential->host;
          $this->username = $ftp_credential->username;
          $this->password = $ftp_credential->password;
+         $this->type = $ftp_credential->type;
          $this->last_modified = $ftp_credential->last_modified;
       }
    }

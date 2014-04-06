@@ -48,10 +48,10 @@
    <table class="wp-list-table widefat fixed posts">
       <thead>
          <tr>
-            <th>Level</th>
-            <th>User</th>
+            <th style='width: 60px;'>Level</th>
+            <th style='width: 150px;'>User</th>
             <th>Message</th>
-            <th>Date/Time</th>
+            <th style='width: 170px;'>Date/Time</th>
          </tr>
       </thead>
       <tbody>

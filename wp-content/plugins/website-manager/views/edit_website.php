@@ -3,7 +3,7 @@
    <div id="poststuff">
       <div id="post-body" class="metabox-holder columns-2">
          <div id="post-body-content">
-            <form action="admin.php?page=wm-websites" class="mimic" method="post" id="website-details" class="<?php echo $site->new === true ? 'add' : 'update'; ?>">
+            <form action="#" class="mimic" method="post" id="website-details" class="<?php echo $site->new === true ? 'add' : 'update'; ?>">
                <?php wp_nonce_field('website', 'wm_nonce'); ?>
                <input type="hidden" value='wm_websites' name='action'>
                <input type="hidden" value="<?php echo $site->new === true ? 'yes' : 'no'; ?>" name="new">
@@ -17,7 +17,10 @@
                <div id="postbox-container-3" class="postbox-container">
                   <div class="meta-box">
                      <div id="website_details_meta" class="postbox ">
-                        <h3><span>Website Details</span><a href="#" rel='website-details-fieldset' class="toggleEdit add-new-h2 alignright"><?php echo $site->new === true ? 'Done' : 'Edit'; ?></a></h3>
+                        <h3>
+                           <span>Website Details</span>
+                           <a href="#" rel='website-details-fieldset' class="toggleEdit add-new-h2 alignright"><?php echo $site->new === true ? 'Done' : 'Edit'; ?></a>
+                        </h3>
                         <div class="inside">
                            <p class="no_auth">Could not save website.</p>
                            <fieldset id='website-details-fieldset' class="<?php echo $site->new === true ? 'input' : 'display'; ?>">
@@ -63,36 +66,40 @@
             <div id="postbox-container-2" class="postbox-container">
                <div class="meta-box">
                   <div id="wm_db_credentials_meta" class="postbox ">
-                     <h3><span>Database Credentials</span> <a href='#' class="toggleNewDb add-new-h2 alignright">Add New</a></h3>
+                     <h3>
+                        <span>Database Credentials</span>
+                        <a href='#' class="toggleNewDb add-new-h2 alignright">Add New</a>
+                     </h3>
                      <div class="inside">
-                        <form action="" method="post" id="new-db-credentials">
+                        <form action="#" method="post" id="new-db-credentials">
+                           <input type="hidden" value="<?php echo $site->id; ?>" name="website_id">
                            <fieldset>
                               <table>
                                  <tbody>
                                     <tr>
-                                       <td><label for='host'>Host</label></td>
+                                       <td><label for='db_host'>Host</label></td>
                                        <td><label for='db_name'>Database</label></td>
-                                       <td><label for='username'>Username</label></td>
+                                       <td><label for='db_username'>Username</label></td>
                                     </tr>
                                     <tr>
                                        <td>
-                                          <input type='text' id='host' name='host' value=''>
+                                          <input type='text' id='db_host' name='host' value=''>
                                        </td>
                                        <td>
                                           <input type='text' id='db_name' name='db_name' value=''>
                                        </td>
                                        <td>
-                                          <input type='text' id='username' name='username' value=''>
+                                          <input type='text' id='db_username' name='username' value=''>
                                        </td>
                                     </tr>
                                     <tr>
-                                       <td><label for='password'>Password</label></td>
+                                       <td><label for='db_password'>Password</label></td>
                                        <td><label for='phpmyadmin_url'>PhpMyAdmin URL</label></td>
                                        <td></td>
                                     </tr>
                                     <tr>
                                        <td>
-                                          <input type='text' id='password' name='password' value=''>
+                                          <input type='text' id='db_password' name='password' value=''>
                                        </td>
                                        <td>
                                           <input type='text' id='phpmyadmin_url' name='phpmyadmin_url' value=''>
@@ -118,10 +125,47 @@
                   <div id="wm_ftp_credentials_meta" class="postbox ">
                      <h3><span>FTP Credentials</span> <a href='#' class="toggleNewFtp add-new-h2 alignright">Add New</a></h3>
                      <div class="inside">
-                        <form action="" method="post" id="ftp-credentials">
+                        <form action="#" method="post" id="new-ftp-credentials">
+                           <input type="hidden" value="<?php echo $site->id; ?>" name="website_id">
                            <fieldset>
-                              
+                              <table>
+                                 <tbody>
+                                    <tr>
+                                       <td><label for='ftp_host'>Host</label></td>
+                                       <td><label for='ftp_username'>Username</label></td>
+                                       <td><label for='ftp_password'>Password</label></td>
+                                       <td><label for='type'>Type</label></td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          <input type='text' id='ftp_host' name='host' value=''>
+                                       </td>
+                                       <td>
+                                          <input type='text' id='ftp_username' name='username' value=''>
+                                       </td>
+                                       <td>
+                                          <input type='text' id='ftp_password' name='password' value=''>
+                                       </td>
+                                       <td>
+                                          <select name='type' id='type'>
+                                             <option value='FTP'>Plain FTP</option>
+                                             <option value='FTP + SSL'>FTP + SSL</option>
+                                             <option value='SFTP'>SFTP</option>
+                                          </select>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          <input type='submit' value='Save' class='button-primary'>
+                                       </td>
+                                       <td></td>
+                                       <td></td>
+                                       <td></td>
+                                    </tr>
+                                 </tbody>
+                              </table>
                            </fieldset>
+                           <hr>
                         </form>
                      </div>
                   </div>
@@ -135,10 +179,27 @@
                   <div id="wm_notes_meta" class="postbox ">
                      <h3><span>Notes</span> <a href='#' class="toggleNewNote add-new-h2 alignright">Add New</a></h3>
                      <div class="inside">
-                        <form action="" method="post" id="notess">
+                        <form action="#" method="post" id="new-note">
                            <fieldset>
-                              
+                              <table>
+                                 <tbody>
+                                    <tr>
+                                       <td><label for='note_contents'>Note</label></td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          <textarea name='note_contents' id='note_contents'></textarea>
+                                       </td>
+                                    </tr>
+                                    <tr>
+                                       <td>
+                                          <input type='submit' value='Save' class='button-primary'>
+                                       </td>
+                                    </tr>
+                                 </tbody>
+                              </table>
                            </fieldset>
+                           <hr>
                         </form>
                      </div>
                   </div>

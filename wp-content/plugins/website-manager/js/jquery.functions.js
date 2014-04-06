@@ -19,7 +19,7 @@ jQuery(function() {
       }
    });
    
-   jQuery('.toggleEdit').click(function(evt) {
+   jQuery('#website_details_meta .toggleEdit').click(function(evt) {
       var fieldset = jQuery(this).attr('rel');
       evt.preventDefault();
       if(jQuery('fieldset#'+fieldset).hasClass('display')) {
@@ -39,10 +39,10 @@ jQuery(function() {
                   }
                   jQuery('#website-details p.no_auth').slideUp();
                   jQuery('fieldset#'+fieldset).removeClass('input').addClass('display');
+                  $button.html('Edit');
                } else {
                   jQuery('#website-details p.no_auth').slideDown();
                }
-               $button.html('Done');
             }).fail(function() {
                $button.html('Done');
                jQuery('#website-details p.no_auth').slideDown();
@@ -58,6 +58,28 @@ jQuery(function() {
          jQuery(this).text('Add New');
       } else {
          jQuery('form#new-db-credentials').slideDown();
+         jQuery(this).text('Cancel');
+      }
+   });
+   
+   jQuery('.toggleNewFtp').click(function(evt) {
+      evt.preventDefault();
+      if(jQuery('form#new-ftp-credentials').is(':visible')) {
+         jQuery('form#new-ftp-credentials').slideUp();
+         jQuery(this).text('Add New');
+      } else {
+         jQuery('form#new-ftp-credentials').slideDown();
+         jQuery(this).text('Cancel');
+      }
+   });
+   
+   jQuery('.toggleNewNote').click(function(evt) {
+      evt.preventDefault();
+      if(jQuery('form#new-note').is(':visible')) {
+         jQuery('form#new-note').slideUp();
+         jQuery(this).text('Add New');
+      } else {
+         jQuery('form#new-note').slideDown();
          jQuery(this).text('Cancel');
       }
    });
