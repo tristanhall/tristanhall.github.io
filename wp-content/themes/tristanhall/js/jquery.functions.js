@@ -184,6 +184,9 @@ jQuery(document).ready(function($) {
    $('body.home a.button').click(function(evt) {
       evt.preventDefault();
       var nextPanel = $(this).attr('href');
+      if(typeof _gaq !== 'undefined') {
+         _gaq.push(['_trackEvent', 'Homepage Button', nextPanel, 'Click']);
+      }
       $("html, body").animate({ scrollTop: $(nextPanel).offset().top }, 650);
       if(nextPanel === '#panel-4') {
          $('input#yourName').focus();
@@ -202,5 +205,8 @@ jQuery(document).ready(function($) {
       perspectiveDistance: '3000',
       perspectiveOrigin: '50% 50%',
       animateGridList: true
+   });
+   $('span[role="alert"]').click(function() {
+      $(this).siblings('input').first().focus();
    });
 });
