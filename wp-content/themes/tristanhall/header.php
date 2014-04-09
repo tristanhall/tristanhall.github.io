@@ -50,7 +50,6 @@ global $global_config;
    <div id="headerWrapper">
       <header>
          <nav id="main-nav">
-            <a id="logo" href="<?php echo home_url() ?>" title="<?php bloginfo( 'name' ); ?>"></a>
                <?php wp_nav_menu( array('theme_location' => 'main_nav', 'container' => false, 'menu_id' => 'main_nav') ); ?>
          </nav>
          <div id="contact-info">

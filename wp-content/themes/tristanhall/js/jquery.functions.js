@@ -76,7 +76,9 @@ var IE = (function () {
    
    return ret;
 }());
+
 $.noConflict();
+
 jQuery(document).ready(function($) {
    $(document).foundation();
    //External links open in a new window
