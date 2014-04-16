@@ -64,7 +64,7 @@ header, #wrapper, footer {
    @include grid-row();
 }
 header {
-   height: 280px;
+   height: 120px;
 }
 #content {
    @include grid-row();

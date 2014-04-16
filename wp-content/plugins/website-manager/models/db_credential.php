@@ -19,6 +19,7 @@ class Db_Credential {
     */
    public function __construct( $id = null ) {
       global $wpdb;
+      $this->encryption_key = file_get_contents(__DIR__.'/../data/wm_private.key');
       if($id === null) {
          //Set a new ID
          $this->id = uniqid('db.', true).'.'.time();
@@ -30,63 +31,16 @@ class Db_Credential {
          $this->phpmyadmin_url = '';
          $this->last_modified = current_time( 'mysql' );
       } else {
-         $db_credential = $wpdb->get_row( $wpdb->prepare( "SELECT * FROM `".$wpdb->prefix."wm_db_credentials` WHERE `id` = '".$id."'" ) );
+         $query = sprintf('SELECT website_id, AES_DECRYPT(host, "%1$s"), AES_DECRYPT(db_name, "%1$s"), AES_DECRYPT(username, "%1$s"), AES_DECRYPT(password, "%1$s"), AES_DECRYPT(phpmyadmin_url, "%1$s"), last_modified FROM `%2$s` WHERE `id` = "%3$s"', $this->encryption_key, $wpdb->prefix.'wm_db_credentials', $id);
+         $db_credential = $wpdb->get_row( $query, ARRAY_A );
          $this->new = false;
          $this->id = $id;
-         $this->website_id = $db_credential->website_id;
-         $this->host = $db_credential->host;
-         $this->db_name = $db_credential->db_name;
-         $this->username = $db_credential->username;
-         $this->password = $db_credential->password;
-         $this->phpmyadmin_url = $db_credential->phpmyadmin_url;
-      }
-   }
-   
-   /**
-    * 
-    * @param string $name
-    * @return string
-    */
-   public function __get($name) {
-      switch($name) {
-         case 'host':
-         case 'db_name':
-         case 'username':
-         case 'password':
-         case 'phpmyadmin_url':
-            return Encryption::decrypt($this->$name);
-            break;
-         case 'id':
-         case 'website_id':
-         case 'last_modified':
-            return $this->$name;
-            break;
-         case 'associated_domain_name':
-            $domain_name = $wpdb->get_var('SELECT `domain_name` FROM `'.$wpdb->prefix.'wm_websites` WHERE `website_id` = "'.$this->website_id.'"');
-            return Encryption::decrypt($domain_name);
-            break;
-      }
-   }
-   
-   /**
-    * 
-    * @param string $name
-    * @param mixed $value
-    */
-   public function __set($name, $value) {
-      switch($name) {
-         case 'host':
-         case 'db_name':
-         case 'username':
-         case 'password':
-         case 'phpmyadmin_url':
-            $this->$name = Encryption::encrypt($value);
-            break;
-         case 'id':
-         case 'website_id':
-         case 'last_modified':
-            $this->$name = $value;
-            break;
+         $this->website_id = $db_credential['AES_DECRYPT(website_id, "'.$this->encryption_key.'")'];
+         $this->host = $db_credential['AES_DECRYPT(host, "'.$this->encryption_key.'")'];
+         $this->db_name = $db_credential['AES_DECRYPT(db_name, "'.$this->encryption_key.'")'];
+         $this->username = $db_credential['AES_DECRYPT(username, "'.$this->encryption_key.'")'];
+         $this->password = $db_credential['AES_DECRYPT(password, "'.$this->encryption_key.'")'];
+         $this->phpmyadmin_url = $db_credential['AES_DECRYPT(phpmyadmin_url, "'.$this->encryption_key.'")'];
       }
    }
    
@@ -97,8 +51,46 @@ class Db_Credential {
     */
    public static function get_all() {
       global $wpdb;
-      $db_credentials = $wpdb->get_col('SELECT `id`, `website_id` FROM `'.$wpdb->prefix.'wm_db_credentials`');
+      $db_credentials = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_db_credentials`');
       return $db_credentials;
+   }
+   
+   /**
+    * 
+    */
+   public function save() {
+      global $wpdb;
+      if(LOGGING === TRUE) {
+         $wpdb->show_errors();
+      }
+      if( $this->new === true ) {
+         $query = sprintf('INSERT INTO `%1$s` (id, website_id, host, db_name, username, password, phpmyadmin_url, last_modified) VALUES ("%9$s", "%2$s", AES_ENCRYPT("%3$s", "%8$s"), AES_ENCRYPT("%4$s", "%8$s"), AES_ENCRYPT("%5$s", "%8$s"), AES_ENCRYPT("%6$s", "%8$s"), AES_ENCRYPT("%7$s", "%8$s"), "%10$s")',
+           $wpdb->prefix.'wm_db_credentials',
+           $this->website_id,
+           $this->host,
+           $this->db_name,
+           $this->username,
+           $this->password,
+           $this->phpmyadmin_url,
+           $this->encryption_key,
+           $this->id,
+           date('Y-m-d H:i:s')
+         );
+         $wpdb->query( $query );
+      } else {
+         $query = sprintf('UPDATE `%1$s` SET `website_id` = "%2$s", "%8$s", `host` = AES_ENCRYPT("%3$s", "%8$s"), `db_name` = AES_ENCRYPT("%4$s", "%8$s"), `username` = AES_ENCRYPT("%5$s", "%8$s"), `password` = AES_ENCRYPT("%6$s", "%8$s"), `phpmyadmin_url` = AES_ENCRYPT("%7$s", "%8$s") WHERE `id` = "%9$s"',
+           $wpdb->prefix.'wm_db_credentials',
+           $this->website_id,
+           $this->host,
+           $this->db_name,
+           $this->username,
+           $this->password,
+           $this->phpmyadmin_url,
+           $this->encryption_key,
+           $this->id
+         );
+         $wpdb->query( $query );
+      }
    }
    
    /**
@@ -109,43 +101,8 @@ class Db_Credential {
     */
    public static function get_by_website( $website_id ) {
       global $wpdb;
-      $db_credentials = $wpdb->get_col('SELECT * FROM `'.$wpdb->prefix.'wm_db_credentials` WHERE `website_id` = "'.$website_id.'"');
+      $db_credentials = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_db_credentials` WHERE `website_id` = "'.$website_id.'"');
       return $db_credentials;
    }
-   
-   /**
-    * 
-    */
-   public function save() {
-      if( $this->new === true) {
-         $wpdb->insert( 
-            'wm_db_credentials', 
-            array( 
-               'id' => $this->id,
-               'website_id' => $this->website_id,
-               'host' => $this->host,
-               'db_name' => $this->db_name,
-               'username' => $this->username,
-               'password' => $this->password,
-               'phpmyadmin_url' => $this->phpmyadmin_url
-            )
-         );
-      } else {
-         $wpdb->update( 
-            'wm_db_credentials', 
-            array( 
-               'id' => $this->id,
-               'website_id' => $this->website_id,
-               'host' => $this->host,
-               'db_name' => $this->db_name,
-               'username' => $this->username,
-               'password' => $this->password,
-               'phpmyadmin_url' => $this->phpmyadmin_url
-            ), 
-            array( 'id' => $this->id )
-         );
-      }
-   }
-   
    
 }

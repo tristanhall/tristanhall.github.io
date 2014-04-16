@@ -12,9 +12,14 @@ class Website {
    public $last_modified;
    public $new = true;
    
+   /**
+    * 
+    * @global object $wpdb
+    * @param string $id
+    */
    public function __construct( $id = null ) {
       global $wpdb;
-      $this->encryption_key = get_option('_wm_private_key_');
+      $this->encryption_key = file_get_contents(__DIR__.'/../data/wm_private.key');
       if($id === null) {
          //Set a new ID if we aren't given one.
          $this->id = uniqid('site.', true).'.'.time();
@@ -40,15 +45,26 @@ class Website {
       }
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    * @return array
+    */
    public function get_all() {
       global $wpdb;
       $website_ids = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_websites`');
       return $website_ids;
    }
    
+   /**
+    * 
+    * @global object $wpdb
+    */
    public function save() {
       global $wpdb;
-      $wpdb->show_errors();
+      if(LOGGING === TRUE) {
+         $wpdb->show_errors();
+      }
       if( $this->new === true ) {
          $query = sprintf('INSERT INTO `%1$s` (id, domain_name, registrar, expiration_date, login_url, username, password, last_modified) VALUES ("%9$s", AES_ENCRYPT("%2$s", "%8$s"), AES_ENCRYPT("%3$s", "%8$s"), AES_ENCRYPT("%4$s", "%8$s"), AES_ENCRYPT("%5$s", "%8$s"), AES_ENCRYPT("%6$s", "%8$s"), AES_ENCRYPT("%7$s", "%8$s"), "%10$s")',
            $wpdb->prefix.'wm_websites',

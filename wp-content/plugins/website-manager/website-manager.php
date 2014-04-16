@@ -2,14 +2,17 @@
 /**
  * Plugin Name: Website Manager
  * Plugin URI: http://tristanhall.com
- * Description: Keeps track of websites, MySQL credentials, FTP credentials, etc. complete with 256-bit encryption.
+ * Description: Keeps track of websites, MySQL credentials, FTP credentials, etc. complete with 128-bit encryption.
  * Author: Tristan Hall
  * Version: 1.0
  * License: Commercial
  */
 
+
+
 define('LOGGING', true);
 
+require_once(__DIR__.'/helpers/string.php');
 require_once(__DIR__.'/models/log.php');
 require_once(__DIR__.'/models/website.php');
 require_once(__DIR__.'/models/ftp_credential.php');
@@ -35,6 +38,7 @@ class WebsiteManager {
       global $wpdb;
       $installed_version = get_option('_wm_db_version_');
       $sql = array();
+      //Set the website's permanent key for determining the master password.
       //Website table
       $sql['wm_websites'] = "CREATE TABLE ".$wpdb->prefix."wm_websites (
          id varchar(50) NOT NULL,
@@ -263,7 +267,7 @@ class WebsiteManager {
          Log::warning('Failed to authorize website save.');
          $response = 'no_auth';
       } else {
-         $new = $_POST['new'];
+         $new = $_POST['new_website'];
          $id = $_POST['id'];
          if( $new == 'no' ) {
             $website = new Website( $id );
@@ -281,7 +285,6 @@ class WebsiteManager {
          Log::info('Modified website information for '.$website->domain_name.'.');
          $response = 'success';
       }
-      //header('Content-type: text/json');
       echo $response;
       die();
    }
@@ -293,6 +296,33 @@ class WebsiteManager {
    
    public function db_ajax() {
       global $wpdb;
+      $response = array();
+      if( !wp_verify_nonce( $_POST['wm_nonce'], 'db' ) ) {
+         Log::warning('Failed to authorize database credential save.');
+         $response['status'] = 'no_auth';
+      } else {
+         $new = filter_input(INPUT_POST, 'new_db');
+         $id = filter_input(INPUT_POST, 'db_id');
+         if( $new === 'no' ) {
+            $db = new Db_Credential( $id );
+         } else {
+            $db = new Db_Credential();
+            if( !empty( $id ) ) {
+               $db->id = $id;
+            }
+         }
+         $db->host = filter_input(INPUT_POST, 'db_host');
+         $db->db_name = filter_input(INPUT_POST, 'db_name');
+         $db->username = filter_input(INPUT_POST, 'db_username');
+         $db->password = filter_input(INPUT_POST, 'db_password');
+         $db->phpmyadmin_url = filter_input(INPUT_POST, 'phpmyadmin_url');
+         $db->website_id = filter_input(INPUT_POST, 'website_id');
+         $db->save();
+         Log::info('Modified credentials for '.$db->host.'.');
+         $response['status'] = 'success';
+      }
+      header('Content-type: text/json');
+      echo json_encode( $response );
       die();
    }
    

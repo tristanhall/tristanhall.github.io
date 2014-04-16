@@ -6,7 +6,7 @@
             <form action="#" class="mimic" method="post" id="website-details" class="<?php echo $site->new === true ? 'add' : 'update'; ?>">
                <?php wp_nonce_field('website', 'wm_nonce'); ?>
                <input type="hidden" value='wm_websites' name='action'>
-               <input type="hidden" value="<?php echo $site->new === true ? 'yes' : 'no'; ?>" name="new">
+               <input type="hidden" value="<?php echo $site->new === true ? 'yes' : 'no'; ?>" name="new_website">
                <div id="titlediv">
                   <div id="titlewrap">
                      <input type="text" name="domain_name" size="30" value="<?php echo $site->domain_name; ?>" id="title" autocomplete="off" placeholder="Enter domain name here">
@@ -69,9 +69,12 @@
                      <h3>
                         <span>Database Credentials</span>
                         <a href='#' class="toggleNewDb add-new-h2 alignright">Add New</a>
+                        <small class="no_auth">Could not save DB credentials.</small>
                      </h3>
                      <div class="inside">
                         <form action="#" method="post" id="new-db-credentials">
+                           <?php wp_nonce_field('db', 'wm_nonce'); ?>
+                           <input type="hidden" value='wm_db' name='action'>
                            <input type="hidden" value="<?php echo $site->id; ?>" name="website_id">
                            <fieldset>
                               <table>
@@ -89,7 +92,7 @@
                                           <input type='text' id='db_name' name='db_name' value=''>
                                        </td>
                                        <td>
-                                          <input type='text' id='db_username' name='username' value=''>
+                                          <input type='text' id='db_username' name='db_username' value=''>
                                        </td>
                                     </tr>
                                     <tr>
@@ -99,7 +102,7 @@
                                     </tr>
                                     <tr>
                                        <td>
-                                          <input type='text' id='db_password' name='password' value=''>
+                                          <input type='text' id='db_password' name='db_password' value=''>
                                        </td>
                                        <td>
                                           <input type='text' id='phpmyadmin_url' name='phpmyadmin_url' value=''>
@@ -113,6 +116,35 @@
                            </fieldset>
                            <hr>
                         </form>
+                        <table id="related_db_credentials">
+                           <thead>
+                              <tr>
+                                 <td>Host</td>
+                                 <td>Database</td>
+                                 <td>Username</td>
+                                 <td>Password</td>
+                                 <td>PhpMyAdmin</td>
+                                 <td>Actions</td>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <?php foreach($db_credentials as $db_id) { $db = new Db_Credential( $db_id ); ?>
+                              <tr>
+                                 <td><?php echo $db->host; ?></td>
+                                 <td><?php echo $db->db_name; ?></td>
+                                 <td><?php echo $db->username; ?></td>
+                                 <td><?php echo $db->password; ?></td>
+                                 <td>
+                                    <a class="button small" href="<?php echo $db->phpmyadmin_url; ?>" title="<?php echo $db->phpmyadmin_url; ?>">Open URL &#10138;</a>
+                                 </td>
+                                 <td>
+                                    <a href="?page=wm-db-credentials&action=edit&id=<?php echo $db->id; ?>" class="button small">Edit</a>&nbsp;&nbsp;
+                                    <button class="button-primary small" data-role="delete-db" data-db_id="<?php echo $db->id; ?>">Delete</button>
+                                 </td>
+                              </tr>
+                              <?php } ?>
+                           </tbody>
+                        </table>
                      </div>
                   </div>
                </div>
@@ -123,9 +155,15 @@
             <div id="postbox-container-4" class="postbox-container">
                <div class="meta-box">
                   <div id="wm_ftp_credentials_meta" class="postbox ">
-                     <h3><span>FTP Credentials</span> <a href='#' class="toggleNewFtp add-new-h2 alignright">Add New</a></h3>
+                     <h3>
+                        <span>FTP Credentials</span>
+                        <a href='#' class="toggleNewFtp add-new-h2 alignright">Add New</a>
+                        <small class="no_auth">Could not save FTP credentials.</small>
+                     </h3>
                      <div class="inside">
                         <form action="#" method="post" id="new-ftp-credentials">
+                           <?php wp_nonce_field('ftp', 'wm_nonce'); ?>
+                           <input type="hidden" value='wm_ftp' name='action'>
                            <input type="hidden" value="<?php echo $site->id; ?>" name="website_id">
                            <fieldset>
                               <table>
@@ -134,20 +172,20 @@
                                        <td><label for='ftp_host'>Host</label></td>
                                        <td><label for='ftp_username'>Username</label></td>
                                        <td><label for='ftp_password'>Password</label></td>
-                                       <td><label for='type'>Type</label></td>
+                                       <td><label for='ftp_type'>Type</label></td>
                                     </tr>
                                     <tr>
                                        <td>
-                                          <input type='text' id='ftp_host' name='host' value=''>
+                                          <input type='text' id='ftp_host' name='ftp_host' value=''>
                                        </td>
                                        <td>
-                                          <input type='text' id='ftp_username' name='username' value=''>
+                                          <input type='text' id='ftp_username' name='ftp_username' value=''>
                                        </td>
                                        <td>
-                                          <input type='text' id='ftp_password' name='password' value=''>
+                                          <input type='text' id='ftp_password' name='ftp_password' value=''>
                                        </td>
                                        <td>
-                                          <select name='type' id='type'>
+                                          <select name='ftp_type' id='ftp_type'>
                                              <option value='FTP'>Plain FTP</option>
                                              <option value='FTP + SSL'>FTP + SSL</option>
                                              <option value='SFTP'>SFTP</option>
