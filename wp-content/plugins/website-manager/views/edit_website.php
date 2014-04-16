@@ -86,7 +86,7 @@
                                     </tr>
                                     <tr>
                                        <td>
-                                          <input type='text' id='db_host' name='host' value=''>
+                                          <input type='text' id='db_host' name='db_host' value=''>
                                        </td>
                                        <td>
                                           <input type='text' id='db_name' name='db_name' value=''>
