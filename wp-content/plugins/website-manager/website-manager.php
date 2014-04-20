@@ -267,8 +267,8 @@ class WebsiteManager {
          Log::warning('Failed to authorize website save.');
          $response = 'no_auth';
       } else {
-         $new = $_POST['new_website'];
-         $id = $_POST['id'];
+         $new = filter_input(INPUT_POST, 'new_website');
+         $id = filter_input(INPUT_POST, 'id');
          if( $new == 'no' ) {
             $website = new Website( $id );
          } else {
@@ -320,6 +320,29 @@ class WebsiteManager {
          $db->save();
          Log::info('Modified credentials for '.$db->host.'.');
          $response['status'] = 'success';
+         $response['id'] = $db->id;
+      }
+      header('Content-type: text/json');
+      echo json_encode( $response );
+      die();
+   }
+   
+   public function db_delete_ajax() {
+      global $wpdb;
+      $response = array();
+      if( !wp_verify_nonce( $_POST['wm_nonce'], 'db' ) ) {
+         Log::warning('Failed to authorize database credential save.');
+         $response['status'] = 'no_auth';
+      } else {
+         $id = filter_input(INPUT_POST, 'db_id');
+         $delete = Db_Credential::delete( $id );
+         $response['debug'] = $delete;
+         if($delete) {
+            Log::info('Deleted DB credential '.$id.'.');
+            $response['status'] = 'success';
+         } else {
+            $response['status'] = 'failure';
+         }
       }
       header('Content-type: text/json');
       echo json_encode( $response );
@@ -336,4 +359,5 @@ add_action( 'admin_enqueue_scripts', array('WebsiteManager', 'load_admin_assets'
 //AJAX Routes
 add_action( 'wp_ajax_wm_websites', array('WebsiteManager', 'websites_ajax') );
 add_action( 'wp_ajax_wm_db', array('WebsiteManager', 'db_ajax') );
+add_action( 'wp_ajax_wm_db_delete', array('WebsiteManager', 'db_delete_ajax') );
 add_action( 'wp_ajax_wm_ftp', array('WebsiteManager', 'ftp_ajax') );

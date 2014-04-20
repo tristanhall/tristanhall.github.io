@@ -105,4 +105,14 @@ class Db_Credential {
       return $db_credentials;
    }
    
+   /**
+    * Deletes a database credential and the current object.
+    * @param string $id
+    * @return boolean
+    */
+   public static function delete( $id ) {
+      global $wpdb;
+      $delete = $wpdb->delete( $wpdb->prefix.'wm_db_credentials', array( 'id' => $id ), array( '%s' ) );
+      return $delete;
+   }
 }

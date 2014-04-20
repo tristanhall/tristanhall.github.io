@@ -63,18 +63,25 @@ jQuery(function() {
             <td>' + jQuery('#db_host').val() +'</td>\n\
             <td>' + jQuery('#db_name').val() +'</td>\n\
             <td>' + jQuery('#db_username').val() +'</td>\n\
-            <td>' + jQuery('#db_password').val() +'</td>\n\
-            <td><a href="' + jQuery('#phpmyadmin_url').val() +'" target="_blank">Open URL &#10138;</a></td>\n\
+            <td><input type="text" readonly="readonly" value="' + jQuery('#db_password').val() +'"></td>\n\
+            <td><a class="button small" title="' + jQuery('#phpmyadmin_url').val() +'" href="' + jQuery('#phpmyadmin_url').val() +'" target="_blank">Open URL &#10138;</a></td>\n\
+            <td><a href="?page=wm-db-credentials&action=edit&id='+r.id+'" class="button small">Edit</a>\n\
+            <form action="#" data-role="delete-db" data-db_id="'+r.id+'">\n\
+            <input type="hidden" name="action" value="wm_db_delete">\n\
+            <input type="hidden" value="'+r.id+'" name="db_id">\n\
+            <input type="submit" class="button-primary small" data-db_id="'+r.id+'" value="Delete">\n\
+            </td>\n\
             </tr>');
             jQuery('#db_host, #db_name, #db_username, #db_password, #phpmyadmin_url').val('');
             $button.html('Save');
+            jQuery('.toggleNewDb').html('Add New');
             jQuery('#new-db-credentials').slideUp('fast');
          } else {
             jQuery('#wm_db_credentials_meta .no_auth').fadeIn('fast');
             $button.html('Save');
          }
       });
-   }); 
+   });
    
    jQuery('.toggleNewDb').click(function(evt) {
       evt.preventDefault();
@@ -109,7 +116,24 @@ jQuery(function() {
       }
    });
    
-   jQuery('#website_details_meta form').submit(function() {
-      
+   jQuery('form[data-role="delete-db"]').live('click', function(evt) {
+      evt.preventDefault();
+      var really = prompt("Please type DELETE to delete this database.");
+      var post_data = jQuery(this).serialize();
+      if(really === "DELETE") {
+         jQuery.post(ajaxurl, post_data, function(r) {
+            if(r.status == 'success') {
+               jQuery('tr#db-' + r.id).slideUp('fast', function() {
+                  jQuery(this).remove();
+               });
+            } else {
+               jQuery('html').fadeOut('fast', function() {
+                  jQuery('html').fadeIn('fast', function() {
+                     jQuery('#wm_db_credentials_meta small.no_delete').fadeIn().delay(2500).fadeOut();
+                  });
+               });
+            }
+         });
+      }
    });
 });

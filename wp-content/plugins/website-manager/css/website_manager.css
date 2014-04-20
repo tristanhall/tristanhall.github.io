@@ -113,7 +113,8 @@ p.no_auth {
    margin-top: -5px;
 }
 
-small.no_auth {
+small.no_auth,
+small.no_delete {
    float: right;
    line-height: 20px;
    padding-right: 10px;
@@ -143,4 +144,9 @@ table thead {
 
 #related_db_credentials {
    width: 100%;
+}
+
+form[data-role="delete-db"] {
+   display: inline-block;
+   margin-left: 5px;
 }

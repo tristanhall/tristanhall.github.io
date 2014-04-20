@@ -70,6 +70,7 @@
                         <span>Database Credentials</span>
                         <a href='#' class="toggleNewDb add-new-h2 alignright">Add New</a>
                         <small class="no_auth">Could not save DB credentials.</small>
+                        <small class="no_delete">Could not delete DB credentials.</small>
                      </h3>
                      <div class="inside">
                         <form action="#" method="post" id="new-db-credentials">
@@ -119,27 +120,31 @@
                         <table id="related_db_credentials">
                            <thead>
                               <tr>
-                                 <td>Host</td>
-                                 <td>Database</td>
-                                 <td>Username</td>
-                                 <td>Password</td>
-                                 <td>PhpMyAdmin</td>
-                                 <td>Actions</td>
+                                 <th>Host</th>
+                                 <th>Database</th>
+                                 <th>Username</th>
+                                 <th>Password</th>
+                                 <th>PhpMyAdmin</th>
+                                 <th>Actions</th>
                               </tr>
                            </thead>
                            <tbody>
                               <?php foreach($db_credentials as $db_id) { $db = new Db_Credential( $db_id ); ?>
-                              <tr>
+                              <tr id="db-<?php echo $db->id; ?>">
                                  <td><?php echo $db->host; ?></td>
                                  <td><?php echo $db->db_name; ?></td>
                                  <td><?php echo $db->username; ?></td>
-                                 <td><?php echo $db->password; ?></td>
+                                 <td><input type="text" readonly="readonly" value="<?php echo $db->password; ?>"></td>
                                  <td>
-                                    <a class="button small" href="<?php echo $db->phpmyadmin_url; ?>" title="<?php echo $db->phpmyadmin_url; ?>">Open URL &#10138;</a>
+                                    <a target="_blank" class="button small" href="<?php echo $db->phpmyadmin_url; ?>" title="<?php echo $db->phpmyadmin_url; ?>">Open URL &#10138;</a>
                                  </td>
                                  <td>
-                                    <a href="?page=wm-db-credentials&action=edit&id=<?php echo $db->id; ?>" class="button small">Edit</a>&nbsp;&nbsp;
-                                    <button class="button-primary small" data-role="delete-db" data-db_id="<?php echo $db->id; ?>">Delete</button>
+                                    <a href="?page=wm-db-credentials&action=edit&id=<?php echo $db->id; ?>" class="button small">Edit</a>
+                                    <form action="#" method="post" data-role="delete-db" data-db_id="<?php echo $db->id; ?>">
+                                       <input type="hidden" value="<?php echo $db->id; ?>" name="db_id">
+                                       <input type="hidden" name="action" value="wm_db_delete">
+                                       <input type="submit" class="button-primary small"  value="Delete">
+                                    </form>
                                  </td>
                               </tr>
                               <?php } ?>
