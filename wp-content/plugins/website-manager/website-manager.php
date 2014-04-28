@@ -18,6 +18,12 @@ require_once(__DIR__.'/models/website.php');
 require_once(__DIR__.'/models/ftp_credential.php');
 require_once(__DIR__.'/models/db_credential.php');
 require_once(__DIR__.'/models/note.php');
+require_once(__DIR__.'/controllers/wmcore.php');
+require_once(__DIR__.'/controllers/websites.php');
+require_once(__DIR__.'/controllers/db_credentials.php');
+require_once(__DIR__.'/controllers/ftp_credentials.php');
+require_once(__DIR__.'/controllers/notes.php');
+require_once(__DIR__.'/controllers/log.php');
 
 class WebsiteManager {
    
@@ -114,8 +120,10 @@ class WebsiteManager {
    public function load_admin_assets() {
       wp_register_style( 'wm_styles', plugins_url( 'website-manager/css/website_manager.css' ), false, '1.0' );
       wp_enqueue_style( 'wm_styles' );
-      wp_register_script( 'wm_scripts', plugins_url( 'website-manager/js/jquery.functions.js' ), false, '1.0' );
-      wp_enqueue_script( 'wm_scripts' );
+      wp_register_script( 'wm_functions', plugins_url( 'website-manager/js/jquery.functions.js' ), false, '1.0' );
+      wp_register_script( 'wm_plugins', plugins_url( 'website-manager/js/jquery.plugins.js' ), false, '1.0' );
+      wp_enqueue_script( 'wm_plugins' );
+      wp_enqueue_script( 'wm_scripts', plugins_url( 'website-manager/js/jquery.functions.js' ), array( 'wm_plugins' ) );
    }
       
    /**
@@ -130,47 +138,13 @@ class WebsiteManager {
     * Website page handler
     */
    public function websites() {
+      $Websites = new Websites();
       if( empty( filter_input( INPUT_POST, 'wm_nonce' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
-         if( filter_input(INPUT_GET, 'id') == '') {
-            $site = new Website;
-            $db_credentials = array();
-            $ftp_credentials = array();
-            $notes = array();
-         } else {
-            $id = filter_input(INPUT_GET, 'id');
-            $site = new Website( $id );
-            Log::info('Accessed website records for '.$site->domain_name.'.');
-            $db_credentials = Db_Credential::get_by_website( $id );
-            $ftp_credentials = Ftp_Credential::get_by_website( $id );
-            $notes = Note::get_by_website( $id );
-         }
-         include(__DIR__.'/views/edit_website.php');
+         $Websites->edit_view();
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce' ) ) ) {
-         if( wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
-            Log::warning('Failed to authorize website save.');
-            exit('Failed to authorize form submission. Please try again.');
-         } else {
-            $action = filter_input(INPUT_POST, 'action');
-            $id = filter_input(INPUT_POST, 'id');
-            if( $action == 'update' ) {
-               $website = new Website( $id );
-            } else {
-               $website = new Website;
-               $website->id = $id;
-            }
-            $website->domain_name = filter_input(INPUT_POST, 'domain_name');
-            $website->registrar = filter_input(INPUT_POST, 'registrar');
-            $website->expiration_date = filter_input(INPUT_POST, 'expiration_date');
-            $website->login_url = filter_input(INPUT_POST, 'login_url');
-            $website->username = filter_input(INPUT_POST, 'username');
-            $website->password = filter_input(INPUT_POST, 'password');
-            $website->save();
-            Log::info('Modified website information for '.$website->domain_name.'.');
-         }
+         $Websites->create_or_update();
       } else {
-         Log::info('Accessed list of websites.');
-         $website_ids = Website::get_all();
-         include(__DIR__.'/views/list_websites.php');
+         $Websites->index();
       }
    }
    
@@ -252,39 +226,14 @@ class WebsiteManager {
     */
    public function log() {
       Log::info('Accessed the security log for '.$year.'-'.$month.'-'.$date.'.');
-      $year = filter_input(INPUT_POST, 'year') == '' ? date('Y') : filter_input(INPUT_POST, 'year');
-      $month = filter_input(INPUT_POST, 'month') == '' ? date('m') : filter_input(INPUT_POST, 'month');
-      $date = filter_input(INPUT_POST, 'date') == '' ? date('d') : filter_input(INPUT_POST, 'date');
-      $log_contents = explode( "\n", Log::read($year, $month, $date, false) );
-      $directories = glob( __DIR__.'/logs/*' , GLOB_ONLYDIR );
-      $dir = __DIR__.'/logs/';
-      include(__DIR__.'/views/list_log.php');
+      $Log = new LogController();
+      $Log->index();
    }
    
    public function websites_ajax() {
+      $Websites = new Websites();
       $response = '';
-      if( !wp_verify_nonce( $_POST['wm_nonce'], 'website' ) ) {
-         Log::warning('Failed to authorize website save.');
-         $response = 'no_auth';
-      } else {
-         $new = filter_input(INPUT_POST, 'new_website');
-         $id = filter_input(INPUT_POST, 'id');
-         if( $new == 'no' ) {
-            $website = new Website( $id );
-         } else {
-            $website = new Website;
-            $website->id = $id;
-         }
-         $website->domain_name = filter_input(INPUT_POST, 'domain_name');
-         $website->registrar = filter_input(INPUT_POST, 'registrar');
-         $website->expiration_date = filter_input(INPUT_POST, 'expiration_date');
-         $website->login_url = filter_input(INPUT_POST, 'login_url');
-         $website->username = filter_input(INPUT_POST, 'username');
-         $website->password = filter_input(INPUT_POST, 'password');
-         $website->save();
-         Log::info('Modified website information for '.$website->domain_name.'.');
-         $response = 'success';
-      }
+      $Websites->create_or_update($response);
       echo $response;
       die();
    }
@@ -295,55 +244,18 @@ class WebsiteManager {
    }
    
    public function db_ajax() {
-      global $wpdb;
       $response = array();
-      if( !wp_verify_nonce( $_POST['wm_nonce'], 'db' ) ) {
-         Log::warning('Failed to authorize database credential save.');
-         $response['status'] = 'no_auth';
-      } else {
-         $new = filter_input(INPUT_POST, 'new_db');
-         $id = filter_input(INPUT_POST, 'db_id');
-         if( $new === 'no' ) {
-            $db = new Db_Credential( $id );
-         } else {
-            $db = new Db_Credential();
-            if( !empty( $id ) ) {
-               $db->id = $id;
-            }
-         }
-         $db->host = filter_input(INPUT_POST, 'db_host');
-         $db->db_name = filter_input(INPUT_POST, 'db_name');
-         $db->username = filter_input(INPUT_POST, 'db_username');
-         $db->password = filter_input(INPUT_POST, 'db_password');
-         $db->phpmyadmin_url = filter_input(INPUT_POST, 'phpmyadmin_url');
-         $db->website_id = filter_input(INPUT_POST, 'website_id');
-         $db->save();
-         Log::info('Modified credentials for '.$db->host.'.');
-         $response['status'] = 'success';
-         $response['id'] = $db->id;
-      }
+      $DBCredentials = new DBCredentials();
+      $DBCredentials->create_or_update( $response );
       header('Content-type: text/json');
       echo json_encode( $response );
       die();
    }
    
    public function db_delete_ajax() {
-      global $wpdb;
       $response = array();
-      if( !wp_verify_nonce( $_POST['wm_nonce'], 'db' ) ) {
-         Log::warning('Failed to authorize database credential save.');
-         $response['status'] = 'no_auth';
-      } else {
-         $id = filter_input(INPUT_POST, 'db_id');
-         $delete = Db_Credential::delete( $id );
-         $response['debug'] = $delete;
-         if($delete) {
-            Log::info('Deleted DB credential '.$id.'.');
-            $response['status'] = 'success';
-         } else {
-            $response['status'] = 'failure';
-         }
-      }
+      $DBCredentials = new DBCredentials();
+      $DBCredentials->delete( $response );
       header('Content-type: text/json');
       echo json_encode( $response );
       die();

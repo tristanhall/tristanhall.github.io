@@ -19,6 +19,28 @@ jQuery(function() {
       }
    });
    
+   //Enter key on input boxes automatically submits the form
+   jQuery('input').keypress(function(evt) {
+      var keycode = (evt.keyCode ? evt.keyCode : evt.which);
+      if(keycode == '13'){
+         jQuery(this).parents('form').first().trigger('click');
+      }
+   });
+   
+   //Ctrl+S Saves the website info
+   jQuery(window).bind('keydown', function(event) {
+      if ( event.ctrlKey || event.metaKey ) {
+         switch (String.fromCharCode(event.which).toLowerCase()) {
+         case 's':
+            event.preventDefault();
+            if( jQuery('#website-details-fieldset').hasClass('input') ) {
+               jQuery('#website_details_meta .toggleEdit').trigger('click');
+            }
+            break;
+         }
+      }
+   });
+   
    jQuery('#website_details_meta .toggleEdit').click(function(evt) {
       evt.preventDefault();
       var fieldset = jQuery(this).attr('rel');
@@ -37,15 +59,15 @@ jQuery(function() {
                   if(jQuery('input[name="new_website"]').val() === 'yes') {
                      jQuery('input[name="new_website"]').val('no');
                   }
-                  jQuery('#website-details p.no_auth').slideUp();
+                  jQuery('#website-details p.no_auth').slideUp('fast');
                   jQuery('fieldset#'+fieldset).removeClass('input').addClass('display');
                   $button.html('Edit');
                } else {
-                  jQuery('#website-details p.no_auth').slideDown();
+                  jQuery('#website-details p.no_auth').slideDown('fast');
                }
             }).fail(function() {
                $button.html('Done');
-               jQuery('#website-details p.no_auth').slideDown();
+               jQuery('#website-details p.no_auth').slideDown('fast');
             });
          }
       }
@@ -86,10 +108,10 @@ jQuery(function() {
    jQuery('.toggleNewDb').click(function(evt) {
       evt.preventDefault();
       if(jQuery('form#new-db-credentials').is(':visible')) {
-         jQuery('form#new-db-credentials').slideUp();
+         jQuery('form#new-db-credentials').slideUp('fast');
          jQuery(this).text('Add New');
       } else {
-         jQuery('form#new-db-credentials').slideDown();
+         jQuery('form#new-db-credentials').slideDown('fast');
          jQuery(this).text('Cancel');
       }
    });
@@ -97,10 +119,10 @@ jQuery(function() {
    jQuery('.toggleNewFtp').click(function(evt) {
       evt.preventDefault();
       if(jQuery('form#new-ftp-credentials').is(':visible')) {
-         jQuery('form#new-ftp-credentials').slideUp();
+         jQuery('form#new-ftp-credentials').slideUp('fast');
          jQuery(this).text('Add New');
       } else {
-         jQuery('form#new-ftp-credentials').slideDown();
+         jQuery('form#new-ftp-credentials').slideDown('fast');
          jQuery(this).text('Cancel');
       }
    });
@@ -108,10 +130,10 @@ jQuery(function() {
    jQuery('.toggleNewNote').click(function(evt) {
       evt.preventDefault();
       if(jQuery('form#new-note').is(':visible')) {
-         jQuery('form#new-note').slideUp();
+         jQuery('form#new-note').slideUp('fast');
          jQuery(this).text('Add New');
       } else {
-         jQuery('form#new-note').slideDown();
+         jQuery('form#new-note').slideDown('fast');
          jQuery(this).text('Cancel');
       }
    });

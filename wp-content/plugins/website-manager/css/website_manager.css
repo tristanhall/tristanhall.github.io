@@ -3,6 +3,10 @@
     Author     : tristan
 */
 
+.wm-container #poststuff #post-body.columns-2 {
+   margin-right: 0px;
+}
+
 form.wm_form label {
    display: inline-block;
    width: 50px;
