@@ -21,23 +21,24 @@ function create_post_type() {
             'search_items' => __('Search Portfolio Item'),
             'not_found' =>  __('Nothing found'),
             'not_found_in_trash' => __('Nothing found in Trash'),
-            'show_ui' => true,
-            'capability_type' => 'post',
-            'hierarchical' => false,
-            'taxonomies' => array('category'),
-            'rewrite' => array("slug" => "portfolio"),
-            'supports' => array(
-               'title',
-               'editor',
-               'excerpt',
-               'custom-fields',
-               'revisions',
-               'thumbnail',
-            )
 			),
-		'public' => true,
-      'has_archive'   => true
-		)
+         'show_ui' => true,
+         'capability_type' => 'post',
+         'hierarchical' => false,
+         'taxonomies' => array('category'),
+         'rewrite' => array("slug" => "portfolio"),
+         'supports' => array(
+            'title',
+            'editor',
+            'excerpt',
+            'custom-fields',
+            'revisions',
+            'thumbnail',
+         ),
+         'menu_icon' => 'dashicons-images-alt',
+         'public' => true,
+         'has_archive'   => true
+      )
 	);
    set_post_thumbnail_size( 270, 170, true );
    add_theme_support( 'post-thumbnails' );

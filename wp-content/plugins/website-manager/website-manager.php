@@ -107,7 +107,7 @@ class WebsiteManager {
     * Setup the admin menus
     */
    public function register_menu_page() {
-       add_menu_page( 'TH Admin', 'TH Admin', 'manage_options', 'wm-dashboard', array('WebsiteManager', 'init'), plugins_url( 'website-manager/images/icon.png' ), 3 );
+       add_menu_page( 'TH Admin', 'TH Admin', 'manage_options', 'wm-dashboard', array('WebsiteManager', 'init'), 'dashicons-lightbulb', 3 );
       add_submenu_page( 'wm-dashboard', 'Websites', 'Websites', 'manage_options', 'wm-websites', array('WebsiteManager', 'websites') );
       add_submenu_page( 'wm-dashboard', 'FTP Credentials', 'FTP Credentials', 'manage_options', 'wm-ftp-credentials', array('WebsiteManager', 'ftp_credentials') );
       add_submenu_page( 'wm-dashboard', 'DB Credentials', 'DB Credentials', 'manage_options', 'wm-db-credentials', array('WebsiteManager', 'db_credentials') );
