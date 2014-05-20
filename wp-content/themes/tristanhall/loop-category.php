@@ -7,6 +7,9 @@
 <div id='content'>
    <h1 class="post-title"><?php single_cat_title(); ?></h1>
    <?php
+   if ( function_exists('yoast_breadcrumb') ) {
+   yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+   }
    if (have_posts()): 
       while (have_posts()):
           the_post();

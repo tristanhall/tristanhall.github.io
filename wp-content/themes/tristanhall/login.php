@@ -23,6 +23,9 @@ $args = array(
 get_header(); ?>
 <div id="content">
    <h1 class="entry-title">Client Login</h1>
+   <?php if ( function_exists('yoast_breadcrumb') ) {
+      yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+   } ?>
    <article>
       <?php wp_login_form( $args ); ?>
       <div id="alreadyLoggedIn">

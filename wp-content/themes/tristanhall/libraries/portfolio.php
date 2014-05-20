@@ -25,7 +25,6 @@ function create_post_type() {
          'show_ui' => true,
          'capability_type' => 'post',
          'hierarchical' => false,
-         'taxonomies' => array('category'),
          'rewrite' => array("slug" => "portfolio"),
          'supports' => array(
             'title',
@@ -57,28 +56,13 @@ function portfolio_taxonomy() {
 			'label' 			=> 'Categories',  //Display name
 			'query_var' 		=> true,
 			'rewrite'			=> array(
-					'slug' 			=> 'portfolio-category', // This controls the base slug that will display before each term
-					'with_front' 	=> false // Don't display the category base before
-					)
+            'slug' 			=> 'portfolio-category', // This controls the base slug that will display before each term
+            'with_front' 	=> false // Don't display the category base before
+            )
 			)
 		);
 }
 add_action( 'init', 'portfolio_taxonomy');
-
-/**
- * Maintain the permalink structure for custom taxonomy
- * Display custom taxonomy term name before post related to that term
- * @uses post_type_filter hook
- */
-function filter_post_type_link( $link, $post) {
-    if ( $post->post_type != 'themes' )
-        return $link;
-
-    if ( $cats = get_the_terms( $post->ID, 'portfolio-categories' ) )
-        $link = str_replace( '%portfolio-categories%', array_pop($cats)->slug, $link );
-    return $link;
-}
-add_filter('post_type_link', 'filter_post_type_link', 10, 2);
 
 //Redirect portfolio queries to the right template
 function portfolio_redirect() {

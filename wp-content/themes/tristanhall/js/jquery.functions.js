@@ -192,7 +192,7 @@ jQuery(document).ready(function($) {
          $('input#yourName').focus();
       }
    });
-   $('body.page-template-archive-th_portfolio-php #grid').mixitup({
+   $('#grid.portfolio-entries').mixitup({
       targetSelector: '.mix',
       filterSelector: '.filter',
       buttonEvent: 'click',

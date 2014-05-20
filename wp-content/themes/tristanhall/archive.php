@@ -7,4 +7,4 @@
 get_header();
 get_template_part('loop', 'blog');
 get_sidebar();
-get_footer(); ?>
+get_footer();
