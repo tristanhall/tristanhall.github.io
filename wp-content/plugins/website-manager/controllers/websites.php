@@ -44,7 +44,7 @@ class Websites extends WMCore {
     * @param string $response
     */
    public function create_or_update( &$response ) {
-      if( $this->validate_nonce( 'website', 'Failed to authorize website save.' ) ){
+      if( $this->verify_nonce( 'website', 'Failed to authorize website save.' ) ){
          $new = filter_input(INPUT_POST, 'new_website');
          $id = filter_input(INPUT_POST, 'id');
          if( $new == 'no' ) {

@@ -13,7 +13,7 @@ class WMCore {
     * @param constant $method
     * @return boolean
     */
-   public function validate_nonce($action, $failmessage, $method = INPUT_POST) {
+   public function verify_nonce($action, $failmessage, $method = INPUT_POST) {
       if( !wp_verify_nonce( filter_input($method, 'wm_nonce'), $action ) ) {
          Log::warning($failmessage);
          return false;
