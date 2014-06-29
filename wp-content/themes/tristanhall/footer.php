@@ -5,6 +5,7 @@
  * Copyright 2013 Tristan Hall
  */
 ?>
+</div><!--endContentWrapper-->
 </div><!--endWrapper-->
 <div id="footerWrapper">
    <footer>

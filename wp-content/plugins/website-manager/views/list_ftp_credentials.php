@@ -25,15 +25,15 @@
          </tr>
       </thead>
       <tbody>
-         <?php foreach($ftp_credential_ids as $id) { 
-         $credential = new Ftp_Credential( $id ); ?>
+         <?php foreach( $ftp_credentials as $obj ) { 
+         $credential = new WebsiteManager\Ftp_Credential( $ftp_credentials->id ); ?>
          <tr>
             <td><?php echo $credential->associated_domain_name; ?></td>
             <td><?php echo $credential->host; ?></td>
             <td><?php echo $credential->db_name; ?></td>
             <td><?php echo $credential->username; ?></td>
             <td><?php echo $credential->password; ?></td>
-            <td><?php echo !empty( $credential->phpmyadmin_url) ? '<a href="'.$credential->phpmyadmin_url.'" target="_blank" class="wm-pma-link"></a>' : ''; ?></td>
+            <td><?php echo !empty( $credential->phpmyadmin_url ) ? '<a href="'.$credential->phpmyadmin_url.'" target="_blank" class="wm-pma-link"></a>' : ''; ?></td>
             <td></td>
          </tr>
          <?php } ?>

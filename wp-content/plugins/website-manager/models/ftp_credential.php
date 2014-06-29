@@ -1,6 +1,11 @@
 <?php
 
-class Ftp_Credential {
+namespace WebsiteManager;
+
+class Ftp_Credential extends WMModel {
+   
+   protected static $id_field = 'id';
+   protected static $table_name = 'wm_ftp_credentials';
    
    public $id;
    public $website_id;
@@ -41,64 +46,6 @@ class Ftp_Credential {
    
    /**
     * 
-    * @param string $name
-    * @return string
-    */
-   public function __get($name) {
-      switch($name) {
-         case 'host':
-         case 'username':
-         case 'password':
-         case 'type':
-            return Encryption::decrypt($this->$name);
-            break;
-         case 'id':
-         case 'website_id':
-         case 'last_modified':
-            return $this->$name;
-            break;
-         case 'associated_domain_name':
-            $domain_name = $wpdb->get_var('SELECT `domain_name` FROM `'.$wpdb->prefix.'wm_websites` WHERE `website_id` = "'.$this->website_id.'"');
-            return Encryption::decrypt($domain_name);
-            break;
-      }
-   }
-   
-   /**
-    * 
-    * @param string $name
-    * @param mixed $value
-    */
-   public function __set($name, $value) {
-      switch($name) {
-         case 'host':
-         case 'db_name':
-         case 'username':
-         case 'password':
-         case 'type':
-            $this->$name = Encryption::encrypt($value);
-            break;
-         case 'id':
-         case 'website_id':
-         case 'last_modified':
-            $this->$name = $value;
-            break;
-      }
-   }
-   
-   /**
-    * 
-    * @global object $wpdb
-    * @return array
-    */
-   public static function get_all() {
-      global $wpdb;
-      $ftp_credentials = $wpdb->get_col('SELECT `id`, `website_id` FROM `'.$wpdb->prefix.'wm_ftp_credentials`');
-      return $ftp_credentials;
-   }
-   
-   /**
-    * 
     * @global object $wpdb
     * @param string $website_id
     * @return array
@@ -113,6 +60,7 @@ class Ftp_Credential {
     * 
     */
    public function save() {
+      global $wpdb;
       if( $this->new === true ) {
          $wpdb->insert( 
          'wm_ftp_credentials', 

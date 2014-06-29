@@ -1,6 +1,12 @@
 <?php
 
-class Db_Credential {
+namespace WebsiteManager;
+
+class Db_Credential extends WMModel {
+   
+   protected static $id_field = 'id';
+   protected static $table_name = 'wm_db_credentials';
+   protected $encryption_key;
    
    public $id;
    public $website_id;
@@ -10,6 +16,7 @@ class Db_Credential {
    public $password;
    public $phpmyadmin_url;
    public $last_modified;
+   public $associated_domain_name;
    public $new = true;
    
    /**
@@ -20,39 +27,30 @@ class Db_Credential {
    public function __construct( $id = null ) {
       global $wpdb;
       $this->encryption_key = file_get_contents(__DIR__.'/../data/wm_private.key');
-      if($id === null) {
+      if( $id === null ) {
          //Set a new ID
-         $this->id = uniqid('db.', true).'.'.time();
+         $this->id = uniqid( 'db.', true ).'.'.time();
          $this->website_id = '';
          $this->host = '127.0.0.1';
          $this->db_name = '';
          $this->username = 'root';
          $this->password = '';
          $this->phpmyadmin_url = '';
+         $this->associated_domain_name = '';
          $this->last_modified = current_time( 'mysql' );
       } else {
-         $query = sprintf('SELECT website_id, AES_DECRYPT(host, "%1$s"), AES_DECRYPT(db_name, "%1$s"), AES_DECRYPT(username, "%1$s"), AES_DECRYPT(password, "%1$s"), AES_DECRYPT(phpmyadmin_url, "%1$s"), last_modified FROM `%2$s` WHERE `id` = "%3$s"', $this->encryption_key, $wpdb->prefix.'wm_db_credentials', $id);
+         $query = sprintf( 'SELECT %2$s.id, %2$s.website_id, AES_DECRYPT(%2$s.host, "%1$s"), AES_DECRYPT(%2$s.db_name, "%1$s"), AES_DECRYPT(%2$s.username, "%1$s"), AES_DECRYPT(%2$s.password, "%1$s"), AES_DECRYPT(%2$s.phpmyadmin_url, "%1$s"), %2$s.last_modified, AES_DECRYPT(%4$s.domain_name, "%1$s") FROM `%2$s`, `%4$s` WHERE `%2$s`.'.static::$id_field.' = "%3$s" AND `%2$s`.website_id = `%4$s`.id', $this->encryption_key, $wpdb->prefix.static::$table_name, $id, $wpdb->prefix.'wm_websites' );
          $db_credential = $wpdb->get_row( $query, ARRAY_A );
          $this->new = false;
          $this->id = $id;
-         $this->website_id = $db_credential['AES_DECRYPT(website_id, "'.$this->encryption_key.'")'];
-         $this->host = $db_credential['AES_DECRYPT(host, "'.$this->encryption_key.'")'];
-         $this->db_name = $db_credential['AES_DECRYPT(db_name, "'.$this->encryption_key.'")'];
-         $this->username = $db_credential['AES_DECRYPT(username, "'.$this->encryption_key.'")'];
-         $this->password = $db_credential['AES_DECRYPT(password, "'.$this->encryption_key.'")'];
-         $this->phpmyadmin_url = $db_credential['AES_DECRYPT(phpmyadmin_url, "'.$this->encryption_key.'")'];
+         $this->website_id = $db_credential['website_id'];
+         $this->host = $db_credential['AES_DECRYPT('.$wpdb->prefix.static::$table_name.'.host, "'.$this->encryption_key.'")'];
+         $this->db_name = $db_credential['AES_DECRYPT('.$wpdb->prefix.static::$table_name.'.db_name, "'.$this->encryption_key.'")'];
+         $this->username = $db_credential['AES_DECRYPT('.$wpdb->prefix.static::$table_name.'.username, "'.$this->encryption_key.'")'];
+         $this->password = $db_credential['AES_DECRYPT('.$wpdb->prefix.static::$table_name.'.password, "'.$this->encryption_key.'")'];
+         $this->phpmyadmin_url = $db_credential['AES_DECRYPT('.$wpdb->prefix.static::$table_name.'.phpmyadmin_url, "'.$this->encryption_key.'")'];
+         $this->associated_domain_name = $db_credential['AES_DECRYPT('.$wpdb->prefix.'wm_websites'.'.domain_name, "'.$this->encryption_key.'")'];
       }
-   }
-   
-   /**
-    * 
-    * @global object $wpdb
-    * @return array
-    */
-   public static function get_all() {
-      global $wpdb;
-      $db_credentials = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_db_credentials`');
-      return $db_credentials;
    }
    
    /**

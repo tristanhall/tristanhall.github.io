@@ -11,8 +11,8 @@ $args = array( 'post_type' => 'th-portfolio', 'posts_per_page' => -1, 'order' =>
 $loop = new WP_Query( $args );
 echo '<div id="content">';
 echo '<h1>Portfolio</h1>';
-if ( function_exists('yoast_breadcrumb') ) {
-yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+if ( function_exists( 'yoast_breadcrumb' ) ) {
+yoast_breadcrumb( '<p id="breadcrumbs">', '</p>' );
 }
 echo '<ul id="portfolioFilter">';
 echo '<li class="active">Filter:</li><li class="filter active" data-filter="mix">All</li>';
@@ -43,4 +43,5 @@ while( $loop->have_posts() ) :
 endwhile;
 echo '</div>';
 echo '</div>';
+wp_reset_postdata();
 get_footer();

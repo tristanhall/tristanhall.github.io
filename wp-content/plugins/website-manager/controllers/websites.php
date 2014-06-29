@@ -1,50 +1,45 @@
 <?php
 
-class Websites extends WMCore {
+namespace WebsiteManager;
 
-   /**
-    * 
-    */
-   public function __construct() {
-      parent::__construct();
-   }
+class Websites extends WMController {
    
    /**
     * 
     */
-   public function edit_view() {
+   public static function edit_view() {
       $tdata = array();
-      if( filter_input(INPUT_GET, 'id') == '') {
+      if( filter_input( INPUT_GET, 'id' ) == '') {
          $tdata['site'] = new Website;
          $tdata['db_credentials'] = array();
          $tdata['ftp_credentials'] = array();
          $tdata['notes'] = array();
       } else {
-         $tdata['id'] = filter_input(INPUT_GET, 'id');
+         $tdata['id'] = filter_input( INPUT_GET, 'id' );
          $tdata['site'] = new Website( $tdata['id'] );
          Log::info('Accessed website records for '.$tdata['site']->domain_name.'.');
          $tdata['db_credentials'] = Db_Credential::get_by_website( $tdata['id'] );
          $tdata['ftp_credentials'] = Ftp_Credential::get_by_website( $tdata['id'] );
          $tdata['notes'] = Note::get_by_website( $tdata['id'] );
       }
-      $this->render('edit_website.php', $tdata);
+      self::render( 'edit_website', $tdata );
    }
    
    /**
     * 
     */
-   public function index() {
+   public static function index() {
       Log::info('Accessed list of websites.');
       $tdata = array( 'website_ids' => Website::get_all() );
-      $this->render( 'list_websites.php', $tdata );
+      self::render( 'list_websites', $tdata );
    }
    
    /**
     * 
     * @param string $response
     */
-   public function create_or_update( &$response ) {
-      if( $this->verify_nonce( 'website', 'Failed to authorize website save.' ) ){
+   public static function create_or_update( &$response ) {
+      if( self::verify_nonce( 'website', 'Failed to authorize website save.' ) ){
          $new = filter_input(INPUT_POST, 'new_website');
          $id = filter_input(INPUT_POST, 'id');
          if( $new == 'no' ) {

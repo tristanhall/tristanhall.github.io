@@ -1,6 +1,12 @@
 <?php
 
-class Website {
+namespace WebsiteManager;
+
+class Website extends WMModel {
+   
+   protected static $id_field = 'id';
+   protected static $table_name = 'wm_websites';
+   protected $encryption_key;
    
    public $id;
    public $domain_name;
@@ -50,7 +56,7 @@ class Website {
     * @global object $wpdb
     * @return array
     */
-   public function get_all() {
+   public static function get_all() {
       global $wpdb;
       $website_ids = $wpdb->get_col('SELECT `id` FROM `'.$wpdb->prefix.'wm_websites`');
       return $website_ids;

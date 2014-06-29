@@ -1,5 +1,7 @@
 <?php
 
+namespace WebsiteManager;
+
 class Note {
    
    public $id;

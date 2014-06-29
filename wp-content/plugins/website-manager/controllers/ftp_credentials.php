@@ -1,8 +1,13 @@
 <?php
 
-/* 
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace WebsiteManager;
 
+class FTPCredentials extends WMController {
+   
+   public static function index() {
+      Log::info('Accessed list of FTP credentials.');
+      $tdata = array( 'ftp_credentials' => Ftp_Credential::get_all() );
+      self::render( 'list_ftp_credentials', $tdata );
+   }
+   
+}

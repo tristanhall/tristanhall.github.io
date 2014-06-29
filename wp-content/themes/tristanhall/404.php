@@ -19,15 +19,16 @@ register_sidebar(array(
 get_header();
 ?>
 <div id="content">
-   <p><img src="http://www.reactiongifs.com/wp-content/uploads/2013/09/Dwight-Schrute-Shakes-Head-and-Rolls-Eyes.gif" class="alignleft" style="margin-right:10px;margin-bottom:10px;"></p>
-   <h1 class="post-title">404: Page Not Found</h1>
-   <?php if ( function_exists('yoast_breadcrumb') ) {
-      yoast_breadcrumb('<p id="breadcrumbs">','</p>');
+   <h1 class="post-title aligncenter">404: Page Not Found</h1>
+   <?php if ( function_exists( 'yoast_breadcrumb' ) ) {
+      yoast_breadcrumb( '<p id="breadcrumbs" class="aligncenter">', '</p>' );
    } ?>
    <div class="post-content">
-      <h2>My Apologies</h2>
-      <p>The page you have requested could not be found.<br/>
+      <p style="text-align: center;">The page you have requested could not be found.<br/>
          But you could try <a title="Tristan's Portfolio" href="http://tristanhall.com/portfolio/">this page</a>.
+      </p>
+      <p>
+         <img src="http://www.reactiongifs.com/wp-content/uploads/2013/09/Dwight-Schrute-Shakes-Head-and-Rolls-Eyes.gif" class="aligncenter">
       </p>
    </div>
 </div>

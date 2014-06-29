@@ -5,6 +5,11 @@
  * Copyright 2013 Tristan Hall
  */
 global $global_config;
+if( is_front_page() ) {
+   $global_config->bodyClass .= ' front-page';
+} else {
+   $global_config->bodyClass .= ' internal';
+}
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="ie8"><![endif]-->
@@ -35,7 +40,7 @@ global $global_config;
          
    </script>
 </head>
-<body <?php echo 'class="'.body_class($global_config->bodyClass).'"'; ?>>
+<body <?php echo 'class="'.body_class( $global_config->bodyClass ).'"'; ?>>
    <nav data-topbar class="top-bar show-for-small" id='mobile-nav'>
       <ul class="title-area">
          <li class="name">
@@ -60,3 +65,4 @@ global $global_config;
       </header>
    </div>
    <div id="wrapper">
+      <div id="contentWrapper">

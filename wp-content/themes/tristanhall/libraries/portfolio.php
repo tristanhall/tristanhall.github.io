@@ -85,4 +85,4 @@ function portfolio_redirect() {
 		}
 	}
 }
-add_action("template_redirect", 'portfolio_redirect');
+//add_action( "template_redirect", 'portfolio_redirect' );

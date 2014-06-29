@@ -1,0 +1,34 @@
+//Colors
+$white: #fbfbfb; //Off-White
+$gray: #393939; //Gray
+$light-gray: #dedede;
+$tundora: #423c40; //Grayish Purple
+$matterhorn: #483642; //Dark Purple
+$red: #F06060;
+$green: #8CBEB2;
+$orange: #F3B562;
+$purple: #5C4B51;
+
+//Typography
+$news-cycle: 'News Cycle', sans-serif;
+$raleway: 'Raleway', sans-serif;
+
+$header-font-color: $purple;
+$paragraph-font-color: $purple;
+
+//Mixins!
+@mixin gradient($start, $end) {
+   
+   background: -moz-linear-gradient(top, $start 0%, $end 100%); /* FF3.6+ */
+   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end)); /* Chrome,Safari4+ */
+   background: -webkit-linear-gradient(top, $start 0%, $end 100%); /* Chrome10+,Safari5.1+ */
+   background: -o-linear-gradient(top, $start 0%, $end 100%); /* Opera 11.10+ */
+   background: -ms-linear-gradient(top, $start 0%, $end 100%); /* IE10+ */
+   background: linear-gradient(to bottom, $start 0%, $end 100%); /* W3C */
+   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end',GradientType=0 ); /* IE6-8 */
+}
+@mixin box-shadow($top, $left, $blur, $color, $inset:"") {
+   -webkit-box-shadow: $top $left $blur $color #{$inset};
+   -moz-box-shadow: $top $left $blur $color #{$inset};
+   box-shadow:$top $left $blur $color #{$inset};
+}

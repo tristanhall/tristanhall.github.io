@@ -8,41 +8,38 @@
  * License: Commercial
  */
 
+namespace WebsiteManager;
 
+//ini_set( 'display_errors', 1 );
+//error_reporting( E_ALL );
 
-define('LOGGING', true);
+define( 'LOGGING', true );
 
-require_once(__DIR__.'/helpers/string.php');
-require_once(__DIR__.'/models/log.php');
-require_once(__DIR__.'/models/website.php');
-require_once(__DIR__.'/models/ftp_credential.php');
-require_once(__DIR__.'/models/db_credential.php');
-require_once(__DIR__.'/models/note.php');
-require_once(__DIR__.'/controllers/wmcore.php');
-require_once(__DIR__.'/controllers/websites.php');
-require_once(__DIR__.'/controllers/db_credentials.php');
-require_once(__DIR__.'/controllers/ftp_credentials.php');
-require_once(__DIR__.'/controllers/notes.php');
-require_once(__DIR__.'/controllers/log.php');
+require_once( __DIR__.'/helpers/string.php' );
+require_once( __DIR__.'/models/wmmodel.php' );
+require_once( __DIR__.'/models/log.php' );
+require_once( __DIR__.'/models/website.php' );
+require_once( __DIR__.'/models/ftp_credential.php' );
+require_once( __DIR__.'/models/db_credential.php' );
+require_once( __DIR__.'/models/note.php' );
+require_once( __DIR__.'/controllers/wmcontroller.php' );
+require_once( __DIR__.'/controllers/websites.php' );
+require_once( __DIR__.'/controllers/db_credentials.php' );
+require_once( __DIR__.'/controllers/ftp_credentials.php' );
+require_once( __DIR__.'/controllers/notes.php' );
+require_once( __DIR__.'/controllers/log.php' );
 
 class WebsiteManager {
    
    const db_version = 1.0;
    
    /**
-    * Constructor function
-    */
-   public function __construct() {
-      
-   }
-   
-   /**
     * Install or upgrade the databse
     * @global object $wpdb
     */
-   public function install() {
+   public static function install() {
       global $wpdb;
-      $installed_version = get_option('_wm_db_version_');
+      $installed_version = get_option( '_wm_db_version_' );
       $sql = array();
       //Set the website's permanent key for determining the master password.
       //Website table
@@ -90,34 +87,34 @@ class WebsiteManager {
          UNIQUE KEY  (id)
       );";
       //Only do this if the database versions don't match
-      if(self::db_version != (int) $installed_version) {
+      if( self::db_version != (int) $installed_version ) {
          //Compile the queries
-         $queries = implode('', $sql);
+         $queries = implode( '', $sql );
          require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
          //Let 'em loose
-         foreach($sql as $query) {
+         foreach( $sql as $query ) {
             dbDelta( $query );
          }
-         update_option('_wm_db_version_', 1.0);
-         Log::info('Database updated to v'.self::db_version.'.');
+         update_option( '_wm_db_version_', 1.0 );
+         Log::info( 'Database updated to v'.self::db_version.'.' );
       }
    }
 
    /**
     * Setup the admin menus
     */
-   public function register_menu_page() {
-       add_menu_page( 'TH Admin', 'TH Admin', 'manage_options', 'wm-dashboard', array('WebsiteManager', 'init'), 'dashicons-lightbulb', 3 );
-      add_submenu_page( 'wm-dashboard', 'Websites', 'Websites', 'manage_options', 'wm-websites', array('WebsiteManager', 'websites') );
-      add_submenu_page( 'wm-dashboard', 'FTP Credentials', 'FTP Credentials', 'manage_options', 'wm-ftp-credentials', array('WebsiteManager', 'ftp_credentials') );
-      add_submenu_page( 'wm-dashboard', 'DB Credentials', 'DB Credentials', 'manage_options', 'wm-db-credentials', array('WebsiteManager', 'db_credentials') );
-      add_submenu_page( 'wm-dashboard', 'Security Log', 'Security Log', 'manage_options', 'wm-log', array('WebsiteManager', 'log') );
+   public static function register_menu_pages() {
+       add_menu_page( 'TH Admin', 'TH Admin', 'manage_options', 'wm-dashboard', array( 'WebsiteManager\WebsiteManager', 'init' ), 'dashicons-lightbulb', 3 );
+      add_submenu_page( 'wm-dashboard', 'Websites', 'Websites', 'manage_options', 'wm-websites', array( 'WebsiteManager\WebsiteManager', 'websites' ) );
+      add_submenu_page( 'wm-dashboard', 'FTP Credentials', 'FTP Credentials', 'manage_options', 'wm-ftp-credentials', array( 'WebsiteManager\WebsiteManager', 'ftp_credentials' ) );
+      add_submenu_page( 'wm-dashboard', 'DB Credentials', 'DB Credentials', 'manage_options', 'wm-db-credentials', array( 'WebsiteManager\WebsiteManager', 'db_credentials' ) );
+      add_submenu_page( 'wm-dashboard', 'Security Log', 'Security Log', 'manage_options', 'wm-log', array( 'WebsiteManager\WebsiteManager', 'log' ) );
    }
    
    /**
     * Register and queue up the styles and scripts
     */
-   public function load_admin_assets() {
+   public static function load_admin_assets() {
       wp_register_style( 'wm_styles', plugins_url( 'website-manager/css/website_manager.css' ), false, '1.0' );
       wp_enqueue_style( 'wm_styles' );
       wp_register_script( 'wm_functions', plugins_url( 'website-manager/js/jquery.functions.js' ), false, '1.0' );
@@ -129,34 +126,34 @@ class WebsiteManager {
    /**
     * Dashboard page handler
     */
-   public function init() {
-      Log::info('Accessed the dashboard.');
-      include(__DIR__.'/views/dashboard.php');
+   public static function init() {
+      Log::info( 'Accessed the dashboard.' );
+      include( __DIR__.'/views/dashboard.php' );
    }
    
    /**
     * Website page handler
     */
-   public function websites() {
+   public static function websites() {
       $Websites = new Websites();
       if( empty( filter_input( INPUT_POST, 'wm_nonce' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
-         $Websites->edit_view();
+         Websites::edit_view();
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce' ) ) ) {
-         $Websites->create_or_update();
+         Websites::create_or_update();
       } else {
-         $Websites->index();
+         Websites::index();
       }
    }
    
    /**
     * FTP Crdentials page handler
     */
-   public function ftp_credentials() {
+   public static function ftp_credentials() {
       if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
-         if( filter_input(INPUT_POST, 'id') == '') {
+         if( filter_input( INPUT_POST, 'id' ) == '') {
             $site = new Ftp_Credential();
          } else {
-            $site = new Ftp_Credential( filter_input(INPUT_POST, 'id') );
+            $site = new Ftp_Credential( filter_input( INPUT_POST, 'id' ) );
          }
          include(__DIR__.'/views/edit_ftp_credential.php');
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
@@ -178,98 +175,77 @@ class WebsiteManager {
             $ftp_credentials->save();
          }
       } else {
-         Log::info('Accessed list of FTP credentials.');
-         $ftp_credential_ids = Ftp_Credential::get_all();
-         include(__DIR__.'/views/list_ftp_credentials.php');
+         FTPCredentials::index();
       }
    }
    
    /**
     * DB Credentials page handler
     */
-   public function db_credentials() {
+   public static function db_credentials() {
       if( empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) && filter_input( INPUT_GET, 'action' ) == 'edit' ) {
-         if( filter_input(INPUT_POST, 'id') == '') {
-            $site = new Db_Credential();
-         } else {
-            $site = new Db_Credential( filter_input(INPUT_POST, 'id') );
-         }
-         include(__DIR__.'/views/edit_db_credential.php');
+         DBCredentials::edit_view();
       } elseif( !empty( filter_input( INPUT_POST, 'wm_nonce_field' ) ) ) {
          if( !wp_verify_nonce( $_POST['wm_nonce_field'] ) ) {
-            Log::warning('Failed to authorize form submission.');
-            exit('Failed to authorize form submission. Please try again.');
+            Log::warning( 'Failed to authorize form submission.' );
+            new WP_Error( 'no_auth', __( 'Failed to authorize form submission. Please try again.', 'website-manager' ) );
          } else {
-            $action = filter_input(INPUT_POST, 'id');
-            if( !empty( $action ) ) {
-               $id = filter_input(INPUT_POST, 'id');
-               $db_credentials = new Db_Credential( $id );
-            } else {
-               $db_credentials = new Db_Credential;
-            }
-            $db_credentials->host = filter_input(INPUT_POST, 'domain_name');
-            $db_credentials->database = filter_input(INPUT_POST, 'database');
-            $db_credentials->username = filter_input(INPUT_POST, 'username');
-            $db_credentials->password = filter_input(INPUT_POST, 'password');
-            $db_credentials->phpmyadmin_url = filter_input(INPUT_POST, 'phpmyadmin_url');
-            $db_credentials->save();
+            DBCredentials::create_or_update();
          }
       } else {
-         Log::info('Accessed list of database credentials.');
-         $db_credential_ids = Db_Credential::get_all();
-         include(__DIR__.'/views/list_db_credentials.php');
+         DBCredentials::index();
       }
    }
    
    /**
     * Security Log page handler
     */
-   public function log() {
-      Log::info('Accessed the security log for '.$year.'-'.$month.'-'.$date.'.');
-      $Log = new LogController();
-      $Log->index();
+   public static function log() {
+      Log::info( 'Accessed the security log for '.$year.'-'.$month.'-'.$date.'.' );
+      LogController::index();
    }
    
-   public function websites_ajax() {
-      $Websites = new Websites();
+   public static function websites_ajax() {
       $response = '';
-      $Websites->create_or_update($response);
+      Websites::create_or_update( $response );
       echo $response;
       die();
    }
    
-   public function ftp_ajax() {
+   public static function ftp_ajax() {
       global $wpdb;
       die();
    }
    
-   public function db_ajax() {
+   public static function db_ajax() {
       $response = array();
-      $DBCredentials = new DBCredentials();
-      $DBCredentials->create_or_update( $response );
-      header('Content-type: text/json');
+      DBCredentials::create_or_update( $response );
+      header( 'Content-type: text/json' );
       echo json_encode( $response );
       die();
    }
    
-   public function db_delete_ajax() {
+   public static function db_delete_ajax() {
       $response = array();
-      $DBCredentials = new DBCredentials();
-      $DBCredentials->delete( $response );
-      header('Content-type: text/json');
+      DBCredentials::delete( $response );
+      header( 'Content-type: text/json' );
       echo json_encode( $response );
       die();
+   }
+   
+   public static function add_actions() {
+      add_action( 'admin_menu', array( 'WebsiteManager\WebsiteManager', 'register_menu_pages' ) );
+      add_action( 'admin_enqueue_scripts', array( 'WebsiteManager\WebsiteManager', 'load_admin_assets' ) );
+
+      //AJAX Routes
+      add_action( 'wp_ajax_wm_websites', array( 'WebsiteManager\WebsiteManager', 'websites_ajax' ) );
+      add_action( 'wp_ajax_wm_db', array( 'WebsiteManager\WebsiteManager', 'db_ajax' ) );
+      add_action( 'wp_ajax_wm_db_delete', array( 'WebsiteManager\WebsiteManager', 'db_delete_ajax' ) );
+      add_action( 'wp_ajax_wm_ftp', array( 'WebsiteManager\WebsiteManager', 'ftp_ajax' ) );
    }
    
 }
 
 //Register the plugin activation function and add the admin actions
-register_activation_hook( __FILE__, array('WebsiteManager', 'install') );
-add_action( 'admin_menu', array('WebsiteManager', 'register_menu_page') );
-add_action( 'admin_enqueue_scripts', array('WebsiteManager', 'load_admin_assets') );
-
-//AJAX Routes
-add_action( 'wp_ajax_wm_websites', array('WebsiteManager', 'websites_ajax') );
-add_action( 'wp_ajax_wm_db', array('WebsiteManager', 'db_ajax') );
-add_action( 'wp_ajax_wm_db_delete', array('WebsiteManager', 'db_delete_ajax') );
-add_action( 'wp_ajax_wm_ftp', array('WebsiteManager', 'ftp_ajax') );
+register_activation_hook( __FILE__, array( 'WebsiteManager\WebsiteManager', 'install' ) );
+WebsiteManager::add_actions();

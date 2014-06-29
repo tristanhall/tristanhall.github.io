@@ -1,34 +1,6 @@
 @charset "UTF-8";
 
-@import "bourbon", "normalize", "foundation", "https://fonts.googleapis.com/css?family=News+Cycle:400,700|Raleway:400,700.css";
-
-//Colors
-$white: #fbfbfb; //Off-White
-$gray: #393939; //Gray
-$light-gray: #dedede;
-$tundora: #423c40; //Grayish Purple
-$matterhorn: #483642; //Dark Purple
-
-//Typography
-$news-cycle: 'News Cycle', sans-serif;
-$raleway: 'Raleway', sans-serif;
-
-//Mixins!
-@mixin gradient($start, $end) {
-   
-   background: -moz-linear-gradient(top, $start 0%, $end 100%); /* FF3.6+ */
-   background: -webkit-gradient(linear, left top, left bottom, color-stop(0%, $start), color-stop(100%, $end)); /* Chrome,Safari4+ */
-   background: -webkit-linear-gradient(top, $start 0%, $end 100%); /* Chrome10+,Safari5.1+ */
-   background: -o-linear-gradient(top, $start 0%, $end 100%); /* Opera 11.10+ */
-   background: -ms-linear-gradient(top, $start 0%, $end 100%); /* IE10+ */
-   background: linear-gradient(to bottom, $start 0%, $end 100%); /* W3C */
-   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='$start', endColorstr='$end',GradientType=0 ); /* IE6-8 */
-}
-@mixin box-shadow($top, $left, $blur, $color, $inset:"") {
-   -webkit-box-shadow: $top $left $blur $color #{$inset};
-   -moz-box-shadow: $top $left $blur $color #{$inset};
-   box-shadow:$top $left $blur $color #{$inset};
-}
+@import "bourbon", "settings", "normalize", "foundation", "https://fonts.googleapis.com/css?family=News+Cycle:400,700|Raleway:400,700.css";
 
 //Left/Right Classes
 .alignleft {
@@ -46,6 +18,33 @@ $raleway: 'Raleway', sans-serif;
    text-align: center;
 }
 
+//Styles for Buttons
+.button {
+   @include transition(all 250ms linear);
+   font-family: $raleway;
+   color: $white;
+   background: $green;
+   text-transform: uppercase;
+   font-weight: 700;
+   border-radius: 3px;
+   border: 0px;
+   &:hover, &:active {
+      background: #fff;
+      color: $green;
+   }
+   &:focus {
+      outline: 0px;
+   }
+   &.secondary {
+      background: $orange;
+      color: #fff;
+      &:hover, &:active {
+         background: #fff;
+         color: $orange;
+      }
+   }
+}
+
 //General Page Structure
 html,
 body {
@@ -56,12 +55,30 @@ body {
 header, #wrapper, footer {
    @include grid-row();
 }
-header {
-   height: 120px;
+
+#wrapper {
+   padding-top: 120px;
+   body.home & {
+      padding-top: 100px;
+   }
 }
-#content {
+
+header {
+   height: 100px;
+}
+#contentWrapper {
    @include grid-row();
-   padding: 15px 0px;
+   body.home & {
+      max-width: 100%;
+   }
+}
+body.internal {
+   #content {
+     @include grid-column(9);
+   }
+   #sidebar {
+      @include grid-column(3);
+   }
 }
 footer {
    height: 135px;
@@ -72,7 +89,6 @@ h1 {
    font-size: 36px;
    font-family: $raleway;
    text-transform: uppercase;
-   color: $matterhorn;
    font-weight: 700;
    width: 100%;
    float: left;
@@ -84,7 +100,7 @@ h2 {
 }
 h3 {
    font-size: 28px;
-   color: $matterhorn;
+   color: $green;
    font-family: $raleway;
 }
 h4 {
@@ -101,7 +117,7 @@ h6 {
 }
 p {
    font-family: $news-cycle;
-   margin-bottom: 0px;
+   margin-bottom: 1.4em;
    &#breadcrumbs {
       @include grid-column(12);
       font-size: 14px;
@@ -110,7 +126,7 @@ p {
       margin-bottom: 15px;
       padding-left: 0px;
       a {
-         color: $matterhorn;
+         color: $purple;
       }
       span {
          color: $gray;
@@ -120,28 +136,27 @@ p {
 
 //Header Styles
 #headerWrapper {
-   @include box-shadow(0px, 3px, 8px, #333);
    width: 100%;
    max-width: 100%;
-   height: 120px;
-   background: $white;
+   height: 100px;
+   background: $red;
    display: block;
    z-index: 9;
-   position: relative;
+   position: fixed;
 }
 
 //Header Nav Styles
 nav#main-nav {
    position: relative;
-   height: 120px;
+   height: 100px;
    width: 100%;
    ul {
       list-style-type: none;
       margin-top: 0px;
       margin-left: 0px;
-      float: left;
+      float: right;
       margin-bottom: 30px;
-      background-image: url('../images/logo.png');
+      //background-image: url('../images/logo.png');
       background-repeat: no-repeat;
       background-size: 100px 100px;
       background-position: center center;
@@ -153,33 +168,27 @@ nav#main-nav {
          width: auto;
          a {
             @include transition(background 200ms linear);
-            padding: 0px 10px;
-            line-height: 120px;
-            font-size: 24px;
+            padding: 0px 20px;
+            line-height: 100px;
+            font-size: 18px;
             font-family: $raleway;
-            color: $tundora;
-            text-transform: uppercase;
+            color: #fff;
+            text-transform: capitalize;
             font-weight: 400;
             display: block;
             letter-spacing: 2px;
             &:hover {
-               background: $tundora;
-               color: $white;
+               background: #fff;
+               color: $red;
             }
          }
          &:first-child {
             margin-left: 60px;
          }
-         & + li + li {
-            margin-left: 250px;
-         }
-         & + li + li + li {
-            margin-left: 0px;
-         }
          &.current-menu-item {
-            background: $tundora;
             a {
-               color: $white;
+               color: $red;
+               background: #fff;
             }
          }
       }
@@ -191,13 +200,11 @@ nav#main-nav {
    background: $gray;
    color: $light-gray;
    width: 100%;
-   height: 135px;
    font-size: 12px;
    font-family: $raleway;
    text-transform: uppercase;
-   @include box-shadow(0px, 3px, 10px, darken($gray, 5%), 'inset');
    footer {
-      padding: 50px 0px;
+      padding: 30px 0px 10px;
       #copyright {
          @include grid-column(6);
          float: right;
@@ -272,7 +279,7 @@ body.home {
          &#panel-2, &#panel-4 {
             .panelContent {
                h2, p {
-                  color:$matterhorn !important;
+                  color: $purple !important;
                }
             }
          }
@@ -319,10 +326,10 @@ body.home {
                   }
                   label {
                      @include grid-column(12);
-                     text-align:left;
-                     text-transform:uppercase;
-                     color:$matterhorn;
-                     padding-left:0px;
+                     text-align: left;
+                     text-transform: uppercase;
+                     color: $purple;
+                     padding-left: 0px;
                      span.required {
                         font-size: 80%;
                         vertical-align: top;
@@ -338,7 +345,7 @@ body.home {
                   border-radius:3px;
                   -moz-border-radius:3px;
                   -webkit-border-radius:3px;
-                  border:1px solid $matterhorn;
+                  border:1px solid $purple;
                   &:focus {
                      border:1px solid $tundora;
                   }
@@ -348,7 +355,7 @@ body.home {
                   border-radius:3px;
                   -moz-border-radius:3px;
                   -webkit-border-radius:3px;
-                  border:1px solid $matterhorn;
+                  border:1px solid $purple;
                   &:focus {
                      border:1px solid $tundora;
                   }
@@ -404,15 +411,15 @@ body.home {
 //Internal Page Styles
 body.page {
    #content {
-      padding:10px 15px;
+      padding: 10px 15px;
       padding-bottom:30px;
       h1 {
          width: 100%;
          float: left;
-         font-family:$raleway;
-         text-transform:uppercase;
-         font-weight:bold;
-         color:$matterhorn;
+         font-family: $raleway;
+         text-transform: uppercase;
+         font-weight: bold;
+         color: $purple;
       }
    }
 }
@@ -433,7 +440,7 @@ body.post-type-archive-th-portfolio {
          display:block;
          float:left;
          margin-right:10px;
-         background:$matterhorn;
+         background: $red;
          color:#fff;
          font-family:$raleway;
          font-weight:700;
@@ -442,7 +449,7 @@ body.post-type-archive-th-portfolio {
          @include transition(background 450ms linear);
          &:hover, &.active {
             cursor:pointer;
-            color:$matterhorn;
+            color: $red;
             background:$white;
          }
       }
@@ -497,7 +504,7 @@ body.post-type-archive-th-portfolio {
          }
          div.portfolio-desc {
             display: block;
-            background-color:$matterhorn;
+            background-color:$red;
             color:#fff;
             -webkit-backface-visibility: hidden;
             -moz-backface-visibility: hidden;
@@ -566,7 +573,7 @@ body.single-th-portfolio {
 //Contact Page
 body.page-id-9 {
    div.wpcf7 {
-      @include grid-column(6);
+      @include grid-column(12);
       padding-left: 0px;
       margin-bottom: 30px;
       span.wpcf7-not-valid-tip {
@@ -589,7 +596,7 @@ body.page-id-9 {
             @include grid-column(12);
             text-align: left;
             text-transform: uppercase;
-            color: $matterhorn;
+            color: $purple;
             padding-left: 0px;
             span.required {
                font-size: 80%;
@@ -606,7 +613,7 @@ body.page-id-9 {
          border-radius: 3px;
          -moz-border-radius: 3px;
          -webkit-border-radius: 3px;
-         border: 1px solid $matterhorn;
+         border: 1px solid $purple;
          &:focus {
             border: 1px solid $tundora;
          }
@@ -616,7 +623,7 @@ body.page-id-9 {
          border-radius: 3px;
          -moz-border-radius: 3px;
          -webkit-border-radius: 3px;
-         border: 1px solid $matterhorn;
+         border: 1px solid $purple;
          float: left;
          width: 50%;
          margin-right: 10px;
@@ -661,13 +668,7 @@ body.page-template-login-php {
       }
    }
    #wp-submit {
-      @include button();
-      background: $matterhorn;
-      border-radius: 3px;
-      @include transition(background 250ms linear);
-      &:hover {
-         background: $tundora;
-      }
+      @extend .button;
    }
 }
 
@@ -707,7 +708,7 @@ html.firefox {
       list-style-type: none;
       margin-left: 0px;
       li {
-         padding-top: 20px;
+         margin-bottom: 20px;
          h3.widget-title {
             font-weight: 700;
             text-transform: uppercase;
@@ -729,61 +730,6 @@ html.firefox {
          display: block;
       }
    }
-}
-
-//Standard for Primary Buttons
-.button {
-   @include transition(all 300ms linear);
-   font-family: $raleway;
-   color: $white;
-   background: #4e3d49; /* Old browsers */
-   /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-   background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRlM2Q0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0MzMyM2QiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-   @include gradient(#4e3d49, #43323d);
-   border-bottom: 1px solid #2a2027;
-   text-transform: uppercase;
-   font-weight: 700;
-   border-radius: 3px;
-   -moz-border-radius: 3px;
-   -webkit-border-radius:3px;
-   border-top:1px solid #4e3d49;
-   html.ie9 &, html.ie10 {
-      filter: none;
-   }
-   &:hover {
-      background: #4e3d49; /* Old browsers */
-      /* IE9 SVG, needs conditional override of 'filter' to 'none' */
-      background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzRlM2Q0OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiM0MzMyM2QiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-      @include gradient(#43323d, #4e3d49);
-      border-top: 1px solid #2a2027;
-      border-bottom: 1px solid #4e3d49;
-   }
-   &:active {
-      position: relative;
-      top: 2px;
-      outline: 0px;
-   }
-   &:focus {
-      outline: 0px;
-   }
-   &.secondary {
-      @include gradient($white, #f6f6f6);
-      color: $matterhorn;
-      border-top: 1px solid $white;
-      border-bottom: 1px solid #e8e8e8;
-      html.ie9 &, html.ie10 {
-         filter: none;
-      }
-      &:hover {
-         @include gradient(#f6f6f6, $white);
-         border-top: 1px solid #e8e8e8;
-         border-bottom: 1px solid $white;
-      }
-   }
-}
-//IE9 Support for button gradients
-html.ie9 .primary-button {
-   filter: none;
 }
 
 @media only screen and (max-width: 1000px) {
@@ -842,7 +788,7 @@ html.ie9 .primary-button {
                font-family: $raleway;
                font-weight: 700;
                letter-spacing: 1px;
-               color: $matterhorn;
+               color: $red;
             }
          }
       }
@@ -852,10 +798,10 @@ html.ie9 .primary-button {
          font-weight: 700;
       }
       .toggle-topbar.menu-icon a {
-         color:$matterhorn;
+         color:$red;
          &:after {
-            -webkit-box-shadow: 0 10px 0 1px $matterhorn, 0 16px 0 1px $matterhorn, 0 22px 0 1px $matterhorn;
-            box-shadow: 0 10px 0 1px $matterhorn, 0 16px 0 1px $matterhorn, 0 22px 0 1px $matterhorn;
+            -webkit-box-shadow: 0 10px 0 1px $red, 0 16px 0 1px $red, 0 22px 0 1px $red;
+            box-shadow: 0 10px 0 1px $red, 0 16px 0 1px $red, 0 22px 0 1px $red;
          }
       }
       &.expanded {
