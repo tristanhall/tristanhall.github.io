@@ -40,7 +40,7 @@ if( is_front_page() ) {
          
    </script>
 </head>
-<body <?php echo 'class="'.body_class( $global_config->bodyClass ).'"'; ?>>
+<body itemscope itemtype="http://schema.org/WebPage" <?php echo 'class="'.body_class( $global_config->bodyClass ).'"'; ?>>
    <nav data-topbar class="top-bar show-for-small" id='mobile-nav'>
       <ul class="title-area">
          <li class="name">
@@ -49,18 +49,23 @@ if( is_front_page() ) {
          <li class="toggle-topbar menu-icon"><a href="#"><span></span></a></li>
       </ul>
       <section class="top-bar-section">
-            <?php wp_nav_menu( array('theme_location' => 'mobile_nav', 'container' => false, 'menu_id' => 'mobile_nav') ); ?>
+            <?php wp_nav_menu( array( 'theme_location' => 'mobile_nav', 'container' => false, 'menu_id' => 'mobile_nav' ) ); ?>
       </section>
    </nav>
    <div id="headerWrapper">
       <header>
+         <div id="logo">
+            <a href="<?php echo home_url() ?>" title="<?php bloginfo( 'name' ); ?>">
+               <img src="/wp-content/themes/tristanhall/images/logo-white.png" alt="<?php bloginfo( 'name' ); ?>" title="<?php bloginfo( 'name' ); ?>">
+            </a>
+         </div>
          <nav id="main-nav">
-               <?php wp_nav_menu( array('theme_location' => 'main_nav', 'container' => false, 'menu_id' => 'main_nav') ); ?>
+               <?php wp_nav_menu( array( 'theme_location' => 'main_nav', 'container' => false, 'menu_id' => 'main_nav' ) ); ?>
          </nav>
          <div id="contact-info">
-               <?php foreach($global_config->social_channels as $channel) {
-                  echo '<a title="Follow '.get_bloginfo( 'name' ).' on '.ucwords(str_replace('_', '&nbsp;', $channel)).'" class="'.$channel.'" rel="external" href="'.get_option("social_".$channel).'"></a>';
-               } ?>
+               <?php foreach( $global_config->social_channels as $channel ) { ?>
+                  <a title="Follow '<?php echo get_bloginfo( 'name' ); ?>' on '<?php echo ucwords( str_replace( '_', '&nbsp;', $channel ) ); ?>'" class="'<?php echo $channel; ?>'" rel="external" href="'<?php echo get_option( "social_".$channel ); ?>'">&nbsp;</a>
+               <?php } ?>
          </div>
       </header>
    </div>

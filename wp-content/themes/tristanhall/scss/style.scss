@@ -1,15 +1,21 @@
 @charset "UTF-8";
 
-@import "bourbon", "settings", "normalize", "foundation", "https://fonts.googleapis.com/css?family=News+Cycle:400,700|Raleway:400,700.css";
+@import "bourbon", "settings", "normalize", "foundation", "https://fonts.googleapis.com/css?family=News+Cycle:400,700|Raleway:400,700|Lato:400,700.css";
 
 //Left/Right Classes
 .alignleft {
    float: left;
    text-align: left;
 }
+img.alignleft {
+   margin: 0px 15px 15px 0px;
+}
 .alignright {
    float: right;
    text-align: right;
+}
+img.alignright {
+   margin: 0px 0px 15px 15px;
 }
 .aligncenter {
    margin: 0 auto;
@@ -25,7 +31,7 @@
    color: $white;
    background: $green;
    text-transform: uppercase;
-   font-weight: 700;
+   font-weight: 700 !important;
    border-radius: 3px;
    border: 0px;
    &:hover, &:active {
@@ -57,67 +63,97 @@ header, #wrapper, footer {
 }
 
 #wrapper {
-   padding-top: 120px;
-   body.home & {
-      padding-top: 100px;
-   }
+   padding-top: 100px;
 }
 
 header {
    height: 100px;
 }
+
 #contentWrapper {
    @include grid-row();
+   overflow: hidden;
    body.home & {
       max-width: 100%;
    }
-}
-body.internal {
+   body.internal & {
+      padding-top: 20px;
+   }
    #content {
-     @include grid-column(9);
+      .wp-caption {
+         max-width: 100%;
+      }
+      body.internal & {
+         @include grid-column(9);
+      }
+      article {
+         @include grid-column(12);
+         padding: 0px;
+         .read-more {
+            text-align: right;
+            margin-bottom: 0px;
+            .read-more-link {
+               @extend .button;
+               @extend .button.secondary;
+               margin-bottom: 0px;
+            }
+         }
+         header {
+            height: auto;
+            h2 {
+               font-size: 30px;
+            }
+         }
+         footer {
+            height: auto;
+            .entry-meta {
+               text-align: right;
+               border-top: 1px solid #efefef;
+               margin-top: 15px;
+               padding-top: 5px;
+               font-size: 13px;
+               font-style: italic;
+               font-family: $raleway;
+               a {
+                  color: $gray;
+               }
+               span {
+                  display: inline-block;
+                  padding: 0px 5px;
+                  &.author {
+                     border-left: 1px solid #efefef;
+                     border-right: 1px solid #efefef;
+                  }
+               }
+            }
+         }
+      }
    }
    #sidebar {
       @include grid-column(3);
    }
 }
+
 footer {
    height: 135px;
 }
 
 
 h1 {
-   font-size: 36px;
-   font-family: $raleway;
-   text-transform: uppercase;
-   font-weight: 700;
-   width: 100%;
-   float: left;
-   line-height: 36px;
+   @include grid-column(12);
+   padding: 0px;
 }
-h2 {
-   font-size: 32px;
-   font-family: $raleway;
+h1, h2, h3, h4, h5, h6 {
+   a {
+      color: $header-font-color;
+      @include transition(color 150ms linear);
+      &:hover {
+         color: lighten($header-font-color, 10%);
+      }
+   }
 }
-h3 {
-   font-size: 28px;
-   color: $green;
-   font-family: $raleway;
-}
-h4 {
-   font-size: 24px;
-   font-family: $raleway;
-}
-h5 {
-   font-size: 20px;
-   font-family: $raleway;
-}
-h6 {
-   font-size: 16px;
-   font-family: $raleway;
-}
+
 p {
-   font-family: $news-cycle;
-   margin-bottom: 1.4em;
    &#breadcrumbs {
       @include grid-column(12);
       font-size: 14px;
@@ -125,8 +161,9 @@ p {
       text-transform: uppercase;
       margin-bottom: 15px;
       padding-left: 0px;
+      color: $red;
       a {
-         color: $purple;
+         color: $red;
       }
       span {
          color: $gray;
@@ -145,11 +182,24 @@ p {
    position: fixed;
 }
 
+//Logo styles
+#logo {
+   @include grid-column(2);
+   a {
+      width: 100%;
+      display: block;
+      height: 100%;
+      img {
+         padding: 10px;
+         height: 100px;
+      }
+   }
+}
+
 //Header Nav Styles
 nav#main-nav {
-   position: relative;
+   @include grid-column(10);
    height: 100px;
-   width: 100%;
    ul {
       list-style-type: none;
       margin-top: 0px;
@@ -306,7 +356,7 @@ body.home {
                   background: transparent;
                   border: 0px;
                   color: #9a0000;
-                  font-family: $news-cycle;
+                  font-family: $lato;
                   font-size: 13px;
                   text-transform: uppercase;
                   padding: 0px;
@@ -364,7 +414,7 @@ body.home {
                   @include grid-column(12);
                   float:left;
                   @include alert(#B30000);
-                  font-family:$news-cycle;
+                  font-family:$lato;
                   font-size:12px;
                   text-transform:uppercase;
                   &.wpcf7-display-none {
@@ -381,11 +431,11 @@ body.home {
          .panelContent {
             @include grid-column(12);
             float:none;
-            max-width:1000px;
-            margin:0 auto;
-            text-align:center;
-            margin-top:60px;
-            margin-bottom:30px;
+            max-width: 1000px;
+            margin: 0 auto;
+            text-align: center;
+            margin-top: 60px;
+            margin-bottom: 30px;
             h1, h2, p {
                color:#fff;
                text-transform:uppercase;
@@ -394,7 +444,7 @@ body.home {
                font-weight:700;
             }
             p {
-               @include grid-column(6);
+               @include grid-column(7);
                float: none;
                margin: 0 auto;
                margin-bottom: 15px;
@@ -412,40 +462,32 @@ body.home {
 body.page {
    #content {
       padding: 10px 15px;
-      padding-bottom:30px;
-      h1 {
-         width: 100%;
-         float: left;
-         font-family: $raleway;
-         text-transform: uppercase;
-         font-weight: bold;
-         color: $purple;
-      }
+      padding-bottom: 30px;
    }
 }
 
 //Portfolio Page Styles
-body.post-type-archive-th-portfolio {
+body.page-template-th-portfolio-archive-php {
    ul#portfolioFilter {
       @include grid-column(12);
-      list-style-type:none;
-      text-align:left;
+      list-style-type: none;
+      text-align: left;
       width:100%;
-      margin:10px 0px 20px;
-      height:40px;
+      margin-bottom: 10px;
+      margin-left: 0px;
+      margin-top: 5px;
+      padding: 0px;
       li {
-         border-radius:3px;
-         -moz-border-radius:3px;
-         -webkit-border-radius:3px;
-         display:block;
-         float:left;
-         margin-right:10px;
+         display: block;
+         margin-right: 10px;
          background: $red;
-         color:#fff;
-         font-family:$raleway;
-         font-weight:700;
-         text-transform:uppercase;
-         padding:5px 10px;
+         color: #fff;
+         font-family: $raleway;
+         font-weight: 700;
+         text-transform: uppercase;
+         padding: 5px 10px;
+         width: 100%;
+         margin-bottom: 5px;
          @include transition(background 450ms linear);
          &:hover, &.active {
             cursor:pointer;
@@ -464,11 +506,11 @@ body.post-type-archive-th-portfolio {
       figure {
          opacity:0;
          filter:alpha(opacity=0);
-         @include grid-column(4);
-         width:32%;
+         @include grid-column(6);
+         width: 49%;
          display:none;
          height:230px;
-         margin-right:10px;
+         margin-right: 1%;
          padding:0px;
          margin-bottom: 10px;
          &:hover {
@@ -504,8 +546,8 @@ body.post-type-archive-th-portfolio {
          }
          div.portfolio-desc {
             display: block;
-            background-color:$red;
-            color:#fff;
+            background-color: #fff;//$red;
+            color: $purple;
             -webkit-backface-visibility: hidden;
             -moz-backface-visibility: hidden;
             width:100%;
@@ -518,17 +560,17 @@ body.post-type-archive-th-portfolio {
             transform: rotateY(-180deg);
             padding:10px;
             h3 {
-               color:#fff;
+               color: $purple;
                font-weight:bold;
                text-transform:uppercase;
                font-size:20px;
                a {
-                  color:#fff;
+                  color: $purple;
                }
             }
             .excerpt {
-               color: #fff;
-               font-family: $news-cycle;
+               color: $purple;
+               font-family: $lato;
             }
             .read-more {
                font-weight: 700 !important;
@@ -544,9 +586,9 @@ body.single-th-portfolio {
    #content {
       @include grid-column(9);
       padding-top: 15px;
-      ul.clearing-thumbs {
+      .clearing-thumbs {
          margin-bottom: 10px;
-         li {
+         .gallery-item {
             margin-bottom: 5px;
             width: 18%;
             &:first-child {
@@ -570,6 +612,16 @@ body.single-th-portfolio {
       }
    }
 }
+
+//Single Posts
+body.single {
+   article {
+      footer {
+         display: none;
+      }
+   }
+}
+
 //Contact Page
 body.page-id-9 {
    div.wpcf7 {
@@ -578,7 +630,7 @@ body.page-id-9 {
       margin-bottom: 30px;
       span.wpcf7-not-valid-tip {
          @include alert(#B30000);
-         font-family: $news-cycle;
+         font-family: $lato;
          font-size: 13px;
          text-transform: uppercase;
          padding: 0 12px;
@@ -635,7 +687,7 @@ body.page-id-9 {
          @include grid-column(12);
          @include alert(#B30000);
          float: left;
-         font-family: $news-cycle;
+         font-family: $lato;
          font-size: 12px;
          text-transform: uppercase;
          &.wpcf7-display-none {
@@ -704,24 +756,41 @@ html.firefox {
 //Sidebar styles
 #sidebar {
    @include grid-column(3);
-   > ul {
-      list-style-type: none;
-      margin-left: 0px;
-      li {
-         margin-bottom: 20px;
-         h3.widget-title {
-            font-weight: 700;
-            text-transform: uppercase;
-            font-size: 21px;
-            margin-bottom: 0px;
-         }
+   background: #fafafa;
+   padding: 10px 20px;
+   &:before {
+      position: absolute;
+      left: 0px;
+      top: -20px;
+      height: 20px;
+      content: " ";
+      background: #fafafa;
+      display: block;
+      width: 100%;
+   }
+   &:after {
+      position: absolute;
+      left: 0px;
+      bottom: -100%;
+      height: 100%;
+      content: " ";
+      background: #fafafa;
+      display: block;
+      width: 100%;
+   }
+   div {
+      margin-bottom: 20px;
+      h3.widget-title {
+         font-weight: 700;
+         font-size: 22px;
+         margin-bottom: 0px;
       }
    }
    blockquote {
       border-left: 0px;
       padding-left: 0px;
       margin-bottom: 15px;
-      font-family: $news-cycle;
+      font-family: $lato;
       font-weight: bold;
       color: $gray;
       cite {
@@ -732,188 +801,4 @@ html.firefox {
    }
 }
 
-@media only screen and (max-width: 1000px) {
-   #headerWrapper {
-      background: transparent;
-   }
-   nav#main-nav {
-      ul {
-         @include grid-column(9);
-         text-align: center;
-         background: transparent !important;
-         padding: 0px;
-         margin-left: 0px;
-         &:after {
-            display: none;
-         }
-      }
-      li {
-         float: none !important;
-         display: inline-block !important;
-         &:first-child {
-            margin-left: 0px !important;
-         }
-         & + li + li {
-            margin-left: 0px !important;
-         }
-      }
-   }
-}
-@media only screen and (max-width:789px) {
-   #headerWrapper {
-      display: none;
-   }
-   nav#mobile-nav {
-      display: block;
-      position: fixed;
-      width: 100%;
-      z-index: 999;
-      background: $white;
-      ul.title-area {
-         li.name {
-            a {
-               height: 40px;
-               width: auto;
-               left: 5px;
-               top: 2.5px;
-               position: relative;
-               display: block;
-               background-image: url('../images/logo.png');
-               background-size: 40px 40px;
-               background-repeat: no-repeat;
-               padding-left: 45px;
-               padding-top: 6px;
-               font-size: 20px;
-               text-transform: uppercase;
-               font-family: $raleway;
-               font-weight: 700;
-               letter-spacing: 1px;
-               color: $red;
-            }
-         }
-      }
-      .top-bar-section ul li > a {
-         font-family: $raleway;
-         text-transform: uppercase;
-         font-weight: 700;
-      }
-      .toggle-topbar.menu-icon a {
-         color:$red;
-         &:after {
-            -webkit-box-shadow: 0 10px 0 1px $red, 0 16px 0 1px $red, 0 22px 0 1px $red;
-            box-shadow: 0 10px 0 1px $red, 0 16px 0 1px $red, 0 22px 0 1px $red;
-         }
-      }
-      &.expanded {
-         ul.title-area {
-            li.name {
-               a {
-                  background-image: url('../images/logo-light.png') !important;
-                  color: $white !important;
-               }
-            }
-         }
-         .toggle-topbar.menu-icon a {
-            &:after {
-               -webkit-box-shadow: 0 10px 0 1px $white, 0 16px 0 1px $white, 0 22px 0 1px $white !important;
-               box-shadow: 0 10px 0 1px $white, 0 16px 0 1px $white, 0 22px 0 1px $white !important;
-            }
-         }
-      }
-   }
-   #wrapper {
-      padding-top: 45px;
-   }
-   #footerWrapper {
-      footer {
-         nav#footer-nav {
-            display: none;
-         }
-         #copyright {
-            @include grid-column(12);
-         }
-      }
-   }
-   body.home {
-      #content {
-         .panel {
-            .panelContent {
-               max-width: 100% !important;
-               margin-top: 20px;
-               padding: 0px;
-               h1, p {
-                  @include grid-column(12);
-                  width: 100% !important;
-               }
-               h1, h2 {
-                  font-size: 28px;
-               }
-               p {
-                  font-size: 14px;
-               }
-               .button {
-                  width: 90% !important;
-               }
-            }
-            &#panel-4 {
-               div.wpcf7 {
-                  width:100% !important;
-                  .hideOnSubmit.half {
-                     width:100% !important;
-                     label span.required {
-                        display:block;
-                     }
-                  }
-                  .button {
-                     width: 100% !important;
-                     clear:both;
-                     margin-bottom: 10px;
-                  }
-               }
-            }
-         }
-      }
-   }
-   body.page-template-archive-th_portfolio-php {
-      div.portfolio-entries {
-         figure {
-            @include grid-column(12);
-            display: block;
-            min-height: 250px;
-            height: auto;
-            &:hover {
-               figcaption {
-                  -webkit-transform: rotateY(0deg) !important;
-                  -moz-transform: rotateY(0deg) !important;
-                  transform: rotateY(0deg) !important;
-               }
-            }
-            .portfolio-desc {
-               position: relative !important;
-               -webkit-transform: rotateY(0deg) !important;
-               -moz-transform: rotateY(0deg) !important;
-               transform: rotateY(0deg) !important;
-            }
-            a.portfolio-link {
-               display: none !important;;
-            }
-         }
-      }
-   }
-   body.page-id-9 {
-      div.wpcf7 {
-         width: 100% !important;
-      }
-   }
-   body.single-th-portfolio {
-      #content {
-         width: 100%;
-         ul.clearing-thumbs li {
-            width: 45% !important;
-         }
-      }
-      #sidebar {
-         width: 100%;
-      }
-   }
-}
+@import "mobile";

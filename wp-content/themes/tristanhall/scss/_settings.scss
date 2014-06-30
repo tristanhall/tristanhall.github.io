@@ -12,9 +12,15 @@ $purple: #5C4B51;
 //Typography
 $news-cycle: 'News Cycle', sans-serif;
 $raleway: 'Raleway', sans-serif;
+$lato: 'Lato', sans-serif;
 
+$header-font-family: $raleway;
+$header-font-weight: 700;
 $header-font-color: $purple;
+$header-line-height: 1.2em;
+$header-bottom-margin: .2em;
 $paragraph-font-color: $purple;
+$paragraph-font-family: $lato;
 
 //Mixins!
 @mixin gradient($start, $end) {

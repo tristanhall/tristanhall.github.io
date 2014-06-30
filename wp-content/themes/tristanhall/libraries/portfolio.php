@@ -36,7 +36,7 @@ function create_post_type() {
          ),
          'menu_icon' => 'dashicons-images-alt',
          'public' => true,
-         'has_archive'   => true
+         'has_archive'   => false
       )
 	);
    set_post_thumbnail_size( 270, 170, true );
@@ -65,24 +65,49 @@ function portfolio_taxonomy() {
 add_action( 'init', 'portfolio_taxonomy');
 
 //Redirect portfolio queries to the right template
-function portfolio_redirect() {
+function portfolio_redirect( $template ) {
 	global $wp;
-	global $wp_query;
-   if(!array_key_exists("post_type", $wp->query_vars)) {
-      return;
+   if( !array_key_exists( "post_type", $wp->query_vars ) ) {
+      return $template;
    }
-	if ($wp->query_vars["post_type"] == "portfolio")
-	{
-		// Let's look for the property.php template file in the current theme
-		if (have_posts())
-		{
-			include(__DIR__ . '/../single-th_portfolio.php');
-			die();
-		}
-		else
-		{
-			$wp_query->is_404 = true;
+	if ( $wp->query_vars["post_type"] == "portfolio" ) {
+		// Let's look for the single-th-portfolio.php template file in the current theme
+		if ( have_posts() ) {
+			$template = __DIR__ . '/../single-th-portfolio.php';
 		}
 	}
+   return $template;
 }
-//add_action( "template_redirect", 'portfolio_redirect' );
+add_filter( 'template_include', 'portfolio_redirect' );
+
+function filter_list_shortcode() {
+   $taxonomy = 'portfolio_categories';
+   $tax_terms = get_terms( $taxonomy );
+   $html = '<ul id="portfolioFilter">';
+   $html .= '<li class="filter active" data-filter="mix">All</li>';
+   foreach( $tax_terms as $tax_term ) {
+      $html .= '<li class="filter" data-filter="'.$tax_term->name.'">'.$tax_term->name.'</li>';
+   }
+   $html .= '</ul>';
+   return $html;
+}
+
+add_shortcode( 'portfolio_filter', 'filter_list_shortcode' );
+add_filter( 'widget_text', 'do_shortcode' );
+
+add_filter( 'wpseo_breadcrumb_links', 'portfolio_yoast_breadcrumbs' );
+
+function portfolio_yoast_breadcrumbs( $links ) {
+    global $post;
+    if ( $post->post_type == 'th-portfolio' ) {
+       $page = get_page_by_path( 'portfolio' );
+        $breadcrumb[] = array(
+            'url' => get_permalink( $page->ID ),
+            'text' => 'Portfolio',
+        );
+
+        array_splice( $links, 1, -2, $breadcrumb );
+    }
+
+    return $links;
+}

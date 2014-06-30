@@ -187,7 +187,7 @@ jQuery(document).ready(function($) {
       if(typeof _gaq !== 'undefined') {
          _gaq.push(['_trackEvent', 'Homepage Button', '#panel-4', 'Click']);
       }
-      $("html, body").animate({ scrollTop: $('#panel-4').offset().top }, 650);
+      $("html, body").animate({ scrollTop: $('#panel-4').offset().top - 80 }, 650);
       if(nextPanel === '#panel-4') {
          $('input#yourName').focus();
       }

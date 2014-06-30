@@ -1,0 +1,254 @@
+@media only screen and (min-width: 790px) and (max-width: 860px) {
+   #content {
+      width: 100% !important;
+      img.wp-image-34 {
+         width: 35%;
+      }
+   }
+   #sidebar {
+      width: 100% !important;
+      .widget {
+         @include grid-column(3);
+      }
+   }
+}
+@media only screen and (min-width: 641px) and (max-width: 790px) {
+   #headerWrapper {
+      display: block !important;
+      height: 70px;
+      header {
+         height: 70px;
+         #logo {
+            a {
+               img {
+                  height: 70px;
+               }
+            }
+         }
+         nav#main-nav {
+            height: 70px;
+            padding-right: 0px;
+            #main_nav {
+               margin-bottom: 0px;
+               li {
+                  a {
+                     line-height: 70px;
+                     padding: 0 10px;
+                  }
+                  &:first-child {
+                     margin-left: 0px;
+                  }
+               }
+            }
+         }
+      }
+   }
+   #wrapper {
+      padding-top: 60px !important;
+   }
+   #content {
+      width: 100% !important;
+      img.wp-image-34 {
+         width: 35%;
+      }
+   }
+   #sidebar {
+      width: 100% !important;
+      .widget {
+         @include grid-column(6);
+      }
+   }
+}
+@media only screen and (max-width: 789px) {
+   #headerWrapper {
+      display: none;
+   }
+   nav#mobile-nav {
+      display: block;
+      position: fixed;
+      width: 100%;
+      z-index: 999;
+      background: #fff;
+      ul.title-area {
+         background: $red;
+         li.name {
+            a {
+               height: 40px;
+               width: auto;
+               left: 5px;
+               top: 2.5px;
+               position: relative;
+               display: inline-block;
+               background-image: url('../images/logo-white.png');
+               background-size: 40px 40px;
+               background-repeat: no-repeat;
+               padding-left: 45px;
+               padding-top: 6px;
+               font-size: 20px;
+               text-transform: uppercase;
+               font-family: $raleway;
+               font-weight: 700;
+               letter-spacing: 1px;
+               color: #fff;
+            }
+         }
+      }
+      .top-bar-section ul li > a {
+         font-family: $raleway;
+         text-transform: uppercase;
+         font-weight: 700;
+      }
+      .toggle-topbar.menu-icon a {
+         color: #fff;
+         &:after {
+            -webkit-box-shadow: 0 10px 0 1px #fff, 0 16px 0 1px #fff, 0 22px 0 1px #fff;
+            box-shadow: 0 10px 0 1px #fff, 0 16px 0 1px #fff, 0 22px 0 1px #fff;
+         }
+      }
+      #mobile_nav {
+         background: #fff;
+         li {
+            a {
+               background: #fff;
+               color: $red;
+            }
+            &.current-menu-item, &.current-menu-ancestor {
+               a {
+                  background: $red;
+                  color: #fff;
+               }
+            }
+         }
+      }
+      &.expanded {
+         ul.title-area {
+            background: #fff;
+            li.name {
+               a {
+                  background-image: url('../images/logo.png') !important;
+                  background-size: 40px;
+                  color: $red !important;
+               }
+            }
+         }
+         .toggle-topbar.menu-icon a {
+            &:after {
+               -webkit-box-shadow: 0 10px 0 1px $red, 0 16px 0 1px $red, 0 22px 0 1px $red !important;
+               box-shadow: 0 10px 0 1px $red, 0 16px 0 1px $red, 0 22px 0 1px $red !important;
+            }
+         }
+      }
+   }
+   #wrapper {
+      padding-top: 45px;
+      #content {
+         width: 100% !important;
+         img.wp-image-34 {
+            width: 35%;
+         }
+      }
+      #sidebar {
+         width: 100% !important;
+         .widget {
+            width: 100%;
+         }
+      }
+   }
+   #footerWrapper {
+      footer {
+         nav#footer-nav {
+            display: none;
+         }
+         #copyright {
+            @include grid-column(12);
+         }
+      }
+   }
+   body.home {
+      #content {
+         .panel {
+            .panelContent {
+               max-width: 100% !important;
+               margin-top: 20px;
+               padding: 0px;
+               h1, p {
+                  @include grid-column(12);
+                  width: 100% !important;
+               }
+               h1, h2 {
+                  font-size: 28px;
+               }
+               p {
+                  font-size: 14px;
+               }
+               .button {
+                  width: 90% !important;
+               }
+            }
+            &#panel-4 {
+               div.wpcf7 {
+                  width:100% !important;
+                  .hideOnSubmit.half {
+                     width:100% !important;
+                     label span.required {
+                        display:block;
+                     }
+                  }
+                  .button {
+                     width: 100% !important;
+                     clear:both;
+                     margin-bottom: 10px;
+                  }
+               }
+            }
+         }
+      }
+   }
+   body.page-template-th-portfolio-archive-php {
+      div.portfolio-entries {
+         figure {
+            @include grid-column(12);
+            display: block;
+            min-height: 250px;
+            height: auto;
+            &:hover {
+               figcaption {
+                  -webkit-transform: rotateY(0deg) !important;
+                  -moz-transform: rotateY(0deg) !important;
+                  transform: rotateY(0deg) !important;
+               }
+            }
+            .portfolio-desc {
+               position: relative !important;
+               -webkit-transform: rotateY(0deg) !important;
+               -moz-transform: rotateY(0deg) !important;
+               transform: rotateY(0deg) !important;
+            }
+            a.portfolio-link {
+               float: left;
+               width: 25%;
+               height: auto;
+               margin-right: 15px;
+               margin-top: 18px;
+               margin-left: 10px;
+            }
+         }
+      }
+   }
+   body.page-id-9 {
+      div.wpcf7 {
+         width: 100% !important;
+      }
+   }
+   body.single-th-portfolio {
+      #content {
+         width: 100%;
+         ul.clearing-thumbs li {
+            width: 45% !important;
+         }
+      }
+      #sidebar {
+         width: 100%;
+      }
+   }
+}
