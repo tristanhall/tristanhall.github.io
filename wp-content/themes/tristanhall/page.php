@@ -16,15 +16,6 @@ get_header(); ?>
    <section itemprop="text">
       <?php the_content(); ?>
    </section>
-   <footer>
-      <p class="entry-meta">
-         <span class="categories"><?php echo get_the_category_list( ',', '' ); ?></span>
-         <span class="author">
-            <a href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>" title="Read more posts by <?php the_author_meta( 'display_name' ); ?>"><?php the_author_meta( 'display_name' ); ?></a>
-         </span>
-         <span class="date"><?php echo get_the_date( 'F j, Y' ); ?></span>
-      </p>
-   </footer>
 </article>
 </div>
 <?php

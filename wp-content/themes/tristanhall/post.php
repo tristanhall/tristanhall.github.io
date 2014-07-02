@@ -4,8 +4,11 @@
          <a href="<?php the_permalink(); ?>" title="Read more of <?php the_title(); ?>"><?php the_title(); ?></a>
       </h2>
    </header>
-   <section itemprop="text">
+   <section class="entry-content" itemprop="text">
       <?php the_content(); ?>
+   </section>
+   <section class="entry-comments">
+      <?php comments_template( '', true ); ?>
    </section>
    <footer>
       <p class="entry-meta">

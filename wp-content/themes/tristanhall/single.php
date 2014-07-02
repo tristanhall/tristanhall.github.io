@@ -9,12 +9,13 @@ get_header(); ?>
    <h1 itemprop="name" class="entry-title">
       <a href="<?php the_permalink(); ?>" title="Read more of <?php the_title(); ?>"><?php the_title(); ?></a>
    </h1>
-   <?php if ( function_exists('yoast_breadcrumb') ) {
-      yoast_breadcrumb('<p id="breadcrumbs">','</p>');
-   } ?>
+   <?php get_template_part( 'breadcrumbs' ); ?>
 <article itemscope itemtype="http://schema.org/BlogPosting" <?php post_class(); ?> id="post-<?php the_ID(); ?>">
    <section itemprop="text">
       <?php the_content(); ?>
+   </section>
+   <section class="entry-comments">
+      <?php comments_template( '', true ); ?>
    </section>
    <footer>
       <p class="entry-meta">

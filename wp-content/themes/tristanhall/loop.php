@@ -6,8 +6,6 @@ if (have_posts()):
    endwhile;
 else:
    echo '<h1 class="page-title">No Results Found</h1>';
-   if ( function_exists('yoast_breadcrumb') ) {
-      yoast_breadcrumb('<p id="breadcrumbs">','</p>');
-   }
+   get_template_part( 'breadcrumbs' );
    echo '<div class="post-content"><p>'._e('Sorry, no posts matched your criteria.').'</p></div>';
 endif;

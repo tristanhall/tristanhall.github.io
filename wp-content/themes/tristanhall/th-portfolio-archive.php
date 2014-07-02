@@ -10,9 +10,7 @@ $tax_terms = get_terms( $taxonomy );
 $args = array( 'post_type' => 'th-portfolio', 'posts_per_page' => -1, 'order' => 'ASC', 'orderby' => 'date' );
 echo '<div id="content">';
 echo '<h1>Portfolio</h1>';
-if ( function_exists( 'yoast_breadcrumb' ) ) {
-   yoast_breadcrumb( '<p id="breadcrumbs">', '</p>' );
-}
+get_template_part( 'breadcrumbs' );
 $tmp_query = $wp_query;
 $wp_query = new WP_Query( $args );
 if( $wp_query->have_posts() ) {

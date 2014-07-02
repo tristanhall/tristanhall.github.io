@@ -1,5 +1,6 @@
 <div id='content'>
    <h1 class="post-title">Search Results</h1>
+   <?php get_template_part( 'breadcrumbs' ); ?>
 <?php
 /**
  * Author: Tristan Hall

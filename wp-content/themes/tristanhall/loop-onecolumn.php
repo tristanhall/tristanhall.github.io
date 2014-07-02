@@ -8,9 +8,7 @@ if (have_posts()):
          the_title();
       endif;
       echo '</h1>';
-      if ( function_exists('yoast_breadcrumb') ) {
-         yoast_breadcrumb('<p id="breadcrumbs">','</p>');
-      }
+      get_template_part( 'breadcrumbs' );
       echo '<div class="post-content">';
       the_content();
       echo '</div>';
