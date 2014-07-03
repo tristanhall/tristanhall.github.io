@@ -32,31 +32,6 @@ class UI {
       return $output;
    }
    /**
-    * Creates the headers and footers and opening markup for a table up to <tbody>.
-    * @param array $headers
-    * @param array $attr
-    * @return string
-    */
-   public static function openTable($headers = array(), $attr = array()) {
-      $output = '<table '.self::cattr($attr).'><thead><tr>';
-      foreach($headers as $val) {
-         $output .= '<td>'.$val.'</td>';
-      }
-      $output .= '</tr></tead><tfoot><tr>';
-      foreach($headers as $val) {
-         $output .= '<td>'.$val.'</td>';
-      }
-      $output .= '</tr></tfoot><tbody>';
-      return $output;
-   }
-   /**
-    * Outputs the closing tags for the open <tbody> and <table> elements.
-    * @return string
-    */
-   public static function closeTable() {
-      return '</tbody></table>';
-   }
-   /**
     * Creates a 1 column div
     * @param array $atts
     * @param string $content
