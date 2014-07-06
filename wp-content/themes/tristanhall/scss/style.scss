@@ -728,7 +728,7 @@ body.page-template-login-php {
 }
 
 //Invoice page
-body.page-id-70 {
+body.invoice {
    .text-input {
       &.small {
          width: 52px !important;
@@ -743,6 +743,25 @@ body.page-id-70 {
    }
    #sidebar {
       display: none;
+   }
+   #contentWrapper {
+      #content {
+         width: 100%;
+         .wpi_invoice_form {
+            @include grid-row();
+            .wpi_left_col {
+               @include grid-column(8);
+               margin-right: 0px;
+               padding-left: 0px;
+               padding-right: 30px;
+            }
+            .wpi_right_col {
+               @include grid-column(4);
+               margin-right: 0px;
+               padding-right: 0px;
+            }
+         }
+      }
    }
 }
 

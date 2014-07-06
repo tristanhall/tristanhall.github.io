@@ -10,6 +10,9 @@ if( is_front_page() ) {
 } else {
    $global_config->bodyClass .= ' internal';
 }
+if( is_page( 'invoices' ) ) {
+   $global_config->bodyClass .= ' invoice';
+}
 ?>
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="ie8"><![endif]-->
