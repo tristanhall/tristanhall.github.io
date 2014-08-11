@@ -28,7 +28,7 @@ class DBCredentials extends WMController {
     * @return boolean
     */
    public static function create_or_update( &$response ) {
-      if( !$this->verify_nonce( 'db', 'Failed to authorize database credential save.' ) ) {
+      if( !self::verify_nonce( 'db', 'Failed to authorize database credential save.' ) ) {
          $response['status'] = 'no_auth';
          return false;
       }
