@@ -1,0 +1,186 @@
+@import "bourbon/bourbon", "neat/neat", "base/base", "refills/switch", "https://fonts.googleapis.com/css?family=Advent+Pro:400,700|Oxygen:400,700.css";
+
+$advent : 'Advent Pro', sans-serif;
+$oxygen : 'Oxygen', sans-serif;
+$blue : #4A789C;
+$orange : #F4BA70;
+$red : #E96D63;
+$green : #7FCA9F;
+
+html,
+body {
+   background: #fcfefd;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+   font-family: $advent;
+   font-weight: 700;
+   margin-top: 10px;
+   margin-bottom: 5px;
+}
+
+#wrapper {
+   @include outer-container;
+   font-family: $oxygen;
+   color: #525252;
+   #content {
+      @include row();
+      h1 {
+         @include span-columns(12);
+         text-align: center;
+         font-size: 36px;
+      }
+      .step {
+         @include span-columns(12);
+         background: whitesmoke;
+         padding: 15px;
+         border-radius: 2px;
+         margin-bottom: 20px;
+         label, textarea {
+            @include span-columns(12);
+         }
+         label.label-switch {
+            float: right;
+            width: 250px !important;
+            line-height: 32px;
+            top: 15px;
+            text-align: right;
+            .checkbox {
+               width: 42px !important;
+               height: 22px;
+               display: inline-block;
+               margin-left: 10px;
+               top: 5px;
+               float: right;
+               &:before {
+                  height: 18px;
+                  width: 38px;
+               }
+               &:after {
+                  height: 18px;
+                  width: 18px;
+               }
+            }
+         }
+         textarea {
+            min-height: 150px;
+            font-family: Courier, sans-serif;
+            border-radius: 2px;
+            border: 1px solid $blue;
+            padding: 10px;
+            line-height: 14px;
+            font-size: 14px;
+            max-width: 100%;
+            &:focus {
+               outline: 0px;
+               box-shadow: 0px 0px 3px $blue;
+            }
+         }
+         .stepheading {
+            @include span-columns(12);
+            h2 {
+               float: left;
+            }
+         }
+         &#step1 {
+            .sources, .destinations {
+               @include span-columns(6);
+            }
+         }
+         &#step2 {
+            .list-container {
+               @include span-columns(6);
+            }
+            ul {
+               list-style-type: none;
+               margin: 0px;
+               padding: 0px;
+               width: 100%;
+               li {
+                  background: $green;
+                  color: #fff;
+                  padding-left: 10px;
+                  padding-top: 5px;
+                  padding-bottom: 5px;
+                  cursor: pointer;
+                  margin-bottom: 5px;
+                  border-radius: 2px;
+                  width: 100%;
+                  @include transition(opacity 100ms linear);
+                  &.ui-draggable-dragging {
+                     opacity: 0.8;
+                  }
+               }
+            }
+         }
+         &#step3 {
+            button {
+               display: none;
+               float: right;
+               border: 0px;
+               background: $red;
+               padding: 5px 15px;
+               border-radius: 3px;
+               color: #fff;
+               cursor: pointer;
+               font-size: 16px;
+               @include transition(background 100ms linear);
+               &:hover {
+                  background: darken($red, 5%);
+                  outline: 0;
+               }
+               &:active {
+                  background: darken($red, 15%);
+                  outline: 0;
+               }
+               &:focus {
+                  outline: 0;
+               }
+            }
+            [data-clipboard-text] {
+               display: inline-block;
+               border-bottom: 1px dotted $blue;
+               position: relative;
+               @include transition(border 250ms linear);
+               cursor: pointer;
+               &:hover {
+                  border-bottom-color: #343434;
+               }
+               &:active {
+                  color: #343434;
+               }
+            }
+            pre {
+               color: $blue;
+               @include span-columns(10);
+               &#redirects {
+                  display: none;
+               }
+            }
+         }
+      }
+      #copyright {
+         @include span-columns(12);
+         p {
+            color: #333;
+            text-align: center;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            a {
+               color: $orange;
+               text-decoration: none;
+               @include transition(color 150ms linear);
+               &:hover {
+                  color: darken($orange, 15%);
+               }
+            }
+         }
+      }
+   }
+}
