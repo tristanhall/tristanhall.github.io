@@ -1,0 +1,14 @@
+.stashbox-ping-fail {
+   display: inline-block;
+   border-radius: 1em;
+   height: 1em;
+   width: 1em;
+   background-color: #f94a32;
+}
+.stashbox-ping-success {
+   display: inline-block;
+   border-radius: 1em;
+   height: 1em;
+   width: 1em;
+   background-color: #00c10d;
+}

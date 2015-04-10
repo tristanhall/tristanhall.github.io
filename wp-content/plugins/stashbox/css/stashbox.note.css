@@ -1,0 +1,43 @@
+#stashbox-note-table blockquote {
+   position: relative;
+}
+#stashbox-note-table blockquote:before {
+   content: '\f122';
+   position: absolute;
+   z-index: 0;
+   color: #f5f5f5;
+   font-size: 46px;
+   left: -20px;
+   top: -20px;
+}
+#stashbox-note-table blockquote p,
+#stashbox-note-table blockquote pre {
+   position: relative;
+}
+#stashbox-note-table blockquote cite {
+   float: right;
+   font-size: 0.85em;
+}
+#stashbox-note-table blockquote cite span,
+#stashbox-note-table blockquote cite .stashbox-note-delete {
+   display: block;
+}
+#stashbox-note-table blockquote cite span {
+   margin-bottom: 4px;
+}
+#stashbox-note-table blockquote cite .stashbox-note-delete {
+   transition: color 250ms linear;
+   color: #aaa;
+   text-decoration: none;
+   border-bottom: 1px dotted;
+}
+#stashbox-note-table blockquote cite .stashbox-note-delete:hover {
+   color: #ff0000;
+}
+#stashbox-note-table blockquote cite .stashbox-note-delete:link,
+#stashbox-note-table blockquote cite .stashbox-note-delete:hover,
+#stashbox-note-table blockquote cite .stashbox-note-delete:focus,
+#stashbox-note-table blockquote cite .stashbox-note-delete:active,
+#stashbox-note-table blockquote cite .stashbox-note-delete:visited {
+   outline: 0;
+}

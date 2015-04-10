@@ -43,7 +43,7 @@ if( is_page( 'invoices' ) ) {
          
    </script>
 </head>
-<body itemscope itemtype="http://schema.org/WebPage" <?php echo 'class="'.body_class( $global_config->bodyClass ).'"'; ?>>
+<body itemscope itemtype="http://schema.org/WebPage" <?php echo body_class( $global_config->bodyClass ) ?>>
    <nav data-topbar class="top-bar show-for-small" id='mobile-nav'>
       <ul class="title-area">
          <li class="name">

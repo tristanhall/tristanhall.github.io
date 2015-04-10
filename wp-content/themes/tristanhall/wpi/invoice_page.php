@@ -3,6 +3,10 @@
     <h3 class="wpi_greeting"><?php echo sprintf(__('Welcome, %s!', WPI), recipients_name(array('return' => true))) ?></h3>
 
     <div class="invoice_description">
+
+    <?php if (show_business_info()) { ?>
+      <?php wp_invoice_show_business_information(); ?>
+    <?php } ?>
       <div class="invoice_top_message">
         <?php if (is_quote()) : ?>
           <p><?php echo sprintf(__('We have sent you a quote in the amount of %s.', WPI), balance_due(array('return' => true))) ?></p>
@@ -36,12 +40,8 @@
   </div>
 
   <div class="wpi_right_col">
-
-    <?php if (show_business_info()) { ?>
-      <?php wp_invoice_show_business_information(); ?>
-    <?php } ?>
-
-    <?php if (!is_quote()) { ?>
+      <h3><?php _e( 'Pay Now', 'tristanhall' ); ?></h3>
+      <?php if (!is_quote()) { ?>
       <div class="wpi_checkout">
         <?php if (allow_partial_payments()): ?>
           <?php show_partial_payments(); ?>
