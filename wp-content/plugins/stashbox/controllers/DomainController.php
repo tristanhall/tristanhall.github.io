@@ -50,7 +50,8 @@ class DomainController {
     */
    public static function filter_stashbox_register_settings( $settings ) {
       $settings['sb_domain_reminders'] = 'boolval';
-      $settings['sb_domain_reminder_distance'] = 'intval';
+      $settings['sb_domain_reminder_distance'] = 'stashbox_sanitize_array';
+      $settings['sb_domain_reminder_count'] = 'intval';
       $settings['sb_domain_reminder_recipient'] = 'sanitize_email';
       return $settings;
    }
@@ -66,6 +67,7 @@ class DomainController {
    public static function filter_stashbox_settings_fields( $field_html ) {
       $tdata = array(
          'domain_reminders'   => self::send_domain_reminders(),
+         'reminder_count'     => self::get_reminder_count(),
          'reminder_distance'  => self::get_reminder_distance(),
          'reminder_recipient' => self::get_reminder_recipient()
       );
@@ -284,18 +286,31 @@ class DomainController {
    
    /**
     * Get the number of weeks ahead of time to warn about an expiring domain.
+    * Specify which reminder you want to retrive the distance for, or returns the entire array of distances.
     * 
     * @access public
     * @static
     * @return integer
     */
-   public static function get_reminder_distance() {
+   public static function get_reminder_distance( $reminder = null ) {
       $reminder_distance = get_option( 'sb_domain_reminder_distance' );
-      $distance = intval( $reminder_distance );
-      if( $distance < 1 ) {
-         return 1;
+      if( !empty( $reminder ) && isset( $reminder_distance[$reminder] ) ) {
+         return $reminder_distance[$reminder];
+      } else {
+         return $reminder_distance;
       }
-      return $distance;
+   }
+   
+   /**
+    * Get the number of reminders to send.
+    * 
+    * @access public
+    * @static
+    * @return integer
+    */
+   public static function get_reminder_count() {
+      $reminder_count = get_option( 'sb_domain_reminder_count' );
+      return intval( $reminder_count );
    }
    
    /**
@@ -363,19 +378,22 @@ class DomainController {
     */
    public static function cron_expiration_reminder() {
       $domains = Domain::get_domain_expirations();
-      $min_distance = self::get_reminder_distance();
+      $distances = self::get_reminder_distance();
       $expiring_soon = array();
       foreach( $domains as $dom ) {
          $m = new Moment( $dom->expiration );
          $momentFromVo = $m->fromNow();
-         $distance = $momentFromVo->getWeeks();
-         //Subtract the time until expiration from the minimum warning window (weeks in advance to send reminders)
-         $diff = $min_distance + $distance;
-         //If the difference is greater than or equal to 0, expiration is closing in and we need to send a reminder.
-         if( $diff >= 0 && $distance < 0 ) {
-            $expiring_soon[] = $dom->ID;
+         foreach( $distances as $min_distance ) {
+            $distance = $momentFromVo->getWeeks();
+            //Subtract the time until expiration from the minimum warning window (weeks in advance to send reminders)
+            $diff = $min_distance + $distance;
+            //If the difference is greater than or equal to 0, expiration is closing in and we need to send a reminder.
+            if( $diff >= 0 && $distance < 0 ) {
+               $expiring_soon[] = $dom->ID;
+            }
          }
       }
+      $expiring_soon = array_unique( $expiring_soon );
       if( !empty( $expiring_soon ) ) {
          self::send_reminder_digest( $expiring_soon );
       }
