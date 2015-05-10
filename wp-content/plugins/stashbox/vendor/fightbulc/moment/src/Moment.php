@@ -7,7 +7,7 @@ namespace Moment;
  * Wrapper for PHP's DateTime class inspired by moment.js
  *
  * @package Moment
- * @author Tino Ehrich (tino@bigpun.me)
+ * @author  Tino Ehrich (tino@bigpun.me)
  */
 class Moment extends \DateTime
 {
@@ -94,7 +94,7 @@ class Moment extends \DateTime
     }
 
     /**
-     * @param null $format
+     * @param null                  $format
      * @param null|FormatsInterface $formatsInterface
      *
      * @return string
@@ -122,8 +122,9 @@ class Moment extends \DateTime
             {
                 foreach ($matches[1] as $part)
                 {
-                    $number = $this->format(substr($part, 0, 1));
-                    $format = str_replace($part, $this->formatOrdinal($number), $format);
+                    $token = substr($part, 0, 1);
+                    $number = $this->format($token);
+                    $format = str_replace($part, $this->formatOrdinal($number, $token), $format);
                 }
             }
         }
@@ -470,8 +471,8 @@ class Moment extends \DateTime
     }
 
     /**
-     * @param int $hour
-     * @param int $minute
+     * @param int  $hour
+     * @param int  $minute
      * @param null $second
      *
      * @return $this|\DateTime
@@ -485,7 +486,7 @@ class Moment extends \DateTime
 
     /**
      * @param string|Moment $fromMoment
-     * @param null $timezoneString
+     * @param null          $timezoneString
      *
      * @return MomentFromVo
      */
@@ -537,7 +538,7 @@ class Moment extends \DateTime
 
     /**
      * @param string $type
-     * @param int $value
+     * @param int    $value
      *
      * @return Moment
      */
@@ -686,43 +687,46 @@ class Moment extends \DateTime
         $diff = $momentFromVo->getDays();
 
         // handle time string
-        $renderedTimeString = MomentLocale::renderLocaleString(array('calendar', 'withTime'));
+        $renderedTimeString = MomentLocale::renderLocaleString(array('calendar', 'withTime'), array($this));
         $addTime = false;
 
         // apply cases
         if ($diff > 7)
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'default'));
+            $localeKeys = array('calendar', 'default');
         }
         elseif ($diff > 1)
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'lastWeek'));
+            $localeKeys = array('calendar', 'lastWeek');
             $addTime = true;
         }
         elseif ($diff > 0)
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'lastDay'));
+            $localeKeys = array('calendar', 'lastDay');
             $addTime = true;
         }
         elseif ($diff == 0)
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'sameDay'));
+            $localeKeys = array('calendar', 'sameDay');
             $addTime = true;
         }
         elseif ($diff == -1)
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'nextDay'));
+            $localeKeys = array('calendar', 'nextDay');
             $addTime = true;
         }
         elseif ($diff > -7)
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'sameElse'));
+            $localeKeys = array('calendar', 'sameElse');
             $addTime = true;
         }
         else
         {
-            $format = MomentLocale::renderLocaleString(array('calendar', 'default'));
+            $localeKeys = array('calendar', 'default');
         }
+
+        // render format
+        $format = MomentLocale::renderLocaleString($localeKeys, array($this));
 
         // add time if valid
         if ($addTime && $withTime === true)
@@ -736,7 +740,7 @@ class Moment extends \DateTime
     /**
      * @param $period
      *
-     * @return $this
+     * @return Moment
      */
     public function startOf($period)
     {
@@ -785,7 +789,7 @@ class Moment extends \DateTime
     /**
      * @param $period
      *
-     * @return $this
+     * @return Moment
      */
     public function endOf($period)
     {
@@ -841,7 +845,7 @@ class Moment extends \DateTime
 
     /**
      * @param array $weekdayNumbers
-     * @param int $forUpcomingWeeks
+     * @param int   $forUpcomingWeeks
      *
      * @return Moment[]
      */
@@ -1002,7 +1006,7 @@ class Moment extends \DateTime
 
     /**
      * @param string $type
-     * @param int $value
+     * @param int    $value
      *
      * @return Moment
      */
@@ -1014,19 +1018,20 @@ class Moment extends \DateTime
     }
 
     /**
-     * @param $number
+     * @param int    $number
+     * @param string $token
      *
      * @return string
      */
-    private function formatOrdinal($number)
+    private function formatOrdinal($number, $token)
     {
-        return (string)call_user_func(MomentLocale::getLocaleString(array('ordinal')), $number);
+        return (string)call_user_func(MomentLocale::getLocaleString(array('ordinal')), $number, $token);
     }
 
     /**
      * Returns copy of Moment normalized to UTC timezone
      *
-     * @return \Moment\Moment
+     * @return Moment
      */
     public function toUTC()
     {
@@ -1037,7 +1042,7 @@ class Moment extends \DateTime
      * Check if a moment is the same as another moment
      *
      * @param string|Moment $dateTime
-     * @param string $period 'seconds|minute|hour|day|month|year'
+     * @param string        $period 'seconds|minute|hour|day|month|year'
      *
      * @return boolean
      */
@@ -1052,7 +1057,7 @@ class Moment extends \DateTime
      * Checks if Moment is before given time
      *
      * @param string|Moment $dateTime
-     * @param string $period 'seconds|minute|hour|day|month|year'
+     * @param string        $period 'seconds|minute|hour|day|month|year'
      *
      * @return boolean
      */

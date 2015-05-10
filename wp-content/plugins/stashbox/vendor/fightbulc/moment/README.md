@@ -28,7 +28,7 @@ Easy install via composer. Still no idea what composer is? Inform yourself [here
 ```json
 {
     "require": {
-        "fightbulc/moment": "1.8.*"
+        "fightbulc/moment": "*"
     }
 }
 ```
@@ -64,8 +64,19 @@ $m = new \Moment\Moment();
 echo $m->format('[Wochentag:] l'); // e.g. Wochentag: Mittwoch 
 ```
 
-Supported languages so far:  
-``de_DE`` ``en_GB`` ``en_US`` ``es_ES`` ``fr_FR`` ``pt_BR`` ``th_TH`` ``it_IT``  
+__Supported languages so far:__
+
+```cs_CZ``` Czech  
+```de_DE``` German (Germany)  
+```en_GB``` English  (British)  
+```en_US``` English  (American)  
+```es_ES``` Spanish (Europe)  
+```fr_FR``` French (Europe)  
+```pt_BR``` Portuguese (Europe)  
+```it_IT``` Italian  
+```th_TH``` Thai  
+```zh_CN``` Chinese  
+```zh_TW``` Traditional Chinese  
 
 -------------------------------------------------
 
@@ -324,6 +335,36 @@ You can now run through the result and put it formatted into a drop-down field o
 -------------------------------------------------
 
 # Changelog
+
+### 1.11.0
+- added:
+    - locale Czech 
+
+### 1.10.4
+- added:
+    - ```calendar``` locale receives as \Closure the following params ```function(Moment $m) {}``` 
+    - ```relativeTime``` locale receives as \Closure the following params ```function($count, $direction, Moment $m) {}``` 
+    
+### 1.10.3
+- added:
+    - fixed passing closures to locale (calendar, relativeTime)
+    - set correct german locale information
+
+### 1.10.2
+- added:
+    - fixed Thai locale strings
+
+### 1.10.1
+- added:
+    - locale traditional Chinese
+
+### 1.10.0
+- added:
+    - locale Chinese
+    - ordinal formatter receives now the ```token``` e.g. the token within ```dS``` is ```d```  
+
+### 1.9.1
+- fixed: english ordinal issue for numbers between 11 - 13
 
 ### 1.9.0
 - added: locale Italian

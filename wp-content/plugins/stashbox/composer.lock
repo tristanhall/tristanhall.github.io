@@ -1,7 +1,7 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
     "hash": "371caad2c416b57f7e4eb90c3b7340bc",
@@ -131,16 +131,16 @@
         },
         {
             "name": "fightbulc/moment",
-            "version": "1.9.0",
+            "version": "1.11.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/fightbulc/moment.php.git",
-                "reference": "81e7aaaed6166f7f63ba186cbb9627d0f0b55279"
+                "reference": "ef0e8fd8cb600699af1fb24e7893bc1d9f76aa80"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fightbulc/moment.php/zipball/81e7aaaed6166f7f63ba186cbb9627d0f0b55279",
-                "reference": "81e7aaaed6166f7f63ba186cbb9627d0f0b55279",
+                "url": "https://api.github.com/repos/fightbulc/moment.php/zipball/ef0e8fd8cb600699af1fb24e7893bc1d9f76aa80",
+                "reference": "ef0e8fd8cb600699af1fb24e7893bc1d9f76aa80",
                 "shasum": ""
             },
             "require": {
@@ -182,12 +182,15 @@
                 "display",
                 "format",
                 "i18n",
+                "locale",
                 "manipulate",
+                "moment",
                 "parse",
                 "time",
+                "translation",
                 "validate"
             ],
-            "time": "2015-04-01 14:00:47"
+            "time": "2015-05-04 09:11:32"
         },
         {
             "name": "filp/whoops",
@@ -323,7 +326,7 @@
         },
         {
             "name": "illuminate/encryption",
-            "version": "v5.0.26",
+            "version": "v5.0.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/encryption.git",
@@ -369,16 +372,16 @@
         },
         {
             "name": "illuminate/support",
-            "version": "v5.0.26",
+            "version": "v5.0.28",
             "source": {
                 "type": "git",
                 "url": "https://github.com/illuminate/support.git",
-                "reference": "29e8618a45d090572e092abf193a257bf28c48d9"
+                "reference": "b6d68e1f2a7053bf4c755c5e6b15fcfb700e14e7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/support/zipball/29e8618a45d090572e092abf193a257bf28c48d9",
-                "reference": "29e8618a45d090572e092abf193a257bf28c48d9",
+                "url": "https://api.github.com/repos/illuminate/support/zipball/b6d68e1f2a7053bf4c755c5e6b15fcfb700e14e7",
+                "reference": "b6d68e1f2a7053bf4c755c5e6b15fcfb700e14e7",
                 "shasum": ""
             },
             "require": {
@@ -417,20 +420,20 @@
             ],
             "description": "The Illuminate Support package.",
             "homepage": "http://laravel.com",
-            "time": "2015-03-27 14:49:11"
+            "time": "2015-04-15 19:26:55"
         },
         {
             "name": "mashape/unirest-php",
-            "version": "v2.5.0",
+            "version": "v2.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Mashape/unirest-php.git",
-                "reference": "ec5828c8aa28bfca19003c095359ef36d1c706ec"
+                "reference": "b0df287d646cf09b05c3bea1c3acd10081fd1894"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Mashape/unirest-php/zipball/ec5828c8aa28bfca19003c095359ef36d1c706ec",
-                "reference": "ec5828c8aa28bfca19003c095359ef36d1c706ec",
+                "url": "https://api.github.com/repos/Mashape/unirest-php/zipball/b0df287d646cf09b05c3bea1c3acd10081fd1894",
+                "reference": "b0df287d646cf09b05c3bea1c3acd10081fd1894",
                 "shasum": ""
             },
             "require": {
@@ -461,7 +464,7 @@
                 "https",
                 "rest"
             ],
-            "time": "2015-04-03 17:08:41"
+            "time": "2015-04-08 21:36:02"
         },
         {
             "name": "symfony/security-core",
