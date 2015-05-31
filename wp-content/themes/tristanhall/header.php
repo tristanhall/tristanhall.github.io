@@ -20,7 +20,6 @@ if( is_page( 'invoices' ) ) {
     <link rel="dns-prefetch" href="//ajax.googleapis.com">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
-    <?php echo HTML::favicon('/favicon.png'); ?>
     <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
