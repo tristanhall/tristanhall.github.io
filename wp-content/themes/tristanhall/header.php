@@ -17,31 +17,28 @@ if( is_page( 'invoices' ) ) {
 <!DOCTYPE html>
 <!--[if lt IE 9]><html class="ie8"><![endif]-->
 <head>
-   <link rel="dns-prefetch" href="//ajax.googleapis.com">
-   <meta name="viewport" content="width=device-width, initial-scale=1">
-   <title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
-      <?php echo HTML::favicon('/favicon.png'); ?>
-   <link rel="profile" href="http://gmpg.org/xfn/11">
-   <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
-      <?php echo HTML::style(get_template_directory_uri().'/css/style.css'); ?>
-      <?php wp_head(); ?>
-   <!--[if lt IE 9]>
-   <script src="<?php echo get_template_directory_uri(); ?>/js/respond.js"></script>
-   <script src="<?php echo get_template_directory_uri(); ?>/js/html5shiv.js"></script>
-   <![endif]-->
-   <script type="text/javascript">
-         
-      var _gaq = _gaq || [];
-      _gaq.push(['_setAccount', 'UA-17578082-1']);
-      _gaq.push(['_trackPageview']);
-         
-      (function() {
-         var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-         ga.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'stats.g.doubleclick.net/dc.js';
-         var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-      })();
-         
-   </script>
+    <link rel="dns-prefetch" href="//ajax.googleapis.com">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title><?php bloginfo('name'); ?> | <?php is_front_page() ? bloginfo('description') : wp_title(''); ?></title>
+    <?php echo HTML::favicon('/favicon.png'); ?>
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+    <link rel="profile" href="http://gmpg.org/xfn/11">
+    <link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>">
+    <?php echo HTML::style(get_template_directory_uri().'/css/style.css'); ?>
+    <?php wp_head(); ?>
+    <!--[if lt IE 9]>
+    <script src="<?php echo get_template_directory_uri(); ?>/js/respond.js"></script>
+    <script src="<?php echo get_template_directory_uri(); ?>/js/html5shiv.js"></script>
+    <![endif]-->
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+        ga('create', 'UA-17578082-1', 'auto');
+        ga('require', 'linkid', 'linkid.js');
+        ga('send', 'pageview');
+    </script>
 </head>
 <body itemscope itemtype="http://schema.org/WebPage" <?php echo body_class( $global_config->bodyClass ) ?>>
    <nav data-topbar class="top-bar show-for-small" id='mobile-nav'>
