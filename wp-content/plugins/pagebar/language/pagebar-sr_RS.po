@@ -1,0 +1,134 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Lutz schroeer <latz@elektroelch.de>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.7\n"
+
+msgid "Options"
+msgstr "Opcije"
+
+msgid "No options"
+msgstr "Brz opcija"
+
+msgid "updated"
+msgstr "updatovano"
+
+msgid "Basic settings"
+msgstr "Osnovne postavke"
+
+msgid "Display"
+msgstr "Prikaži"
+
+msgid "Left"
+msgstr "Levo"
+
+msgid "Center"
+msgstr "Centar"
+
+msgid "Right"
+msgstr "Desno"
+
+msgid "Leading text"
+msgstr "Glavni tekst"
+
+msgid "Standard page"
+msgstr "Standardna stranica"
+
+msgid "Current Page"
+msgstr "Trenutna stranica"
+
+msgid "First page"
+msgstr "Prva stranica"
+
+msgid "Last page"
+msgstr "Poslednja stranica"
+
+msgid "Connector"
+msgstr "Konektor"
+
+msgid "Previous"
+msgstr "Prethodna"
+
+msgid "Next"
+msgstr "Sledeća"
+
+msgid "Tooltips"
+msgstr "Tooltips"
+
+msgid "Text"
+msgstr "Tekst"
+
+msgid "Automagic insertion"
+msgstr "Automatsko ubacivanje"
+
+msgid "Insert postbar automagic into blog"
+msgstr "Unesite postbar automatski u blog"
+
+msgid "Positioning"
+msgstr "Pozicioniranje"
+
+msgid "Front of postings"
+msgstr "Postovanje spreda"
+
+msgid "Behind postings"
+msgstr "Postovanje iza"
+
+msgid "Footer"
+msgstr "Footer"
+
+msgid "Integration"
+msgstr "Integracija"
+
+msgid "Remove standard navigation"
+msgstr "Ukloni standardnu navigaciju"
+
+msgid "Stylesheet"
+msgstr "Stylesheet"
+
+msgid "style.css"
+msgstr "style.css"
+
+msgid "Update Options"
+msgstr "Update opcije"
+
+msgid "Cancel"
+msgstr "Ukini"
+
+msgid "auto"
+msgstr "auto"
+
+msgid "always"
+msgstr "uvek"
+
+msgid "never"
+msgstr "nikada"
+
+msgid "Inherit settings"
+msgstr "nasledjene postavke"
+
+msgid "Inherit basic settings from postbar"
+msgstr "nasledjene osnovne postavke sa post bara"
+
+msgid "All pages link"
+msgstr "Svi linkovi stranica"
+
+msgid "Display 'All Pages' link"
+msgstr "Prikaži SVE STRANICE link"
+
+msgid "All Pages Label"
+msgstr "Oznaka sve stranice"
+
+msgid "All comments link"
+msgstr "Link svi komentari"
+
+msgid "Display 'All Comments' link"
+msgstr "Prikaži SVI KOMENTARI LINK"
+
+msgid "All Comments Label"
+msgstr "Oznaka svi komentari"

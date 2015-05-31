@@ -1,0 +1,39 @@
+.pagebar {
+    clear: both;
+    display: block;
+    margin: 0 0 1.625em;
+    text-align: center;
+}
+.pagebar a, .break, .this-page, .inactive {
+    background: #eee;
+    color: #373737;
+    margin: 0;
+    padding: 4px 6px;
+    text-decoration: none;
+}
+
+.pagebar .this-page {
+    border: transparent;
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+}
+
+.pagebar a:visited {
+    border: 1px solid #9AAFE5;
+    text-decoration: none;
+    background: #eee;
+    color: #373737;
+    margin: 0;
+}
+
+.pagebar a:hover {
+    background: #888;
+    color: #fff;
+        /*font-weight: bold;*/
+}
+
+.pagebar .inactive
+{
+    color: #ccc;
+}

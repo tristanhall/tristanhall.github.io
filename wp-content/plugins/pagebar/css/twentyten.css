@@ -1,0 +1,49 @@
+.pagebar {
+    clear: both;
+    color: #000;
+    font-weight: bold;
+    line-height: 48px;
+    word-spacing: 0.5em;
+    text-align: center;
+}
+
+.pagebar a, .break, .this-page {
+    background: #fff;
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    text-decoration: none;
+
+    }
+
+.pagebar a, .break, .this-page, .inactive {
+    background: #f1f1f1;
+    color: #333;
+    font-weight: normal;
+    padding: 0.5em 0.75em;
+    text-decoration: none;
+}
+
+.pagebar .this-page {
+    border: transparent;
+    background: #fff;
+    color: #000;
+    font-weight: bold;
+}
+
+.pagebar a:visited {
+    background: #f1f1f1;
+    color: #333;
+    font-weight: normal;
+    padding: 0.5em 0.75em;
+    text-decoration: none;
+}
+
+.pagebar a:hover {
+    color: #ff4b33;
+}
+
+
+.pagebar .inactive
+{
+    color: #ccc;
+}  

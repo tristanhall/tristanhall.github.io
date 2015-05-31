@@ -1,0 +1,52 @@
+.pagebar {
+    clear: both;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 2.2;
+    margin: 20px 0;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.pagebar a, .break, .this-page {
+    background: #fff;
+    border: 1px solid #fff;
+    padding: 5px 10px;
+    text-decoration: none;
+    }
+
+.pagebar a, .break, .this-page, .inactive {
+    clear: both;
+    font-size: 16px;
+    font-style: italic;
+    font-weight: normal;
+    line-height: 2.2;
+    margin: 20px 0;
+    text-transform: uppercase;
+    background: #e63f2a;
+    border: 1px solid #e63f2a;
+    color: #fff;
+}
+
+.pagebar a:hover {
+    background: #fff;
+    color: #e63f2a;
+}
+
+.pagebar .this-page {
+    border: transparent;
+    background: #fff;
+    color: #000;
+}
+
+.pagebar a:visited {
+    border: 1px solid #9AAFE5;
+    text-decoration: none;
+    padding: 0.2em 0.5em;
+}
+
+.pagebar .inactive
+{
+    color: #ccc;
+}  

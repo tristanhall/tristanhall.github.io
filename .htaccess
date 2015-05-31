@@ -1,11 +1,3 @@
-# BEGIN W3TC CDN
-<FilesMatch "\.(ttf|ttc|otf|eot|woff|font.css)$">
-<IfModule mod_headers.c>
-    Header set Access-Control-Allow-Origin "*"
-</IfModule>
-</FilesMatch>
-# END W3TC CDN
-
 # BEGIN W3TC Page Cache core
 <IfModule mod_rewrite.c>
     RewriteEngine On

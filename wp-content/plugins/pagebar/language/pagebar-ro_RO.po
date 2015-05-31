@@ -1,0 +1,136 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"X-Poedit-Language: Romanian\n"
+"X-Poedit-Country: Romania\n"
+"Language-Team: Web Geeks\n"
+"Last-Translator: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "Options"
+msgstr "Opţiuni"
+
+msgid "No options"
+msgstr "Fără opţiuni"
+
+msgid "updated"
+msgstr "actualizat"
+
+msgid "Basic settings"
+msgstr "Setările de bază"
+
+msgid "Display"
+msgstr "Afişare"
+
+msgid "Left"
+msgstr "Stânga"
+
+msgid "Center"
+msgstr "Centrul de"
+
+msgid "Right"
+msgstr "Dreptul de"
+
+msgid "Leading text"
+msgstr "Lider de text"
+
+msgid "Standard page"
+msgstr "Pagină standard"
+
+msgid "Current Page"
+msgstr "Pagina curentă"
+
+msgid "First page"
+msgstr "Prima pagină"
+
+msgid "Last page"
+msgstr "Ultima pagină"
+
+msgid "Connector"
+msgstr "Conector"
+
+msgid "Previous"
+msgstr "Anterioară"
+
+msgid "Next"
+msgstr "Următorul"
+
+msgid "Tooltips"
+msgstr "Tooltips"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Automagic insertion"
+msgstr "Automagic Inserare"
+
+msgid "Insert postbar automagic into blog"
+msgstr "Inserare postbar automagic în blog-ul"
+
+msgid "Positioning"
+msgstr "Poziţionare"
+
+msgid "Front of postings"
+msgstr "Faţă de postări"
+
+msgid "Behind postings"
+msgstr "În spatele postări"
+
+msgid "Footer"
+msgstr "Subsol"
+
+msgid "Integration"
+msgstr "Integrarea"
+
+msgid "Remove standard navigation"
+msgstr "Eliminaţi standard de navigare"
+
+msgid "Stylesheet"
+msgstr "StyleSheet"
+
+msgid "style.css"
+msgstr "style.CSS"
+
+msgid "Update Options"
+msgstr "Opţiuni de actualizare"
+
+msgid "Cancel"
+msgstr "Revocare"
+
+msgid "auto"
+msgstr "auto"
+
+msgid "always"
+msgstr "întotdeauna"
+
+msgid "never"
+msgstr "niciodată"
+
+msgid "Inherit settings"
+msgstr "Moştenesc setările"
+
+msgid "Inherit basic settings from postbar"
+msgstr "Moştenire parametri de bază de la postbar"
+
+msgid "All pages link"
+msgstr "Toate paginile link"
+
+msgid "Display 'All Pages' link"
+msgstr "Link-ul de afişare 'paginile'"
+
+msgid "All Pages Label"
+msgstr "Toate paginile eticheta"
+
+msgid "All comments link"
+msgstr "Toate comentariile link"
+
+msgid "Display 'All Comments' link"
+msgstr "Link-ul de afişare 'toate Comentarii'"
+
+msgid "All Comments Label"
+msgstr "Toate comentariile eticheta"
+

@@ -1,0 +1,5 @@
+[09-May-2015 16:50:19 UTC] PHP Fatal error:  Call to a member function format() on string in /var/www/vhosts/tristanhall.com/htdocs/wp-content/plugins/stashbox/views/notes/row-note.php on line 4
+[09-May-2015 17:03:31 UTC] PHP Fatal error:  Call to a member function format() on string in /var/www/vhosts/tristanhall.com/htdocs/wp-content/plugins/stashbox/views/notes/row-note.php on line 4
+[09-May-2015 17:03:33 UTC] PHP Fatal error:  Call to a member function format() on string in /var/www/vhosts/tristanhall.com/htdocs/wp-content/plugins/stashbox/views/notes/row-note.php on line 4
+[10-May-2015 15:05:26 UTC] PHP Fatal error:  Call to a member function format() on string in /var/www/vhosts/tristanhall.com/htdocs/wp-content/plugins/stashbox/views/notes/row-note.php on line 4
+[10-May-2015 15:34:59 UTC] PHP Fatal error:  Call to undefined method TH\Stashbox\NoteController::load() in /var/www/vhosts/tristanhall.com/htdocs/wp-content/plugins/stashbox/controllers/NoteController.php on line 120
