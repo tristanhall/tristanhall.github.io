@@ -136,10 +136,16 @@ class IWP_Dropbox {
 		return $output;
     }
 
-	public function download($path,$echo=false){
+	public function download($path, $file, $echo=false){
 		$url = self::API_CONTENT_URL.self::API_VERSION_URL.'files/'.$this->root.'/'.trim($path,'/');
-		if (!$echo)
-			return $this->request($url);
+		if (!$echo){
+			$handle = fopen($file, 'w'); 	
+			if($handle === false){
+				throw new IWP_DropboxException('Error while trying to open the file('.$file.') for writing');
+			}		
+			$this->request($url,'','GET_DOWNLOAD_IN_FILE', $handle);
+			fclose($handle);
+		}
 		else
 			$this->request($url,'','GET','','',true);
 	}
@@ -258,6 +264,10 @@ class IWP_Dropbox {
 			curl_setopt($ch,CURLOPT_INFILESIZE,$filesize);
 			$args = (is_array($args)) ? '?'.http_build_query($args, '', '&') : $args;
 			curl_setopt($ch, CURLOPT_URL, $url.$args);
+		} elseif ($method == 'GET_DOWNLOAD_IN_FILE') {
+			curl_setopt($ch, CURLOPT_FILE, $filehandle);
+			$args = (is_array($args)) ? '?'.http_build_query($args, '', '&') : $args;
+			curl_setopt($ch, CURLOPT_URL, $url.$args);
 		} else {
 			$args = (is_array($args)) ? '?'.http_build_query($args, '', '&') : $args;
 			curl_setopt($ch, CURLOPT_URL, $url.$args);
@@ -265,7 +275,9 @@ class IWP_Dropbox {
 		
 		curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
 		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		if($method != 'GET_DOWNLOAD_IN_FILE'){
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		}
 		curl_setopt($ch, CURLOPT_SSLVERSION,1);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
 		curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);

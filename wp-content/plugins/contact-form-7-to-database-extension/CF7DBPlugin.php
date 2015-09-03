@@ -440,11 +440,19 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle implements CFDBDateFormatter {
                 }
             }
         }
+
         if (!$user) {
             $user = !empty($_REQUEST['username']) ? $_REQUEST['username'] : null;
         }
+        if (!$user) {
+            $user = !empty($_REQUEST['user_login']) ? $_REQUEST['user_login'] : null;
+        }
+
         if (!$password) {
             $password = !empty($_REQUEST['password']) ? $_REQUEST['password'] : null;
+        }
+        if (!$password) {
+            $password = !empty($_REQUEST['user_password']) ? $_REQUEST['user_password'] : null;
         }
 
         $creds['user_login'] = $user;
@@ -462,7 +470,7 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle implements CFDBDateFormatter {
             switch ($_REQUEST['cfdb-action']) {
                 case 'cfdb-export':
                     if (!$this->canUserDoRoleOption('CanSeeSubmitData')) {
-                        echo '<strong>ERROR</strong>: user ' . $_REQUEST['username'] . ' is not authorized to export CFDB data';
+                        echo '<strong>ERROR</strong>: user ' . $creds['user_login'] . ' is not authorized to export CFDB data';
                         die;
                     }
                     $this->ajaxExport();
@@ -987,7 +995,7 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle implements CFDBDateFormatter {
             <form action="<?php echo get_admin_url() . 'admin.php?page=' . $this->getDBPageSlug() . "&form_name=" . urlencode($form) ?>" method="post">
                 <input name="form_name" type="hidden" value="<?php echo htmlspecialchars($form) ?>"/>
                 <input name="<?php echo htmlspecialchars($submitTime) ?>" type="hidden" value="row"/>
-                <?php wp_nonce_field('delete-from-' . $form); ?>
+                <?php wp_nonce_field(); ?>
                 <button id="delete" name="delete" onclick="this.form.submit();"><?php echo htmlspecialchars(__('Delete', 'contact-form-7-to-database-extension')); ?></button>
             </form>
             <?php
@@ -1238,7 +1246,7 @@ class CF7DBPlugin extends CF7DBPluginLifeCycle implements CFDBDateFormatter {
         if (!$this->isEditorActive()) {
             return;
         }
-        $requiredEditorVersion = '1.4';
+        $requiredEditorVersion = '1.4.1';
         $editorData = $this->getEditorPluginData();
         if (isset($editorData['Version'])) {
             if (version_compare($editorData['Version'], $requiredEditorVersion) == -1) {

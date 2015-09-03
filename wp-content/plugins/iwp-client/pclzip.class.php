@@ -157,6 +157,7 @@
   define( 'IWP_PCLZIP_OPT_TEMP_FILE_OFF', 77022 );
   define( 'IWP_PCLZIP_OPT_ADD_TEMP_FILE_OFF', 77022 ); // alias
   define( 'IWP_PCLZIP_OPT_IWP_EXCLUDE', 77999 );//IWP Mod
+  define( 'IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT', 78998 );//darkCode
   
   
   // ----- File description attributes
@@ -287,6 +288,7 @@
 	$v_options[IWP_PCLZIP_OPT_CHUNK_BLOCK_SIZE] = 15*1024*1024*1024;  
 	$v_options[IWP_PCLZIP_OPT_FILE_EXCLUDE_SIZE] = 15*1024*1024*1024;
 	$v_options[IWP_PCLZIP_OPT_IWP_EXCLUDE] = array();
+	$v_options[IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT] = array();
 	$v_options[IWP_PCLZIP_OPT_HISTORY_ID] = 0;
 	
     // ----- Look for variable options arguments
@@ -320,6 +322,7 @@
 												   IWP_PCLZIP_OPT_FILE_EXCLUDE_SIZE => 'optional',
 												   IWP_PCLZIP_OPT_HISTORY_ID => 'optional',
 												   IWP_PCLZIP_OPT_IWP_EXCLUDE => 'optional',
+												   IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT => 'optional',
                                                    //, IWP_PCLZIP_OPT_CRYPT => 'optional'
                                              ));
         if ($v_result != 1) {
@@ -476,6 +479,7 @@
 												   IWP_PCLZIP_OPT_FILE_EXCLUDE_SIZE => 'optional',
 												   IWP_PCLZIP_OPT_HISTORY_ID => 'optional',
 												   IWP_PCLZIP_OPT_IWP_EXCLUDE => 'optional',
+												   IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT => 'optional',
                                                    //, IWP_PCLZIP_OPT_CRYPT => 'optional'
 												   ));
         if ($v_result != 1) {
@@ -579,9 +583,9 @@
 	}
 	if(!(empty($responseParams)))
 	{
-		$prevFileList = $responseParams['response_data']['p_filedescr_list'];
-		$next_file_index = $responseParams['response_data']['next_file_index'];
-		$complete_folder_list = $responseParams['response_data']['complete_folder_list'];
+		$prevFileList = isset($responseParams['response_data']['p_filedescr_list']) ? $responseParams['response_data']['p_filedescr_list'] : array();
+		$next_file_index = isset($responseParams['response_data']['next_file_index']) ? $responseParams['response_data']['next_file_index'] : 0;
+		$complete_folder_list = isset($responseParams['response_data']['complete_folder_list']) ? $responseParams['response_data']['complete_folder_list'] : array();
 	}
 	else
 	{
@@ -799,6 +803,7 @@
 	$v_options[IWP_PCLZIP_OPT_CHUNK_BLOCK_SIZE] = 15*1024*1024*1024;
 	$v_options[IWP_PCLZIP_OPT_FILE_EXCLUDE_SIZE] = 15*1024*1024*1024;
 	$v_options[IWP_PCLZIP_OPT_IWP_EXCLUDE] = array();
+	$v_options[IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT] = array();
 	$v_options[IWP_PCLZIP_OPT_HISTORY_ID] = 0;
 
     // ----- Look for variable options arguments
@@ -834,6 +839,7 @@
 												   IWP_PCLZIP_OPT_HISTORY_ID => 'optional',
                                                    IWP_PCLZIP_OPT_TEMP_FILE_OFF => 'optional',
 												   IWP_PCLZIP_OPT_IWP_EXCLUDE => 'optional',
+												   IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT => 'optional',
                                                    //, IWP_PCLZIP_OPT_CRYPT => 'optional'
 												   ));
         if ($v_result != 1) {
@@ -1801,6 +1807,12 @@
 			}
 			$i++;			  
 	    break;
+		case IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT :
+			if (is_array($p_options_list[$i+1])) {
+            	$v_result_list[$p_options_list[$i]] = $p_options_list[$i+1];
+			}
+			$i++;			  
+	    break;
         case IWP_PCLZIP_OPT_PATH :
         case IWP_PCLZIP_OPT_REMOVE_PATH :
         case IWP_PCLZIP_OPT_ADD_PATH :
@@ -2441,7 +2453,8 @@
         if (@is_file($v_descr['filename'])) {
 		  if($is_get_file_list == 'getFileList')
 		  {
-			  $exclude = $p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE];
+			  $exclude = isset($p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE]) ? $p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE] : array();
+			  $exclude_extensions = isset($p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT]) ? $p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE_EXT] : array();
 			  $skip_this = false;
 			  if(!empty($exclude)){
 				  foreach($exclude as $item)
@@ -2466,9 +2479,34 @@
 				  }
 			  }
 			  
+			  //to exclude files based on extensions
+			  $this_base_name = basename($v_descr['filename']);
+			  $skip_after_ext = false;
+			  //file extension based exclude
+			  if((!empty($exclude_extensions)) && is_array($exclude_extensions))
+			  {
+				  foreach($exclude_extensions as $ext)
+				  {
+					  $this_pos = strrpos($this_base_name, $ext);
+					  if($this_pos !== false)
+					  {
+						  if(substr($this_base_name, $this_pos) == $ext)
+						  {
+							//$files_excluded_by_size[] = substr($value, strlen(ABSPATH));
+							$skip_after_ext = true;											//to skip the file exclude by size 
+							break;
+						  }
+					  }
+				  }
+			  }
+			  if($skip_after_ext)
+			  {
+				continue;
+			  }
+			  
 			  //$excludeFileSize = 200;
 			  //exclude the file if the filesize is larger than the specified file size
-			  if(iwp_mmb_get_file_size($v_descr['filename']) >= $excludeFileSize)
+			  if(!empty($excludeFileSize) && (iwp_mmb_get_file_size($v_descr['filename']) >= $excludeFileSize))
 			  {
 				continue;
 			  }
@@ -2627,7 +2665,7 @@
       
 	  //exclude IWP Mod
 	  $skip_this = false;
-	  $exclude = $p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE];
+	  $exclude = isset($p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE]) ? $p_options[IWP_PCLZIP_OPT_IWP_EXCLUDE] : array();
 	  if(!empty($exclude)){
 		  foreach($exclude as $item){
 			  if(strpos($v_descr['stored_filename'], $item) === 0){

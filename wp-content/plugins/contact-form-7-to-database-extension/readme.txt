@@ -5,8 +5,8 @@ Tags: contact form,database,contact form database,save contact form,form databas
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 Requires at least: 3.2.1
-Tested up to: 4.2.1
-Stable tag: 2.8.38
+Tested up to: 4.3
+Stable tag: 2.9.7
 
 Saves submitted form data to the database. Export the data to a file or use short codes to display it.
 
@@ -83,6 +83,37 @@ You can always deactivate the plugin without loosing data.
 1. Admin Panel view of submitted form data
 
 == Changelog ==
+
+= 2.9.8 =
+* Bug fix: Capturing Gravity Forms List element when it has columns
+
+= 2.9.7 =
+* Bug Fix: Capturing file uploads from WR Contact Form 1.1.10
+
+= 2.9.6 =
+* Bug fix: Occasional problem with language translations being initialized
+* Minor update to Contact Form 7 integration
+
+= 2.9.5 =
+* Bug fix to Google Spreadsheet Live Data export (failing to login)
+* Bug fix for exporting forms with a single quote in the name
+
+= 2.9.4 =
+* Added spreadsheet-like transforms:
+** Sum rows: trans="total=field1,field2,field3"
+** Sum columns: trans=TotalField(field1,field2,field3)
+** Sum both: trans="total=field1,field2&&TotalField(field1,field2,total)"
+** Sum product prices: trans="p1_total=multiply(p1,9.99)&&p2_total=multiply(p2,8.99)&&line_total=sum(p1_total,p2_total)&&TotalField(line_total)"
+
+= 2.9.3 =
+* Fix error on systems where php_uname() is not available
+* Allowing various PHP math functions in "trans"
+
+= 2.9.2 =
+* Fix for some cases where cannot delete row in administration page
+
+= 2.9.1 =
+* Fix for some cases where cannot delete row in administration page
 
 = 2.9 =
 * Additional HTML-injection protections
@@ -526,6 +557,12 @@ See "Database Options" -> "Save Cookie Data with Form Submissions" and "Save onl
 * Initial Revision.
 
 == Upgrade Notice ==
+
+= 2.9.2 =
+For users of the CFDB Editor, CFDB 2.9.x will require and upgrade of the CFDB Editor 1.4 as well. See admin notice after upgrade of CFDB.
+
+= 2.9.1 =
+For users of the CFDB Editor, CFDB 2.9.x will require and upgrade of the CFDB Editor 1.4 as well. See admin notice after upgrade of CFDB.
 
 = 2.9 =
 For users of the CFDB Editor, CFDB 2.9 will require and upgrade of the CFDB Editor 1.4 as well. See admin notice after upgrade of CFDB.

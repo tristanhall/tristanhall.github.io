@@ -4,7 +4,7 @@ Plugin Name: InfiniteWP - Client
 Plugin URI: http://infinitewp.com/
 Description: This is the client plugin of InfiniteWP that communicates with the InfiniteWP Admin panel.
 Author: Revmakx
-Version: 1.3.13
+Version: 1.4.1
 Author URI: http://www.revmakx.com
 */
 /************************************************************
@@ -26,7 +26,7 @@ Author URI: http://www.revmakx.com
  **************************************************************/
 
 if(!defined('IWP_MMB_CLIENT_VERSION'))
-	define('IWP_MMB_CLIENT_VERSION', '1.3.13');
+	define('IWP_MMB_CLIENT_VERSION', '1.4.1');
 	
 
 
@@ -89,14 +89,19 @@ if( !function_exists ( 'iwp_mmb_filter_params' )) {
 if( !function_exists ('iwp_mmb_parse_request')) {
 	function iwp_mmb_parse_request()
 	{
-		if (!isset($HTTP_RAW_POST_DATA)) {
-			$HTTP_RAW_POST_DATA = file_get_contents('php://input');
+		global $HTTP_RAW_POST_DATA;
+		$HTTP_RAW_POST_DATA_LOCAL = NULL;
+		$HTTP_RAW_POST_DATA_LOCAL = file_get_contents('php://input');
+		if(empty($HTTP_RAW_POST_DATA_LOCAL)){
+			if (isset($HTTP_RAW_POST_DATA)) {
+				$HTTP_RAW_POST_DATA_LOCAL = $HTTP_RAW_POST_DATA;
+			}
 		}
 		
 		ob_start();
 		
 		global $current_user, $iwp_mmb_core, $new_actions, $wp_db_version, $wpmu_version, $_wp_using_ext_object_cache;
-		$data = base64_decode($HTTP_RAW_POST_DATA);
+		$data = base64_decode($HTTP_RAW_POST_DATA_LOCAL);
 		if ($data){
 			//$num = @extract(unserialize($data));
 			$unserialized_data = @unserialize($data);
@@ -120,6 +125,8 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 			@ini_set("display_errors", 1);
 			
 			iwp_mmb_create_backup_table();
+			
+			run_hash_change_process();
 			
 			$action = $iwp_action;
 			$_wp_using_ext_object_cache = false;
@@ -151,11 +158,14 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 				if(isset($params['username']) && !is_user_logged_in()){
 					$user = function_exists('get_user_by') ? get_user_by('login', $params['username']) : get_userdatabylogin( $params['username'] );
 					wp_set_current_user($user->ID);
-					//For WPE
-					if(@getenv('IS_WPE'))
-					wp_set_auth_cookie($user->ID);
+					//For WPE or Reload Data
+					//if(@getenv('IS_WPE') || $iwp_action == 'get_stats')
+					$SET_14_DAYS_VALIDITY = true;
+					wp_set_auth_cookie($user->ID, $SET_14_DAYS_VALIDITY);
 				}
-				
+				if ($action == 'get_cookie') {
+					iwp_mmb_response(true, true);
+				}
 				/* in case database upgrade required, do database backup and perform upgrade ( wordpress wp_upgrade() function ) */
 				if( strlen(trim($wp_db_version)) && !defined('ACX_PLUGIN_DIR') ){
 					if ( get_option('db_version') != $wp_db_version ) {
@@ -201,7 +211,8 @@ if( !function_exists ('iwp_mmb_parse_request')) {
 			}
 		} else {
 			//IWP_MMB_Stats::set_hit_count();
-                    $GLOBALS['HTTP_RAW_POST_DATA'] =  $HTTP_RAW_POST_DATA;
+            // $GLOBALS['HTTP_RAW_POST_DATA'] =  $HTTP_RAW_POST_DATA_LOCAL;
+            $HTTP_RAW_POST_DATA =  $HTTP_RAW_POST_DATA_LOCAL;
 		}
 		ob_end_clean();
 	}
@@ -1853,6 +1864,151 @@ if(!function_exists('iwp_mmb_add_zero_clipboard_scripts')){
 				);
 			}
 		}
+	}
+}
+
+if (!function_exists('run_hash_change_process')) {
+	function run_hash_change_process(){
+		//code to check whether old hash files are already changed from wp_option table flag
+		$is_replaced = get_option('iwp_client_replaced_old_hash_backup_files');
+		if($is_replaced){
+			return true;
+		}
+		
+		global $wpdb;
+		$table_name = $wpdb->base_prefix . "iwp_backup_status";
+		$rows = $wpdb->get_results("SELECT historyID,taskResults FROM ".$table_name,  ARRAY_A);
+		
+		$hash_changed_files = array();
+		$hash_changed_urls = array();
+		foreach($rows as $k => $v){
+			$this_his_id = $v['historyID'];
+			$this_task_result = unserialize($v['taskResults']);
+			if(!empty($this_task_result) && !empty($this_task_result['task_results']) && !empty($this_task_result['task_results'][$this_his_id]) && !empty($this_task_result['task_results'][$this_his_id]['server']) && !empty($this_task_result['task_results'][$this_his_id]['server']) && !empty($this_task_result['task_results'][$this_his_id]['server']['file_path']) && !empty($this_task_result['task_results'][$this_his_id]['server']['file_url'])){
+				$new_task_result_server = modify_task_result_server($this_task_result['task_results'][$this_his_id]['server']);
+				if(is_array($new_task_result_server) && array_key_exists("error")){
+					continue;
+				}
+				$this_task_result['task_results'][$this_his_id]['server'] = $new_task_result_server;
+			}
+			if(!empty($this_task_result) && !empty($this_task_result['server']) && !empty($new_task_result_server['hash'])){
+				$new_task_result_server = modify_task_result_server($this_task_result['server'], $new_task_result_server['hash']);
+				if(is_array($new_task_result_server) && array_key_exists("error")){
+					return $new_task_result_server;
+					break;
+				}
+				$this_task_result['server'] = $new_task_result_server;
+				
+			}
+			
+			//updating table with new fileNames
+			$new_task_result = serialize($this_task_result);
+			$update = $wpdb->update($wpdb->base_prefix.'iwp_backup_status',array('taskResults' =>  $new_task_result ),array( 'historyID' => $this_his_id),array('%s'),array('%d'));
+		}
+		update_option('iwp_client_replaced_old_hash_backup_files', true);
+		return true;
+	}
+}
+
+if (!function_exists('modify_task_result_server')) {
+	function modify_task_result_server($task_result_server, $useThisHash=''){
+		if(!is_array($task_result_server['file_path'])){
+			$current_file = $task_result_server['file_path'];
+			$task_result_server['file_path'] = array();
+			$task_result_server['file_path'][0] = $current_file;
+		}
+		if(!is_array($task_result_server['file_url'])){
+			$current_url = $task_result_server['file_url'];
+			$task_result_server['file_url'] = array();
+			$task_result_server['file_url'][0] = $current_url;
+		}
+
+		$old_file_path = $task_result_server['file_path'];
+		$old_file_url = $task_result_server['file_url'];
+		
+		$new_file_path = replace_old_hash_with_new_hash($old_file_path, $useThisHash);
+		foreach($new_file_path['files'] as $ke => $va){
+			
+			//rename file
+			$rename_result = rename_old_backup_file_name($va['old'], $va['new']);
+			if(is_array($rename_result) && array_key_exists("error")){
+				return $rename_result;
+				break;
+			}
+			$task_result_server['file_path'][$ke] = $va['new'];
+		}
+		$task_result_server['hash'] = $new_file_path['hash'];
+		
+		$new_file_url = replace_old_hash_with_new_hash($old_file_url, $new_file_path['hash']);
+		foreach($new_file_url['files'] as $ke => $va){
+			$task_result_server['file_url'][$ke] = $va['new'];
+		}
+		
+		//for single backup fix
+		if(count($task_result_server['file_path']) === 1){
+			$temp_val = $task_result_server['file_path'][0];
+			unset($task_result_server['file_path']);
+			$task_result_server['file_path'] = $temp_val;
+		}
+		if(count($task_result_server['file_url']) === 1){
+			$temp_val = $task_result_server['file_url'][0];
+			unset($task_result_server['file_url']);
+			$task_result_server['file_url'] = $temp_val;
+		}
+		return $task_result_server;
+	}
+}
+
+if (!function_exists('replace_old_hash_with_new_hash')) {
+	
+	function replace_old_hash_with_new_hash($backFileArr, $useThisHash='') {
+		$newbackupfileArr = array();
+		$newbackupfileArr['files'] = array();
+		$newbackupfileArr['hash'] = '';
+		
+		if(empty($useThisHash)){
+			$newBackupHash = md5(microtime(true).uniqid('',true).substr(str_shuffle("0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"), 0, rand(20,60)));
+			$useThisHash = $newBackupHash;
+		}
+		else{
+			$newBackupHash = $useThisHash;
+		}
+		foreach($backFileArr as $k => $backFile){
+			$iwpPart = '.zip';
+			$tempBackupFile = $backFile;
+			
+			$iwpPartIndex = strpos($backFile, '_iwp_part');
+			if($iwpPartIndex !== false){
+				$iwpPart = substr($backFile, $iwpPartIndex);
+				$backFile = substr($backFile, 0, $iwpPartIndex);
+			}
+			
+			$backFileInArray = explode("_", $backFile);
+			$hashIndex = count($backFileInArray) - 1;
+			
+			$backupHashWithZip = $backFileInArray[$hashIndex];
+			$backupHash = substr($backupHashWithZip, 0, 32);
+			
+			$newBackupHashWithZip = $newBackupHash . $iwpPart;
+			$newBackupFile = substr($backFile, 0, strpos($backFile, $backupHashWithZip));
+			$newBackupFile = $newBackupFile . $newBackupHashWithZip; 
+			$newbackupfileArr['files'][$k]['new'] = $newBackupFile;
+			$newbackupfileArr['files'][$k]['old'] = $tempBackupFile;
+		}
+		$newbackupfileArr['hash'] = $newBackupHash;
+		return $newbackupfileArr;
+	}
+	
+}
+
+
+if (!function_exists('rename_old_backup_file_name')) {
+	
+	function rename_old_backup_file_name($oldName, $newName) {
+		if (!@rename($oldName, $newName)) {
+			return array('error' => 'Unable to rename old files', 'error_code' => 'unable_to_remane_old_backup_files');
+		}
+		return true;
 	}
 }
 

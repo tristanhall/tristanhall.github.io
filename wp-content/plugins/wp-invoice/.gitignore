@@ -1,4 +1,12 @@
-core/premium
+temp
+node_modules
+static/cache
+static/codex
+npm-debug.log
+wp-test-config.php
+composer.lock
+
+.git
 .svn
 .idea
 .idea/workspace.xml
@@ -7,7 +15,6 @@ core/premium
 .Trashes
 *.sublime-project
 *.sublime-workspace
-*.bat
 
 *.seed
 *.log

@@ -657,62 +657,72 @@ class IWP_MMB_Installer extends IWP_MMB_Core
             return array();
     }
     
-    function get_upgradable_themes( $filter = array() )
-    {
-        if(function_exists('wp_get_themes')){
-        	$all_themes     = wp_get_themes();
-        	$upgrade_themes = array();
-        
-	        $current = $this->iwp_mmb_get_transient('update_themes');
-	        if (!empty($current->response)) {
-				foreach ((array) $all_themes as $theme_template => $theme_data) {
-					if(isset($theme_data->{'Parent Theme'}) && !empty($theme_data->{'Parent Theme'}))
-						continue;
-					
-					if(isset($theme_data->Name) && in_array($theme_data->Name, $filter))
-						continue;
-						
-					foreach ($current->response as $current_themes => $theme) {
-	                    if ($theme_data->Template == $current_themes) {
-	                        if (strlen($theme_data->Name) > 0 && strlen($theme_data->Version) > 0) {
-	                            $current->response[$current_themes]['name']        = $theme_data->Name;
-	                            $current->response[$current_themes]['old_version'] = $theme_data->Version;
-	                            $current->response[$current_themes]['theme_tmp']   = $theme_data->Template;
-	                            $upgrade_themes[] = $current->response[$current_themes];
-	                        }
-	                    }
-	                }
-	            }
-	        }
-        }else{
-        $all_themes     = get_themes();
-	        
-        $upgrade_themes = array();
-        
-        $current = $this->iwp_mmb_get_transient('update_themes');
-        if (!empty($current->response)) {
-			foreach ((array) $all_themes as $theme_template => $theme_data) {
-				if(isset($theme_data['Parent Theme']) && !empty($theme_data['Parent Theme']))
-					continue;
-					
-				if(isset($theme_data['Name']) && in_array($theme_data['Name'], $filter))
-					continue;
-					
-				foreach ($current->response as $current_themes => $theme) {
-                    if ($theme_data['Template'] == $current_themes) {
-                        if (strlen($theme_data['Name']) > 0 && strlen($theme_data['Version']) > 0) {
-                            $current->response[$current_themes]['name']        = $theme_data['Name'];
-                            $current->response[$current_themes]['old_version'] = $theme_data['Version'];
-                            $current->response[$current_themes]['theme_tmp']   = $theme_data['Template'];
-                            $upgrade_themes[] = $current->response[$current_themes];
+    function get_upgradable_themes($filter = array()) {
+        if (function_exists('wp_get_themes')) {
+            $all_themes     = wp_get_themes();
+            $upgrade_themes = array();
+
+            $current = $this->iwp_mmb_get_transient('update_themes');
+            if (!empty($current->response)) {
+                foreach ((array) $all_themes as $theme_template => $theme_data) {
+
+                    if (isset($theme_data->{'Parent Theme'}) && !empty($theme_data->{'Parent Theme'})) {
+                        continue;
+                    }
+
+                    if (isset($theme_data->Name) && in_array($theme_data->Name, $filter)) {
+                        continue;
+                    }
+
+                    if (!$theme_data->parent()) {
+                        foreach ($current->response as $current_themes => $theme) {
+                            if ($theme_data->Template == $current_themes) {
+                                if (strlen($theme_data->Name) > 0 && strlen($theme_data->Version) > 0) {
+
+                                    $current->response[$current_themes]['name']        = $theme_data->Name;
+                                    $current->response[$current_themes]['old_version'] = $theme_data->Version;
+                                    $current->response[$current_themes]['theme_tmp']   = $theme_data->Template;
+                                    $upgrade_themes[]                                  = $current->response[$current_themes];
+
+                                }
+                            }
                         }
                     }
                 }
             }
+        } else {
+            $all_themes = get_themes();
+
+            $upgrade_themes = array();
+
+            $current = $this->iwp_mmb_get_transient('update_themes');
+
+            if (!empty($current->response)) {
+                foreach ((array) $all_themes as $theme_template => $theme_data) {
+                    if (isset($theme_data['Parent Theme']) && !empty($theme_data['Parent Theme'])) {
+                        continue;
+                    }
+
+                    if (isset($theme_data['Name']) && in_array($theme_data['Name'], $filter)) {
+                        continue;
+                    }
+                        if (!$theme_data->parent()) {
+                    foreach ($current->response as $current_themes => $theme) {
+                        if ($theme_data['Template'] == $current_themes) {
+                            if (strlen($theme_data['Name']) > 0 && strlen($theme_data['Version']) > 0) {
+                                $current->response[$current_themes]['name']        = $theme_data['Name'];
+                                $current->response[$current_themes]['old_version'] = $theme_data['Version'];
+                                $current->response[$current_themes]['theme_tmp']   = $theme_data['Template'];
+                                $upgrade_themes[]                                  = $current->response[$current_themes];
+                            }
+                        }
+                    }
+                }
+            }
+          }
+
         }
-        }
-        
-        
+
         return $upgrade_themes;
     }
     

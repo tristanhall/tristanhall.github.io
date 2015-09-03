@@ -11,35 +11,54 @@ class IWP_MMB_Optimize extends IWP_MMB_Core
     
 	function cleanup_system($cleanupType){
 		
+		$cleanup_values = array();
+		$cleanup_values['value_array'] = array();
+		$text = '';
+		
 		if (isset($cleanupType["clean-revisions"])) {
-		$text .= self::cleanup_type_process('revisions');
+			$values = self::cleanup_type_process('revisions');
+			$text .= "<span class='wpm_results'>" . $values['message'] . "</span>";
+			$cleanup_values['value_array']['revisions'] = $values['value'];
 		}
 	
 		if (isset($cleanupType["clean-autodraft"])) {
-			$text .= self::cleanup_type_process('autodraft');
+			$values = self::cleanup_type_process('autodraft');
+			$text .= "<span class='wpm_results'>" . $values['message'] . "</span>";
+			$cleanup_values['value_array']['autodraft'] = $values['value'];
 			}	
 			
 		if (isset($cleanupType["clean-comments"])) {
-			$text .= self::cleanup_type_process('spam');
+			$values = self::cleanup_type_process('spam');
+			$text .= "<span class='wpm_results'>" . $values['message'] . "</span>";
+			$cleanup_values['value_array']['spam'] = $values['value'];
 			}
 		
 		if (isset($cleanupType["unapproved-comments"])) {
-			$text .= self::cleanup_type_process('unapproved');
+			$values = self::cleanup_type_process('unapproved');
+			$text .= "<span class='wpm_results'>" . $values['message'] . "</span>";
+			$cleanup_values['value_array']['unapproved'] = $values['value'];
 			}
 		
+		$text .= '<br>';
+		
 		if (isset($cleanupType["optimize-db"])) {
-			$text .= self::cleanup_type_process('optimize-db');
+			$values = self::cleanup_type_process('optimize-db');
+			$text .= "<span class='wpm_results_db'>" . $values['message'] . "</span>";
+			$cleanup_values['value_array']['optimize-db'] = $values['value'];
 			//$text .= DB_NAME.__(" Database Optimized!<br>", 'wp-optimize');
 			}
 	
 		if ($text !==''){
-			return $text;
+			$cleanup_values['message'] = $text;
+			return $cleanup_values;
 		}
 	}
 	
 	function cleanup_type_process($cleanupType){
 		global $wpdb;
 		$clean = ""; $message = "";
+		$message_array = array();
+		//$message_array['value'] = array();
 		$optimized = array();
 	
 		switch ($cleanupType) {
@@ -47,7 +66,9 @@ class IWP_MMB_Optimize extends IWP_MMB_Core
 			case "revisions":
 				$clean = "DELETE FROM $wpdb->posts WHERE post_type = 'revision'";
 				$revisions = $wpdb->query( $clean );
-				$message .= $revisions.__(' post revisions deleted<br>', 'wp-optimize');
+				$message .= __('Post revisions deleted - ', 'wp-optimize') . $revisions;
+				$message_array['value'] = $revisions;
+				//$message_array['del_post_rev']['message'] = $revisions.__(' post revisions deleted<br>', 'wp-optimize');
 				
 				break;
 				
@@ -55,34 +76,46 @@ class IWP_MMB_Optimize extends IWP_MMB_Core
 			case "autodraft":
 				$clean = "DELETE FROM $wpdb->posts WHERE post_status = 'auto-draft'";
 				$autodraft = $wpdb->query( $clean );
-				$message .= $autodraft.__(' auto drafts deleted<br>', 'wp-optimize');
+				$message .= __('Auto drafts deleted - ', 'wp-optimize') . $autodraft;
+				$message_array['value'] = $autodraft;
+				//$message_array['del_auto_drafts']['message'] = $autodraft.__(' auto drafts deleted<br>', 'wp-optimize');
 				
 				break;
 	
 			case "spam":
 				$clean = "DELETE FROM $wpdb->comments WHERE comment_approved = 'spam';";
 				$comments = $wpdb->query( $clean );
-				$message .= $comments.__(' spam comments deleted<br>', 'wp-optimize');
+				$message .= __('Spam comments deleted - ', 'wp-optimize') . $comments;
+				$message_array['value'] = $comments;
+				//$message_array['del_spam_comments']['message'] = $comments.__(' spam comments deleted<br>', 'wp-optimize');
+				
 				break;
 	
 			case "unapproved":
 				$clean = "DELETE FROM $wpdb->comments WHERE comment_approved = '0';";
 				$comments = $wpdb->query( $clean );
-				$message .= $comments.__(' unapproved comments deleted<br>', 'wp-optimize');
+				$message .= __('Unapproved comments deleted - ', 'wp-optimize') . $comments;
+				$message_array['value'] = $comments;
+				//$message_array['del_unapproved_comments']['message'] = $comments.__(' unapproved comments deleted<br>', 'wp-optimize');
+				
 				break;
 	
 			case "optimize-db":
 			   self::optimize_tables(true);
-			   $message .= "Database ".DB_NAME." Optimized!<br>";
+			   $message .= "Database ".DB_NAME." Optimized!";
+			   $message_array['value'] = DB_NAME;
+			   
 			   break;
 		
 			default:
-				$message .= __('NO Actions Taken<br>', 'wp-optimize');
+				$message .= __('NO Actions Taken', 'wp-optimize');
+				$message_array['value'] = $comments;
+				
 				break;
 		} // end of switch
 		
-		
-	return $message;
+	$message_array['message'] = $message;
+	return $message_array;
 
 	} // end of function
 	

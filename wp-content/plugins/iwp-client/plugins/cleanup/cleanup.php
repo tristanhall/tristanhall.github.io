@@ -119,6 +119,8 @@ function iwp_mmb_handle_overhead($clear = false)
     $tables     = $wpdb->get_results($query, ARRAY_A);
     $total_gain = 0;
 	$table_string = '';
+    if (!empty($table) && is_array($table)) {
+    
     foreach ($tables as $table) {
         if (in_array($table['Engine'], array(
             'MyISAM',
@@ -146,7 +148,7 @@ function iwp_mmb_handle_overhead($clear = false)
             //$total_gain +=  $table['Data_free'] > 100*1024*1024 ? $table['Data_free'] / 1024 : 0;
         }
     }
-    
+   } 
     if ($clear) {
         $table_string = substr($table_string, 0, strlen($table_string) - 1); //remove last ,
         
