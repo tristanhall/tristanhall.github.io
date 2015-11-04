@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "stats.class.php"):
+    exit;
+endif;
 
 class IWP_MMB_Stats extends IWP_MMB_Core
 {
@@ -284,6 +286,14 @@ class IWP_MMB_Stats extends IWP_MMB_Core
             if (!empty($upgrades)) {
                 $stats['upgradable_plugins'] = $upgrades;
                 $upgrades                    = false;
+            }
+        }
+          if (isset($options['translations']) && $options['translations']) {
+            $this->get_installer_instance();
+            $upgrades = $this->installer_instance->get_upgradable_translations();
+             if (!empty($upgrades)) {
+                 $stats['upgradable_translations'] = $upgrades;
+                 $upgrades                         = false;
             }
         }
         

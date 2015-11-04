@@ -32,25 +32,33 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 		echo '<table cellspacing="0" class="qm-sortable">';
 		echo '<thead>';
 		echo '<tr>';
-		echo '<th class="qm-sorted-asc">&nbsp;' . $this->build_sorter() . '</th>';
-		echo '<th scope="col">' . __( 'HTTP Request', 'query-monitor' ) . '</th>';
-		echo '<th scope="col">' . __( 'Response', 'query-monitor' ) . $this->build_filter( 'type', array_keys( $data['types'] ) ) . '</th>';
-		echo '<th scope="col">' . __( 'Transport', 'query-monitor' ) . '</th>';
-		echo '<th scope="col">' . __( 'Call Stack', 'query-monitor' ) . '</th>';
-		echo '<th scope="col">' . __( 'Component', 'query-monitor' ) . $this->build_filter( 'component', wp_list_pluck( $data['component_times'], 'component' ) ) . '</th>';
-		echo '<th scope="col" class="qm-num">' . __( 'Timeout', 'query-monitor' ) . $this->build_sorter() . '</th>';
-		echo '<th scope="col" class="qm-num">' . __( 'Time', 'query-monitor' ) . $this->build_sorter() . '</th>';
+		echo '<th class="qm-sorted-asc">&nbsp;';
+		echo $this->build_sorter(); // WPCS: XSS ok.
+		echo '</th>';
+		echo '<th scope="col">' . esc_html__( 'HTTP Request', 'query-monitor' ) . '</th>';
+		echo '<th scope="col">' . esc_html__( 'Response', 'query-monitor' );
+		echo $this->build_filter( 'type', array_keys( $data['types'] ) ); // WPCS: XSS ok.
+		echo '</th>';
+		echo '<th scope="col">' . esc_html__( 'Transport', 'query-monitor' ) . '</th>';
+		echo '<th scope="col">' . esc_html__( 'Call Stack', 'query-monitor' ) . '</th>';
+		echo '<th scope="col">' . esc_html__( 'Component', 'query-monitor' );
+		echo $this->build_filter( 'component', wp_list_pluck( $data['component_times'], 'component' ) ); // WPCS: XSS ok.
+		echo '</th>';
+		echo '<th scope="col" class="qm-num">' . esc_html__( 'Timeout', 'query-monitor' );
+		echo $this->build_sorter(); // WPCS: XSS ok.
+		echo '</th>';
+		echo '<th scope="col" class="qm-num">' . esc_html__( 'Time', 'query-monitor' );
+		echo $this->build_sorter(); // WPCS: XSS ok.
+		echo '</th>';
 		echo '</tr>';
 		echo '</thead>';
 
-		$vars = '';
+		$vars = array();
 
 		if ( !empty( $data['vars'] ) ) {
-			$vars = array();
 			foreach ( $data['vars'] as $key => $value ) {
-				$vars[] = $key . ': ' . esc_html( $value );
+				$vars[] = $key . ': ' . $value;
 			}
-			$vars = implode( '<br>', $vars );
 		}
 
 		if ( !empty( $data['http'] ) ) {
@@ -64,14 +72,8 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 
 				$row_attr = array();
 
-				if ( empty( $ltime ) ) {
-					$stime = '';
-				} else {
-					$stime = number_format_i18n( $ltime, 4 );
-				}
-
 				if ( is_wp_error( $row['response'] ) ) {
-					$response = esc_html( $row['response']->get_error_message() );
+					$response = $row['response']->get_error_message();
 					$css      = 'qm-warn';
 				} else {
 					$response = wp_remote_retrieve_response_code( $row['response'] );
@@ -81,7 +83,7 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 					if ( empty( $response ) ) {
 						$response = __( 'n/a', 'query-monitor' );
 					} else {
-						$response = esc_html( $response . ' ' . $msg );
+						$response = $response . ' ' . $msg;
 					}
 
 					if ( intval( $response ) >= 400 ) {
@@ -102,8 +104,15 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 					$transport = '';
 				}
 
-				$stack     = $row['trace']->get_stack();
 				$component = $row['component'];
+
+				$stack          = array();
+				$filtered_trace = $row['trace']->get_filtered_trace();
+				array_shift( $filtered_trace );
+
+				foreach ( $filtered_trace as $item ) {
+					$stack[] = self::output_filename( $item['display'], $item['calling_file'], $item['calling_line'] );
+				}
 
 				$row_attr['data-qm-component'] = $component->name;
 				$row_attr['data-qm-type']      = $row['type'];
@@ -113,19 +122,52 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 					$attr .= ' ' . $a . '="' . esc_attr( $v ) . '"';
 				}
 
-				$stack = implode( '<br>', $stack );
-				echo "
-					<tr{$attr} class='{$css}'>\n
-						<td valign='top' class='qm-num'>{$i}</td>
-						<td valign='top' class='qm-url qm-ltr qm-wrap'>{$method}<br>{$url}</td>\n
-						<td valign='top'>{$response}</td>\n
-						<td valign='top'>{$transport}</td>\n
-						<td valign='top' class='qm-nowrap qm-ltr'>{$stack}</td>\n
-						<td valign='top' class='qm-nowrap'>{$component->name}</td>\n
-						<td valign='top' class='qm-num'>{$row['args']['timeout']}</td>\n
-						<td valign='top' class='qm-num'>{$stime}</td>\n
-					</tr>\n
-				";
+				printf(
+					'<tr %s class="%s">',
+					$attr,
+					esc_attr( $css )
+				); // WPCS:: XSS ok.
+				printf(
+					'<td class="qm-num">%s</td>',
+					intval( $i )
+				);
+				printf(
+					'<td class="qm-url qm-ltr qm-wrap">%s<br>%s</td>',
+					esc_html( $method ),
+					$url
+				); // WPCS:: XSS ok.
+				printf(
+					'<td>%s</td>',
+					esc_html( $response )
+				);
+				printf(
+					'<td>%s</td>',
+					esc_html( $transport )
+				);
+				printf(
+					'<td class="qm-nowrap qm-ltr">%s</td>',
+					implode( '<br>', $stack ) // WPCS: XSS ok.
+				);
+				printf(
+					'<td class="qm-nowrap">%s</td>',
+					esc_html( $component->name )
+				);
+				printf(
+					'<td class="qm-num">%s</td>',
+					esc_html( $row['args']['timeout'] )
+				);
+
+				if ( empty( $ltime ) ) {
+					$stime = '';
+				} else {
+					$stime = number_format_i18n( $ltime, 4 );
+				}
+
+				printf(
+					'<td class="qm-num">%s</td>',
+					esc_html( $stime )
+				);
+				echo '</tr>';
 			}
 
 			echo '</tbody>';
@@ -134,8 +176,11 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 			$total_stime = number_format_i18n( $data['ltime'], 4 );
 
 			echo '<tr>';
-			echo '<td colspan="7">' . $vars . '</td>';
-			echo "<td class='qm-num'>{$total_stime}</td>";
+			printf(
+				'<td colspan="7">%s</td>',
+				implode( '<br>', array_map( 'esc_html', $vars ) )
+			);
+			echo '<td class="qm-num">' . esc_html( $total_stime ) . '</td>';
 			echo '</tr>';
 			echo '</tfoot>';
 
@@ -143,11 +188,14 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 
 			echo '<tbody>';
 			echo '<tr>';
-			echo '<td colspan="8" style="text-align:center !important"><em>' . __( 'none', 'query-monitor' ) . '</em></td>';
+			echo '<td colspan="8" style="text-align:center !important"><em>' . esc_html__( 'none', 'query-monitor' ) . '</em></td>';
 			echo '</tr>';
 			if ( !empty( $vars ) ) {
 				echo '<tr>';
-				echo '<td colspan="8">' . $vars . '</td>';
+				printf(
+					'<td colspan="8">%s</td>',
+					implode( '<br>', array_map( 'esc_html', $vars ) )
+				);
 				echo '</tr>';
 			}
 			echo '</tbody>';
@@ -184,7 +232,10 @@ class QM_Output_Html_HTTP extends QM_Output_Html {
 			: __( 'HTTP Requests (%s)', 'query-monitor' );
 
 		$args = array(
-			'title' => sprintf( $title, number_format_i18n( $count ) ),
+			'title' => esc_html( sprintf(
+				$title,
+				number_format_i18n( $count )
+			) ),
 		);
 
 		if ( isset( $data['errors']['error'] ) ) {

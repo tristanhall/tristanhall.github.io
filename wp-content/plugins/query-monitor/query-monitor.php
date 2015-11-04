@@ -2,7 +2,7 @@
 /*
 Plugin Name: Query Monitor
 Description: Monitoring of database queries, hooks, conditionals and more.
-Version:     2.7.4
+Version:     2.8.0
 Plugin URI:  https://querymonitor.com/
 Author:      John Blackbourn
 Author URI:  https://johnblackbourn.com/
@@ -30,9 +30,9 @@ if ( defined( 'QM_DISABLED' ) and QM_DISABLED ) {
 	return;
 }
 
-if ( defined( 'WP_CLI' ) and WP_CLI ) {
-	# For the time being, let's not load QM when using WP-CLI because we've no persistent storage and no means of
-	# outputting collected data on the CLI. This will change in a future version of QM.
+if ( 'cli' === php_sapi_name() && ! defined( 'QM_TESTS' ) ) {
+	# For the time being, let's not load QM when using the CLI because we've no persistent storage and no means of
+	# outputting collected data on the CLI. This will hopefully change in a future version of QM.
 	return;
 }
 
@@ -49,7 +49,6 @@ class QueryMonitor extends QM_Plugin {
 		# Actions
 		add_action( 'plugins_loaded', array( $this, 'action_plugins_loaded' ) );
 		add_action( 'init',           array( $this, 'action_init' ) );
-		add_action( 'shutdown',       array( $this, 'action_shutdown' ), 0 );
 
 		# Filters
 		add_filter( 'pre_update_option_active_plugins',               array( $this, 'filter_active_plugins' ) );
@@ -63,7 +62,9 @@ class QueryMonitor extends QM_Plugin {
 		parent::__construct( $file );
 
 		# Load and register built-in collectors:
-		QM_Util::include_files( $this->plugin_path( 'collectors' ) );
+		foreach ( glob( $this->plugin_path( 'collectors/*.php' ) ) as $file ) {
+			include $file;
+		}
 
 	}
 
@@ -74,8 +75,10 @@ class QueryMonitor extends QM_Plugin {
 			QM_Collectors::add( $collector );
 		}
 
-		# Dispatchers:
-		QM_Util::include_files( $this->plugin_path( 'dispatchers' ) );
+		# Load dispatchers:
+		foreach ( glob( $this->plugin_path( 'dispatchers/*.php' ) ) as $file ) {
+			include $file;
+		}
 
 		# Register built-in and additional dispatchers:
 		foreach ( apply_filters( 'qm/dispatchers', array(), $this ) as $dispatcher ) {
@@ -115,99 +118,9 @@ class QueryMonitor extends QM_Plugin {
 
 	}
 
-	public function should_process() {
-
-		# @TODO this decision should be moved to each dispatcher
-
-		# Don't process if the minimum required actions haven't fired:
-
-		if ( is_admin() ) {
-
-			if ( ! did_action( 'admin_init' ) ) {
-				return false;
-			}
-
-		} else {
-
-			if ( ! ( did_action( 'wp' ) or did_action( 'login_init' ) ) ) {
-				return false;
-			}
-
-		}
-
-		$e = error_get_last();
-
-		# Don't process if a fatal has occurred:
-		if ( ! empty( $e ) and ( $e['type'] & ( E_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR ) ) ) {
-			return false;
-		}
-		
-		# Allow users to disable the processing and output
-		if ( ! apply_filters( 'qm/process', true, is_admin_bar_showing() ) ) {
-			return false;
-		}
-
-		$dispatchers = QM_Dispatchers::init();
-
-		foreach ( $dispatchers as $dispatcher ) {
-
-			# At least one dispatcher is active, so we need to process:
-			if ( $dispatcher->is_active() ) {
-				return true;
-			}
-
-		}
-
-		return false;
-
-	}
-
-	public function action_shutdown() {
-
-		# @TODO this should move to each dispatcher so it can decide when it wants to do its output
-		# eg. the JSON dispatcher needs to output inside the 'json_post_dispatch' filter, not on shutdown
-
-		if ( ! $this->should_process() ) {
-			return;
-		}
-
-		$collectors  = QM_Collectors::init();
-		$dispatchers = QM_Dispatchers::init();
-
-		foreach ( $collectors as $collector ) {
-			$collector->tear_down();
-			$collector->process();
-		}
-
-		foreach ( $dispatchers as $dispatcher ) {
-
-			if ( ! $dispatcher->is_active() ) {
-				continue;
-			}
-
-			$dispatcher->before_output();
-
-			$outputters = apply_filters( "qm/outputter/{$dispatcher->id}", array(), $collectors );
-
-			foreach ( $outputters as $outputter ) {
-				$outputter->output();
-			}
-
-			$dispatcher->after_output();
-
-		}
-
-	}
-
 	public function action_init() {
 
 		load_plugin_textdomain( 'query-monitor', false, dirname( $this->plugin_base() ) . '/languages' );
-
-		$dispatchers = QM_Dispatchers::init();
-
-		foreach ( $dispatchers as $dispatcher ) {
-			$dispatcher->init();
-		}
 
 	}
 
@@ -250,7 +163,10 @@ class QueryMonitor extends QM_Plugin {
 
 	public static function symlink_warning() {
 		$db = WP_CONTENT_DIR . '/db.php';
-		trigger_error( sprintf( __( 'The symlink at %s is no longer pointing to the correct location. Please remove the symlink, then deactivate and reactivate Query Monitor.', 'query-monitor' ), "<code>{$db}</code>" ), E_USER_WARNING );
+		trigger_error( sprintf(
+			esc_html__( 'The symlink at %s is no longer pointing to the correct location. Please remove the symlink, then deactivate and reactivate Query Monitor.', 'query-monitor' ),
+			'<code>' . esc_html( $db ) . '</code>'
+		), E_USER_WARNING );
 	}
 
 	public static function init( $file = null ) {

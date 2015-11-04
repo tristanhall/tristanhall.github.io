@@ -24,19 +24,58 @@ abstract class QM_Dispatcher {
 			define( 'QM_COOKIE', 'query_monitor_' . COOKIEHASH );
 		}
 
+		add_action( 'init', array( $this, 'init' ) );
+
 	}
 
 	abstract public function is_active();
 
+	final public function should_dispatch() {
+
+		$e = error_get_last();
+
+		# Don't dispatch if a fatal has occurred:
+		if ( ! empty( $e ) and ( $e['type'] & ( E_ERROR | E_USER_ERROR | E_RECOVERABLE_ERROR ) ) ) {
+			return false;
+		}
+		
+		# Allow users to disable this dispatcher
+		if ( ! apply_filters( "qm/dispatch/{$this->id}", true ) ) {
+			return false;
+		}
+
+		return $this->is_active();
+
+	}
+
+	public function get_outputters( $outputter_id ) {
+
+		$out = array();
+
+		$collectors = QM_Collectors::init();
+		$collectors->process();
+
+		$this->outputters = apply_filters( "qm/outputter/{$outputter_id}", array(), $collectors );
+
+		/* @var QM_Output[] */
+		foreach ( $this->outputters as $id => $outputter ) {
+			$out[ $id ] = $outputter;
+		}
+
+		return $out;
+
+	}
+
 	public function init() {
+		// @TODO should be abstract?
 		// nothing
 	}
 
-	public function before_output() {
+	protected function before_output() {
 		// nothing
 	}
 
-	public function after_output() {
+	protected function after_output() {
 		// nothing
 	}
 
@@ -50,13 +89,13 @@ abstract class QM_Dispatcher {
 			return true;
 		}
 
-		return $this->user_verified();
+		return self::user_verified();
 
 	}
 
-	public function user_verified() {
+	public static function user_verified() {
 		if ( isset( $_COOKIE[QM_COOKIE] ) ) {
-			return $this->verify_cookie( stripslashes( $_COOKIE[QM_COOKIE] ) );
+			return self::verify_cookie( stripslashes( $_COOKIE[QM_COOKIE] ) );
 		}
 		return false;
 	}

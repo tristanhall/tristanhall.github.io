@@ -1,0 +1,112 @@
+@import "bourbon/bourbon", "neat/neat", "base/base";
+
+$header-font-family: "Nexa Bold", sans-serif;
+$body-font-family: "Nexa Book", sans-serif;
+
+$touch-breakpoint: 780px;
+
+$color-blue: #477dca;
+
+body {
+    background: #fff;
+    margin: 0;
+    font-family: $body-font-family;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: $header-font-family;
+    text-transform: uppercase;
+}
+
+#Mast {
+    @include outer-container();
+    margin-top: 50px;
+    margin-bottom: 10px;
+    @include media($touch-breakpoint) {
+        margin-top: 100px;
+        margin-bottom: 0;
+    }
+    .slogan {
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 25px;
+        font-weight: bold;
+        font-family: $header-font-family;
+        letter-spacing: 2px;
+        max-width: 210px;
+        margin: 25px auto 0.75em;
+        @include media(407px) {
+            max-width: 100%;
+        }
+    }
+}
+
+#Logo {
+    display: block;
+    margin: 0 auto;
+    width: 150px;
+    height: 150px;
+    text-indent: -9999px;
+    background-image: url('../images/img-logo-black.png');
+    background-repeat: no-repeat;
+    background-size: 100%;
+}
+
+#PrimaryNav {
+    @include outer-container();
+    background-color: #fafafa;
+    padding: 10px 15px;
+    overflow: scroll;
+    position: relative;
+    height: 45px;
+    width: 100%;
+    @include media($touch-breakpoint) {
+        background-color: transparent;
+    }
+    .menu {
+        position: absolute;
+        left: 15px;
+        width: auto;
+        white-space: nowrap;
+        margin: 0 auto;
+        @include media($touch-breakpoint) {
+            position: relative;
+            left: auto;
+            text-align: center;
+        }
+    }
+    .menu-item {
+        display: inline-block;
+        margin-right: 1.4em;
+        text-transform: uppercase;
+        font-weight: bold;
+        font-family: $header-font-family;
+        letter-spacing: 1px;
+        @include media($touch-breakpoint) {
+            margin-left: 1.4em;
+            font-size: 20px;
+        }
+    }
+}
+
+#Content {
+    padding: 15px 25px;
+    text-align: center;
+    font-family: $body-font-family;
+}
+
+.disciplines {
+    #Content {
+        ul li {
+            width: 100%;
+            padding: 0 10px;
+            background: #fafafa;
+            color: $color-blue;
+            text-transform: uppercase;
+            font-family: $header-font-family;
+            line-height: 40px;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+    }
+}

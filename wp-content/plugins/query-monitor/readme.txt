@@ -1,16 +1,16 @@
 === Query Monitor ===
 Contributors: johnbillion
-Tags: debug, debug-bar, debugging, development, developer, performance, profiler, profiling, queries, query monitor
-Requires at least: 3.5
-Tested up to: 4.2
-Stable tag: 2.7.4
+Tags: ajax, debug, debug-bar, debugging, development, developer, performance, profiler, profiling, queries, query monitor, rest-api
+Requires at least: 3.7
+Tested up to: 4.3
+Stable tag: 2.8.0
 License: GPLv2 or later
 
 View debugging and performance information on database queries, hooks, conditionals, HTTP requests, redirects and more.
 
 == Description ==
 
-Query Monitor is a debugging plugin for anyone developing with WordPress. It has some advanced features not available in other debugging plugins, including automatic AJAX debugging and the ability to narrow down things by plugin or theme.
+Query Monitor is a debugging plugin for anyone developing with WordPress. It has some advanced features not available in other debugging plugins, including automatic AJAX debugging, REST API debugging, and the ability to narrow down things by plugin or theme.
 
 For complete information, please see [Query Monitor's GitHub repo](https://github.com/johnbillion/query-monitor).
 
@@ -25,7 +25,7 @@ Here's an overview of what's shown:
  * Filter queries by **component** (WordPress core, Plugin X, Plugin Y, theme)
  * Filter queries by **calling function**
  * View **aggregate query information** grouped by component, calling function, and type
- * Super advanced: Supports **multiple instances of wpdb** on one page
+ * Super advanced: Supports **multiple instances of wpdb** on one page (more info in the FAQ)
 
 Filtering queries by component or calling function makes it easy to see which plugins, themes, or functions on your site are making the most (or the slowest) database queries.
 
@@ -39,7 +39,7 @@ Filtering queries by component or calling function makes it easy to see which pl
 
  * Shows the **template filename** for the current page
  * Shows the available **body classes** for the current page
- * Shows the active parent and child theme name
+ * Shows the active theme name
 
 = PHP Errors =
 
@@ -50,7 +50,7 @@ Filtering queries by component or calling function makes it easy to see which pl
 
  * Shows **matched rewrite rules** and associated query strings
  * Shows **query vars** for the current request, and highlights **custom query vars**
- * Shows the **queried object** details (collapsed by default)
+ * Shows the **queried object** details
  * Shows details of the **current blog** (multisite only) and **current site** (multi-network only)
 
 = Scripts & Styles =
@@ -58,25 +58,34 @@ Filtering queries by component or calling function makes it easy to see which pl
  * Shows all **enqueued scripts and styles** on the current page, along with their URL and version
  * Shows their **dependencies and dependents**, and alerts you to any **broken dependencies**
 
+= Languages =
+
+ * Shows you **language settings** and text domains
+ * Shows you the **MO files** for each text domain and which ones were loaded or not
+
 = HTTP Requests =
 
  * Shows all HTTP requests performed on the current page (as long as they use WordPress' HTTP API)
- * Shows the response code, call stack, transport, timeout, and time taken
+ * Shows the response code, call stack, transport, component, timeout, and time taken
  * Highlights **erroneous responses**, such as failed requests and anything without a `200` response code
 
 = Redirects =
 
- * Whenever a redirect occurs, Query Monitor adds an `X-QM-Redirect` HTTP header containing the call stack, so you can use your favourite HTTP inspector to easily trace where a redirect has come from
+ * Whenever a redirect occurs, Query Monitor adds an `X-QM-Redirect` HTTP header containing the call stack, so you can use your favourite HTTP inspector or browser developer tools to easily trace where a redirect has come from
 
 = AJAX =
 
-The response from any jQuery AJAX request on the page will contain various debugging information in its header that gets output to the developer console. **No hooking required**.
+The response from any jQuery AJAX request on the page will contain various debugging information in its headers. Any errors also get output to the developer console. **No hooking required**.
 
-AJAX debugging is in its early stages. Currently it only includes PHP errors, but this will be built upon in future versions.
+Currently this includes PHP errors and some overview information such as memory usage, but this will be built upon in future versions.
+
+= REST API =
+
+The response from an authenticated WordPress REST API (v2 or later) request will contain various debugging information in its headers, as long as the authenticated user has permission to view Query Monitor's output.
+
+Currently this includes PHP errors and some overview information such as memory usage, but this will be built upon in future versions.
 
 = Admin Screen =
-
-Hands up who can remember the correct names for the filters and actions for custom admin screen columns?
 
  * Shows the correct names for **custom column filters and actions** on all admin screens that have a listing table
  * Shows the state of `get_current_screen()` and a few variables
@@ -94,8 +103,7 @@ Hands up who can remember the correct names for the filters and actions for cust
 
  * Shows any **transients that were set**, along with their timeout, component, and call stack
  * Shows all **WordPress conditionals** on the current page, highlighted nicely
- * Shows an overview including page generation time and memory limit as absolute values and as % of their respective limits
- * Shows all *scripts and styles* which were enqueued on the current page, along with their URL, dependencies, dependents, and version number
+ * Shows an overview at the top, including page generation time and memory limit as absolute values and as % of their respective limits
 
 = Authentication =
 
@@ -105,14 +113,9 @@ In addition to this, you can set an authentication cookie which allows you to vi
 
 == Installation ==
 
-You can install this plugin directly from your WordPress dashboard:
+Install Query Monitor just like any other plugin.
 
-1. Go to the *Plugins* menu and click *Add New*.
-2. Search for *Query Monitor*.
-3. Click *Install Now* next to the Query Monitor plugin.
-4. Activate the plugin.
-
-Alternatively, see the guide to [Manually Installing Plugins](https://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation).
+If you don't know how to do that, then Query Monitor is not for you.
 
 == Screenshots ==
 
@@ -142,19 +145,36 @@ On pages that have an especially high number of database queries (in the hundred
 
 = Are there any add-on plugins for Query Monitor? =
 
-Query Monitor transparently supports add-ons for the Debug Bar plugin. If you have any Debug Bar add-ons installed, just deactivate Debug Bar and the add-ons will show up in Query Monitor's menu.
+[A list of add-on plugins for Query Monitor can be found here.](https://github.com/johnbillion/query-monitor/wiki/Query-Monitor-Add-on-Plugins)
 
-There's also [Query Monitor bbPress & BuddyPress Conditionals](https://wordpress.org/plugins/query-monitor-bbpress-buddypress-conditionals/) by Stephen Edgar.
+In addition, Query Monitor transparently supports add-ons for the Debug Bar plugin. If you have any Debug Bar add-ons installed, just deactivate Debug Bar and the add-ons will show up in Query Monitor's menu.
 
 = Where can I suggest a new feature or report a bug? =
 
 Please use [the issue tracker on Query Monitor's GitHub repo](https://github.com/johnbillion/query-monitor/issues) as it's easier to keep track of issues there, rather than on the wordpress.org support forums.
+
+= I'm using multiple instances of `wpdb`. How do I get my additional instances to show up in Query Monitor? =
+
+You'll need to hook into the `qm/collect/db_objects` filter and add an item to the array with your connection name as the key and the `wpdb` instance as the value. Your `wpdb` instance will then show up as a separate panel, and the query time and query count will show up separately in the admin toolbar menu. Aggregate information (queries by caller and component) will not be separated.
 
 = Do you accept donations? =
 
 No, I do not accept donations. If you like the plugin, I'd love for you to [leave a review](https://wordpress.org/support/view/plugin-reviews/query-monitor). Tell all your friends about the plugin too!
 
 == Changelog ==
+
+= 2.8.0 =
+* A new Languages component for debugging languages and text domains. Thanks, @MPolleke!
+* REST API debugging in the form of HTTP headers when performing an authenticated REST API request. Shows PHP errors when relevant, along with an overview of memory usage, processing time, database query number, and database query time.
+* Various visual improvements, including displaying the relevant file name below stack trace functions, and a more visible stack trace expansion toggle.
+* Add `is_embed()`, `is_comment_feed()`, and `is_user_admin()` to the list of conditional functions.
+* Add HHVM, SAPI, and MySQL client info to the Environment component.
+* QM is now not loaded at all on the CLI.
+* Avoid an issue with the CloudFlare Flexible SSL plugin.
+* Improve the output of Multisite's `$current_blog` and `$current_site` in the Request component.
+* Fully handle Windows paths when detecting a file component.
+* Don't display the symlink warning when using a secondary instance of WPDB.
+* Whole bunch of internal structure refactoring, escaping, and other misc tweaks.
 
 = 2.7.4 =
 * An unknown component now gets marked as such, not as Core.

@@ -16,7 +16,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
- 
+ if(basename($_SERVER['SCRIPT_FILENAME']) == "brokenlinks.class.singlecall.php"):
+    exit;
+endif;
 if(!defined('IWP_BACKUP_DIR')){
 define('IWP_BACKUP_DIR', WP_CONTENT_DIR . '/infinitewp/backups');
 }

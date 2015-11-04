@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
- 
+ if(basename($_SERVER['SCRIPT_FILENAME']) == "core.class.php"):
+    exit;
+endif;
 class IWP_MMB_Core extends IWP_MMB_Helper
 {
     var $name;
@@ -281,7 +283,7 @@ class IWP_MMB_Core extends IWP_MMB_Helper
 		$notice_display_URL = rtrim($notice_display_URL, '/').'/';
 		
 		
-		echo '<div class="updated" style="text-align: center;"><p style="color: green; font-size: 14px; font-weight: bold;">Add this site to IWP Admin panel</p><p>
+		echo '<div class="updated" style="text-align: center; display:block !important; "><p style="color: green; font-size: 14px; font-weight: bold;">Add this site to IWP Admin panel</p><p>
 		<table border="0" align="center" cellpadding="5">';
 		if(!empty($iwp_client_activate_key)){
 			echo '<tr><td align="right">WP-ADMIN URL:</td><td align="left"><strong>'.$notice_display_URL.'</strong></td></tr>

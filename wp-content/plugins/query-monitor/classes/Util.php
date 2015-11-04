@@ -78,6 +78,8 @@ class QM_Util {
 
 		# @TODO turn this into a class (eg QM_File_Component)
 
+		$file = self::standard_dir( $file );
+
 		if ( isset( self::$file_components[$file] ) ) {
 			return self::$file_components[$file];
 		}
@@ -167,7 +169,7 @@ class QM_Util {
 
 				if ( is_a( $callback['function'], 'Closure' ) ) {
 					$ref  = new ReflectionFunction( $callback['function'] );
-					$file = trim( QM_Util::standard_dir( $ref->getFileName(), '' ), '/' );
+					$file = QM_Util::standard_dir( $ref->getFileName(), '' );
 					$callback['name'] = sprintf( __( 'Closure on line %1$d of %2$s', 'query-monitor' ), $ref->getStartLine(), $file );
 				} else {
 					// the object should have a __invoke() method
@@ -186,16 +188,26 @@ class QM_Util {
 			$callback['file'] = $ref->getFileName();
 			$callback['line'] = $ref->getStartLine();
 
-			if ( '__lambda_func' === $ref->getName() ) {
+			// https://github.com/facebook/hhvm/issues/5856
+			$name = trim( $ref->getName() );
+
+			if ( '__lambda_func' === $name || 0 === strpos( $name, 'lambda_' ) ) {
 				if ( preg_match( '|(?P<file>.*)\((?P<line>[0-9]+)\)|', $callback['file'], $matches ) ) {
 					$callback['file'] = $matches['file'];
 					$callback['line'] = $matches['line'];
 					$file = trim( QM_Util::standard_dir( $callback['file'], '' ), '/' );
 					$callback['name'] = sprintf( __( 'Anonymous function on line %1$d of %2$s', 'query-monitor' ), $callback['line'], $file );
+				} else {
+					// https://github.com/facebook/hhvm/issues/5807
+					unset( $callback['line'], $callback['file'] );
+					$callback['name'] = $name . '()';
+					$callback['error'] = new WP_Error( 'unknown_lambda', __( 'Unable to determine source of lambda function', 'query-monitor' ) );
 				}
 			}
 
-			$callback['component'] = self::get_file_component( $callback['file'] );
+			if ( ! empty( $callback['file'] ) ) {
+				$callback['component'] = self::get_file_component( $callback['file'] );
+			}
 
 		} catch ( ReflectionException $e ) {
 
@@ -236,30 +248,12 @@ class QM_Util {
 		return ( is_ssl() ? 'https://' : 'http://' ) . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 
-	public static function include_files( $path ) {
-
- 		if ( class_exists( 'DirectoryIterator' ) and method_exists( 'DirectoryIterator', 'getExtension' ) ) {
-
-			$output_iterator = new DirectoryIterator( $path );
-
-			foreach ( $output_iterator as $output ) {
-				if ( $output->getExtension() === 'php' ) {
-					include $output->getPathname();
-				}
-			}
-
-		} else {
-
-			foreach ( glob( sprintf( '%s/*.php', $path ) ) as $file ) {
-				include $file;
-			}
-
-		}
-
-	}
-
 	public static function is_multi_network() {
 		global $wpdb;
+
+		if ( function_exists( 'is_multi_network' ) ) {
+			return is_multi_network();
+		}
 
 		if ( ! is_multisite() ) {
 			return false;
@@ -271,6 +265,20 @@ class QM_Util {
 		" );
 
 		return ( $num_sites > 1 );
+	}
+
+	public static function get_client_version( $client ) {
+
+		$client = intval( $client );
+
+		$hello = $client % 10000;
+
+		$major = intval( floor( $client / 10000 ) );
+		$minor = intval( floor( $hello / 100 ) );
+		$patch = intval( $hello % 100 );
+
+		return compact( 'major', 'minor', 'patch' );
+
 	}
 
 }

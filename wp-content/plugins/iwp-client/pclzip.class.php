@@ -26,6 +26,9 @@
 // --------------------------------------------------------------------------------
 
   // ----- Constants
+if(basename($_SERVER['SCRIPT_FILENAME']) == "pclzip.class.php"):
+    exit;
+endif;
   if (!defined('IWP_PCLZIP_READ_BLOCK_SIZE')) {
     define( 'IWP_PCLZIP_READ_BLOCK_SIZE', 2048 );
   }

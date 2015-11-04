@@ -15,7 +15,9 @@
  * Copyright (c) 2011 Prelovac Media
  * www.prelovac.com
  **************************************************************/
-
+if(basename($_SERVER['SCRIPT_FILENAME']) == "search.php"):
+    exit;
+endif;
 	iwp_mmb_add_action('iwp_mmb_search_posts_by_term', 'iwp_mmb_search_posts_by_term');
 	
     function iwp_mmb_search_posts_by_term($params = false){
