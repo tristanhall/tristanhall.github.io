@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="dns-prefetch" href="//ajax.googleapis.com">
         <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <?php wp_head(); ?>
         <script>
@@ -14,27 +15,18 @@
             ga('send', 'pageview');
         </script>
     </head>
-    <body <?php body_class(); ?>>
-        <div id="Wrapper">
-            <div id="Container">
-                <header id="Mast">
-                    <a href="<?php echo home_url(); ?>" title="<?php echo get_option('blogname'); ?>" id="Logo"><?php echo get_option('blogname'); ?></a>
-                    <p class="slogan">Complex Problems. Simple Solutions.</p>
+    <body <?php body_class(); ?> itemscope itemtype="<?php echo (isset($post->post_name) && $post->post_name == 'contact' ? 'http://schema.org/ContactPage' : 'http://schema.org/WebPage'); ?>">
+        <div id="wrapper">
+            <div id="container">
+                <header id="mast">
+                    <a href="<?php echo home_url(); ?>" title="<?php echo get_option('blogname'); ?>" id="logo"><?php echo get_option('blogname'); ?></a>
+                    <p class="slogan"><?php bloginfo('description'); ?></p>
                 </header>
-                <nav id="PrimaryNav">
-                    <ul class="menu">
-                        <li class="menu-item current-menu-item">
-                            <a href="#">Home</a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="#">Disciplines</a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="#">Work</a>
-                        </li>
-                        <li class="menu-item">
-                            <a href="#">Blog</a>
-                        </li>
-                    </ul>
+                <nav id="primaryNav">
+                    <div class="mobileNavToggle"><?php _e('Menu', 'th'); ?></div>
+                    <?php wp_nav_menu(array(
+                        'theme_location'  => 'header_menu',
+                    	'depth'           => 2
+                    )); ?>
                 </nav>
-                <section id="Content">
+                <section id="content">

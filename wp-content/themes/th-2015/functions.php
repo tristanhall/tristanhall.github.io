@@ -17,3 +17,7 @@ add_filter('body_class', function($classes) {
     }
     return $classes;
 });
+
+add_action('after_setup_theme', function() {
+    register_nav_menu('header_menu', __('Header Menu', 'th'));
+});

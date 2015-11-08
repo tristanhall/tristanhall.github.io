@@ -1,11 +1,8 @@
-@import "bourbon/bourbon", "neat/neat", "base/base";
+@import "bourbon/bourbon", "neat/neat", "base/base", "settings";
 
-$header-font-family: "Nexa Bold", sans-serif;
-$body-font-family: "Nexa Book", sans-serif;
-
-$touch-breakpoint: 780px;
-
-$color-blue: #477dca;
+html, body {
+    height: 100%;
+}
 
 body {
     background: #fff;
@@ -18,13 +15,15 @@ h1, h2, h3, h4, h5, h6 {
     text-transform: uppercase;
 }
 
-#Mast {
+#mast {
     @include outer-container();
     margin-top: 50px;
     margin-bottom: 10px;
-    @include media($touch-breakpoint) {
+    padding: 0 1em;
+    @include media($horizontal-bar-mode) {
         margin-top: 100px;
         margin-bottom: 0;
+        padding: 0;
     }
     .slogan {
         text-transform: uppercase;
@@ -41,7 +40,7 @@ h1, h2, h3, h4, h5, h6 {
     }
 }
 
-#Logo {
+#logo {
     display: block;
     margin: 0 auto;
     width: 150px;
@@ -52,51 +51,75 @@ h1, h2, h3, h4, h5, h6 {
     background-size: 100%;
 }
 
-#PrimaryNav {
+#primaryNav {
     @include outer-container();
-    background-color: #fafafa;
     padding: 10px 15px;
-    overflow: scroll;
     position: relative;
-    height: 45px;
     width: 100%;
-    @include media($touch-breakpoint) {
-        background-color: transparent;
+    background-color: transparent;
+    @include media($horizontal-bar-mode) {
+        height: auto;
+    }
+    .mobileNavToggle {
+        @include span-columns(12);
+        @include omega();
+        font-family: $header-font-family;
+        color: #fff;
+        background-color: $color-blue;
+        text-align: center;
+        text-transform: uppercase;
+        line-height: 50px;
+        font-size: 20px;
+        letter-spacing: 2px;
+        @include media($horizontal-bar-mode) {
+            display: none;
+        }
     }
     .menu {
-        position: absolute;
-        left: 15px;
-        width: auto;
-        white-space: nowrap;
+        @include span-columns(12);
+        @include omega();
         margin: 0 auto;
-        @include media($touch-breakpoint) {
-            position: relative;
-            left: auto;
+        border: 1px solid $color-blue;
+        display: none;
+        @include media($horizontal-bar-mode) {
             text-align: center;
+            display: block;
+            border: 0;
         }
     }
     .menu-item {
-        display: inline-block;
+        @include span-columns(12);
+        @include omega();
         margin-right: 1.4em;
         text-transform: uppercase;
         font-weight: bold;
         font-family: $header-font-family;
         letter-spacing: 1px;
-        @include media($touch-breakpoint) {
+        a {
+            display: block;
+            text-align: center;
+            text-transform: uppercase;
+            line-height: 40px;
+            font-family: $body-font-family;
+        }
+        @include media($horizontal-bar-mode) {
             margin-left: 1.4em;
             font-size: 20px;
+            display: inline-block;
+            float: none;
+            width: auto;
         }
     }
 }
 
-#Content {
+#content {
     padding: 15px 25px;
     text-align: center;
     font-family: $body-font-family;
 }
 
 .disciplines {
-    #Content {
+    #content {
         ul li {
             width: 100%;
             padding: 0 10px;
@@ -107,6 +130,37 @@ h1, h2, h3, h4, h5, h6 {
             line-height: 40px;
             margin-bottom: 5px;
             letter-spacing: 2px;
+        }
+    }
+}
+
+#footer {
+    @include outer-container();
+    text-align: left;
+    font-size: 0.8em;
+    color: #ccc;
+    font-family: $body-font-family;
+    font-weight: normal;
+    #breadcrumbs {
+        @include span-columns(12);
+        @include omega();
+        text-align: center;
+        a {
+            color: #333;
+        }
+        @include media($horizontal-bar-mode) {
+            @include span-columns(6);
+            text-align: left;
+        }
+    }
+    #copyright {
+        @include span-columns(12);
+        @include omega();
+        text-align: center;
+        @include media($horizontal-bar-mode) {
+            @include span-columns(6);
+            float: right;
+            text-align: right;
         }
     }
 }
