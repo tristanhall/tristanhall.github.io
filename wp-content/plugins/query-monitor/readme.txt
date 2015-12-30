@@ -2,8 +2,8 @@
 Contributors: johnbillion
 Tags: ajax, debug, debug-bar, debugging, development, developer, performance, profiler, profiling, queries, query monitor, rest-api
 Requires at least: 3.7
-Tested up to: 4.3
-Stable tag: 2.8.0
+Tested up to: 4.4
+Stable tag: 2.8.1
 License: GPLv2 or later
 
 View debugging and performance information on database queries, hooks, conditionals, HTTP requests, redirects and more.
@@ -162,6 +162,14 @@ You'll need to hook into the `qm/collect/db_objects` filter and add an item to t
 No, I do not accept donations. If you like the plugin, I'd love for you to [leave a review](https://wordpress.org/support/view/plugin-reviews/query-monitor). Tell all your friends about the plugin too!
 
 == Changelog ==
+
+= 2.8.1 =
+* Correctly detect the file name and line number responsible for loading translation files in plugins which use `load_textdomain()`.
+* Correct the visibility of the `before_output()` method in the REST dispatcher.
+* Load the languages collector early so it catches plugins which load their translation files when they initialise.
+* Remove an erroneous double quote.
+* Remove connection as param in `mysqli_get_client_version()`.
+* Various CSS fixes.
 
 = 2.8.0 =
 * A new Languages component for debugging languages and text domains. Thanks, @MPolleke!

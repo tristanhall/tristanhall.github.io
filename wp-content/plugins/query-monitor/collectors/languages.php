@@ -63,7 +63,16 @@ class QM_Collector_Languages extends QM_Collector {
 		}
 
 		if ( empty( $caller ) ) {
-			$caller = $filtered[1];
+			if ( isset( $filtered[1] ) ) {
+				$caller = $filtered[1];
+			} else {
+				$caller = $filtered[0];
+			}
+		}
+
+		if ( ! isset( $caller['file'] ) && isset( $filtered[0]['file'] ) && isset( $filtered[0]['line'] ) ) {
+			$caller['file'] = $filtered[0]['file'];
+			$caller['line'] = $filtered[0]['line'];
 		}
 
 		$this->data['languages'][] = array(
@@ -77,12 +86,7 @@ class QM_Collector_Languages extends QM_Collector {
 
 	}
 
-
 }
 
-function register_qm_collector_languages( array $collectors, QueryMonitor $qm ) {
-	$collectors['languages'] = new QM_Collector_Languages;
-	return $collectors;
-}
-
-add_filter( 'qm/collectors', 'register_qm_collector_languages', 21, 2 );
+# Load early to catch early errors
+QM_Collectors::add( new QM_Collector_Languages );

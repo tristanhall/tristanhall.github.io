@@ -142,14 +142,20 @@ function wp_mail( $to, $subject, $message, $headers = '', $attachments = array()
 	$body['o:tracking-clicks'] = isset( $mailgun['track-clicks'] ) ? $mailgun['track-clicks'] : "no";
 	$body['o:tracking-opens'] = isset( $mailgun['track-opens'] ) ? "yes" : "no";
 
+    // this is the wordpress site tag
 	if ( isset( $mailgun['tag'] ) ){
 		$tags = explode(",", str_replace(" ","", $mailgun['tag']));
 		$body['o:tag'] = $tags;
 	}
 
+    // campaign-id now refers to a list of tags which will be appended to the site tag
 	if ( isset( $mailgun['campaign-id'] ) ){
-		$campaigns = explode(",", str_replace(" ","", $mailgun['campaign-id']));
-		$body['o:campaign'] = $campaigns;
+		$tags = explode(",", str_replace(" ","", $mailgun['campaign-id']));
+		if ($body['o:tag']=='') {
+			$body['o:tag']= $tags;
+		} else {
+			$body['o:tag'].=','.$tags;
+		}
 	}
 
 	if ( ! empty( $cc ) && is_array( $cc ) )
