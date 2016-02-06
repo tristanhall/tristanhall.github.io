@@ -1,7 +1,6 @@
 <?php
   global $wpi_settings;
   $user_information = apply_filters('wpi_user_information', $wpi_settings['user_meta']['custom']);
-  //$user_information = array_merge($wpi_settings['user_meta']['required'], $custom_user_information);
 ?>
 
 <h3><?php _e('Billing / Invoicing Info', ud_get_wp_invoice()->domain) ?></h3>

@@ -38,12 +38,6 @@ namespace UsabilityDynamics\WPI {
         add_filter( "option_wpi_options", array( 'WPI_Functions', 'option_wpi_options' ) );
 
         /**
-         * Some UD helper.
-         * @todo: get rid of this.
-         */
-        require_once( ud_get_wp_invoice()->path( 'lib/wpi_ud.php', 'dir' ) );
-
-        /**
          * Core
          */
         require_once( ud_get_wp_invoice()->path( 'lib/class_core.php', 'dir' ) );
@@ -84,12 +78,6 @@ namespace UsabilityDynamics\WPI {
          */
         require_once( ud_get_wp_invoice()->path( 'lib/class_widgets.php', 'dir' ) );
 
-        /** 
-         * IDK WTF this is
-         * @todo: get rid of this.
-         **/
-        require_once( ud_get_wp_invoice()->path( 'lib/template.php', 'dir' ) );
-
         /**
          * Payments API
          */
@@ -111,12 +99,14 @@ namespace UsabilityDynamics\WPI {
         require_once( ud_get_wp_invoice()->path( 'lib/class_legacy.php', 'dir' ) );
 
         /**
-         *
+         * List table
          */
         require_once( ud_get_wp_invoice()->path( 'lib/class_list_table.php', 'dir' ) );
 
         //** Initiate the plugin */
         $this->core = \WPI_Core::getInstance();
+        $this->uip  = new UnifiedInvoicePage();
+        $this->cd   = new ClientDashboard();
       }
       
       /**

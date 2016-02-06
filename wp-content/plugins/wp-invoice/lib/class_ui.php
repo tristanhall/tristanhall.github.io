@@ -796,7 +796,7 @@ class WPI_UI {
     if ( empty( $_REQUEST[ 'wpi' ] ) ) {
       return $path . '/user_selection_form.php';
     }
-    if ( WPI_UD_F::is_older_wp_version( '3.4' ) ) {
+    if ( \UsabilityDynamics\Utility::is_older_wp_version( '3.4' ) ) {
       return $path = $path . '/wp-invoice_page_wpi_page_manage_invoice_legacy.php';
     }
 
@@ -1041,30 +1041,7 @@ class WPI_UI {
 
     $invoice = $wpi_invoice_object->data;
 
-    /** Mark invoice as viewed if not by admin */
-    if ( !current_user_can( 'manage_options' ) ) {
-
-      /** Prevent duplicating of 'viewed' item. */
-      /** 1 time per $hours */
-      $hours = 12;
-
-      $viewed_today_from_cur_ip = false;
-
-      foreach ( $invoice[ 'log' ] as $key => $value ) {
-        if ( $value[ 'user_id' ] == '0' ) {
-          if ( strstr( strtolower( $value[ 'text' ] ), "viewed by {$_SERVER['REMOTE_ADDR']}" ) ) {
-            $time_dif = time() - $value[ 'time' ];
-            if ( $time_dif < $hours * 60 * 60 ) {
-              $viewed_today_from_cur_ip = true;
-            }
-          }
-        }
-      }
-
-      if ( !$viewed_today_from_cur_ip ) {
-        $wpi_invoice_object->add_entry( "note=Viewed by {$_SERVER['REMOTE_ADDR']}" );
-      }
-    }
+    wpi_track_invoice_page_visit( $wpi_invoice_object );
 
     /** Include our template functions */
     include_once( 'class_template_functions.php' );
@@ -1347,7 +1324,7 @@ class WPI_UI {
 
     if ( !empty( $values_array ) && is_array( $values_array ) ) {
       foreach ( $values_array as $key => $value ) {
-        $output .= "<option value='$key'";
+        $output .= '<option value="'.$key.'"';
         if ( $key == $current_value )
           $output .= " selected";
         $output .= ">$value</option>";

@@ -126,9 +126,28 @@ class WPI_Settings_page {
    * @param type $wpi_settings
    */
   static function basic($wpi_settings) {
+    wp_enqueue_media();
     ?>
 
     <table class="form-table">
+      <tr>
+        <th width="200"><?php _e("Business Logo", ud_get_wp_invoice()->domain); ?></th>
+        <td>
+          <input type="hidden" id="business_logo_path" name="wpi_settings[business_logo]" value="<?php echo !empty($wpi_settings['business_logo']) ?$wpi_settings['business_logo']: '' ; ?>" />
+          <?php if ( !empty($wpi_settings['business_logo']) ): ?>
+            <img id="business_logo_img" style="max-width:100px;" src="<?php echo $wpi_settings['business_logo']; ?>" />
+          <?php endif; ?>
+          <button class="button-secondary business-logo-select clearfix" style="width:100px;" data-uploader_title="<?php _e('Select Logo', ud_get_wp_invoice()->domain); ?>"><?php _e('Select Logo', ud_get_wp_invoice()->domain); ?></button>
+          <script type="text/javascript">
+            jQuery(document).ready(function(){
+              jQuery('.business-logo-select').business_logo_select({
+                url_input: "#business_logo_path",
+                image: "#business_logo_img"
+              });
+            });
+          </script>
+        </td>
+      </tr>
       <tr>
         <th width="200"><?php _e("Business Name", ud_get_wp_invoice()->domain) ?></th>
         <td><?php echo WPI_UI::input(array(
@@ -282,13 +301,39 @@ class WPI_Settings_page {
 
       <tr>
         <th><?php _e("When viewing an invoice", ud_get_wp_invoice()->domain) ?></th>
-        <td><ul class="wpi_settings_list">
+        <td>
+          <ul class="wpi_settings_list">
+            <li><?php echo WPI_UI::checkbox(
+                  array(
+                    'name' => 'activate_client_dashboard',
+                    'group' => 'wpi_settings',
+                    'value' => 'true',
+                    'label' => __('Activate Client Dashboard.', ud_get_wp_invoice()->domain)
+                  ), !empty($wpi_settings['activate_client_dashboard'])?$wpi_settings['activate_client_dashboard']:'false'); ?>
+            <span style="font-size: 10px;color:red;font-weight:bold;"><?php _e('New', ud_get_wp_invoice()->domain); ?></span></li>
+            <li>
+              <label for="wpi_settings[web_dashboard_page]"><?php _e("Display dashboard on the", ud_get_wp_invoice()->domain) ?>
+                <select name='wpi_settings[web_dashboard_page]'>
+                  <option><?php _e( 'Not selected', ud_get_wp_invoice()->domain ); ?></option>
+                  <?php
+                  $list_pages = $wpdb->get_results("SELECT ID, post_title, post_name, guid FROM " . $wpdb->prefix . "posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY post_title");
+                  $wp_invoice_web_dashboard = $wpi_settings['web_dashboard_page'];
+                  foreach ($list_pages as $page) {
+                    echo "<option  style='padding-right: 10px;'";
+                    if (isset($wp_invoice_web_dashboard) && $wp_invoice_web_dashboard == $page->ID)
+                      echo " SELECTED ";
+                    echo " value=\"" . $page->ID . "\">" . $page->post_title . "</option>\n";
+                  }
+                  echo "</select>";
+                  ?>
+                  <?php _e("page.", ud_get_wp_invoice()->domain) ?> </label>
+              <span style="font-size: 10px;color:red;font-weight:bold;"><?php _e('New', ud_get_wp_invoice()->domain); ?></span>
+            </li>
             <li>
               <label for="wpi_settings[web_invoice_page]"><?php _e("Display invoices on the", ud_get_wp_invoice()->domain) ?>
                 <select name='wpi_settings[web_invoice_page]'>
                   <option></option>
                   <?php
-                  $list_pages = $wpdb->get_results("SELECT ID, post_title, post_name, guid FROM " . $wpdb->prefix . "posts WHERE post_status = 'publish' AND post_type = 'page' ORDER BY post_title");
                   $wp_invoice_web_invoice_page = $wpi_settings['web_invoice_page'];
                   foreach ($list_pages as $page) {
                     echo "<option  style='padding-right: 10px;'";
@@ -312,7 +357,7 @@ class WPI_Settings_page {
         <th> <a class="wp_invoice_tooltip"  title="<?php _e('Select whether to overwrite all page content, insert at the bottom of the content, or to look for the [wp-invoice] tag.', ud_get_wp_invoice()->domain); ?>">
     <?php _e('How to Insert Invoice', ud_get_wp_invoice()->domain); ?>
           </a></th>
-        <td><?php echo WPI_UI::select("name=where_to_display&group=wpi_settings&values=" . serialize(array("overwrite" => __("Overwrite All Page Content", ud_get_wp_invoice()->domain), "below_content" => __("Place Below Content", ud_get_wp_invoice()->domain), "above_content" => __("Above Content", ud_get_wp_invoice()->domain), "replace_tag" => __("Replace [wp-invoice] Tag", ud_get_wp_invoice()->domain))) . "&current_value={$wpi_settings['where_to_display']}"); ?> <?php _e('If using the tag, place <span class="wp_invoice_explanation">[wp-invoice]</span> somewhere within your page content.', ud_get_wp_invoice()->domain) ?> </td>
+        <td><?php echo WPI_UI::select("name=where_to_display&group=wpi_settings&values=" . serialize(apply_filters('wpi_where_to_display_options', array("overwrite" => __("Overwrite All Page Content", ud_get_wp_invoice()->domain), "below_content" => __("Place Below Content", ud_get_wp_invoice()->domain), "above_content" => __("Above Content", ud_get_wp_invoice()->domain), "replace_tag" => __("Replace [wp-invoice] Tag", ud_get_wp_invoice()->domain)))) . "&current_value={$wpi_settings['where_to_display']}"); ?> <?php _e('If using the tag, place <span class="wp_invoice_explanation">[wp-invoice]</span> somewhere within your page content.', ud_get_wp_invoice()->domain) ?> </td>
       </tr>
       <tr>
         <th><?php _e("After a payment has been completed", ud_get_wp_invoice()->domain) ?></th>
@@ -687,12 +732,12 @@ class WPI_Settings_page {
               <td>
                 <span>
                   <span class="row_delete">&nbsp;</span>
-                    <input type="text" class="item_name input_field" name="wpi_settings[predefined_services][<?php echo $slug; ?>][name]" value="<?php echo esc_attr($itemized_item['name']); ?>" />
+                    <input type="text" class="item_name input_field" name="wpi_settings[predefined_services][<?php echo $slug; ?>][name]" value="<?php echo htmlspecialchars(stripslashes($itemized_item['name'])); ?>" />
                     <span class="wpi_add_description_text">&nbsp;<span class="content"><?php _e("Toggle Description", ud_get_wp_invoice()->domain) ?></span></span>
                 </span>
                 <div class="flexible_width_holder">
                   <div class="flexible_width_holder_content">
-                    <textarea style="display:<?php echo (empty($itemized_item['description']) ? 'none' : 'block'); ?>" name="wpi_settings[predefined_services][<?php echo $slug; ?>][description]" class="item_description"><?php echo esc_attr(!empty($itemized_item['description'])?$itemized_item['description']:''); ?></textarea>
+                    <textarea style="display:<?php echo (empty($itemized_item['description']) ? 'none' : 'block'); ?>" name="wpi_settings[predefined_services][<?php echo $slug; ?>][description]" class="item_description"><?php echo esc_attr(!empty($itemized_item['description'])?htmlspecialchars(stripslashes($itemized_item['description'])):''); ?></textarea>
                   </div>
                 </div>
               </td>
@@ -745,7 +790,7 @@ class WPI_Settings_page {
     ?>
 
     <div class="wpi_settings_block">
-    <?php _e('Look up the $wpi_settings global settings array:', ud_get_wp_invoice()->domain); ?> <input type="button" class="wpi_settings_view" value="<?php esc_attr(_e('Toggle $wpi_settings', ud_get_wp_invoice()->domain)); ?>">
+    <?php _e('Look up the $wpi_settings global settings array:', ud_get_wp_invoice()->domain); ?> <input type="button" class="wpi_settings_view button-primary" value="<?php esc_attr(_e('Toggle $wpi_settings', ud_get_wp_invoice()->domain)); ?>">
       <div class="wpi_settings_row hidden">
     <?php echo WPI_Functions::pretty_print_r($wpi_settings); ?>
       </div>

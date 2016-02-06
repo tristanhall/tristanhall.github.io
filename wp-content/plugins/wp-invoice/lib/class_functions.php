@@ -2767,3 +2767,115 @@ function wpi_send_json_error( $data = null ) {
 
   wp_send_json( $response );
 }
+
+/**
+ * Mark invoice as viewed if not by admin
+ * @param $invoice_object
+ */
+function wpi_track_invoice_page_visit( $invoice_object ) {
+
+  if ( !current_user_can( 'manage_options' ) ) {
+    $hours = 12;
+    $viewed_today_from_cur_ip = false;
+    foreach ( $invoice_object->data[ 'log' ] as $key => $value ) {
+      if ( $value[ 'user_id' ] == '0' ) {
+        if ( strstr( strtolower( $value[ 'text' ] ), "viewed by {$_SERVER['REMOTE_ADDR']}" ) ) {
+          $time_dif = time() - $value[ 'time' ];
+          if ( $time_dif < $hours * 60 * 60 ) {
+            $viewed_today_from_cur_ip = true;
+          }
+        }
+      }
+    }
+    if ( !$viewed_today_from_cur_ip ) {
+      $invoice_object->add_entry( "note=Viewed by {$_SERVER['REMOTE_ADDR']}" );
+    }
+  }
+}
+
+/**
+ * Returns an invoice object as an array.
+ * @param type $args
+ */
+function get_invoice( $args ) {
+  if ( is_numeric( $args ) ) {
+    $invoice_id = $args;
+  } else {
+    $defaults = array( 'invoice_id' => '', 'return_class' => false );
+    extract( wp_parse_args( $args, $defaults ), EXTR_SKIP );
+  }
+  $invoice = new WPI_Invoice();
+  $invoice->load_invoice( "id=$invoice_id" );
+
+  if ( !empty( $invoice->error ) && $invoice->error ) {
+    return sprintf( __( "Invoice %s not found.", ud_get_wp_invoice()->domain ), $invoice_id );
+  }
+
+  if ( !empty( $return_class ) && $return_class ) {
+    return $invoice;
+  }
+
+  return $invoice->data;
+}
+
+/**
+ * Invoice lookup function
+ * If return is passed as true, function is returned.
+ *
+ * @global type $wpi_settings
+ *
+ * @param type $args
+ *
+ * @return type
+ */
+function wp_invoice_lookup( $args = '' ) {
+  global $wpi_settings, $current_user;
+
+  $result = '';
+
+  $defaults = array(
+      'message' => __( 'Enter Invoice ID', ud_get_wp_invoice()->domain ),
+      'button' => __( 'Lookup', ud_get_wp_invoice()->domain ),
+      'return' => true
+  );
+  extract( wp_parse_args( $args, $defaults ), EXTR_SKIP );
+
+  if ( !$current_user->ID ) {
+    return;
+  }
+
+  ob_start();
+  if ( WPI_Functions::wpi_use_custom_template( 'invoice_lookup.php' ) ) {
+    include( $wpi_settings[ 'frontend_template_path' ] . 'invoice_lookup.php' );
+  } else {
+    include( $wpi_settings[ 'default_template_path' ] . 'invoice_lookup.php' );
+  }
+  $result .= ob_get_clean();
+
+  if ( $return ) {
+    return $result;
+  }
+  echo $result;
+}
+
+/**
+ * TO keep wpi naming structure
+ *
+ * @param type $args
+ *
+ * @return type
+ */
+function wpi_invoice_lookup( $args = '' ) {
+  return wp_invoice_lookup( $args );
+}
+
+/**
+ * Draw widget by shortcode
+ *
+ * @param array $args
+ */
+function wp_invoice_history( $args = '' ) {
+  ob_start();
+  echo the_widget( 'InvoiceHistoryWidget', $args );
+  return ob_get_clean();
+}

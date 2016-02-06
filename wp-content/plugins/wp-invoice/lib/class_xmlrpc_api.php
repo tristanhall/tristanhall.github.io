@@ -482,6 +482,8 @@ class WPI_XMLRPC_API {
     }
     $invoice->set( array( 'tax_method' => $tax_method ) );
 
+    $invoice->data['new_invoice'] = false;
+
     //** Save */
     $invoice->save_invoice();
 
@@ -887,7 +889,7 @@ if ( !function_exists( 'wpi_help_api_reference' ) ) {
     ?>
     <div class="wpi_settings_block">
         <?php _e( 'WP-Invoice XML-RPC API Reference', ud_get_wp_invoice()->domain ); ?>
-      <input type="button" class="wpi_settings_view" value="<?php esc_attr( _e( 'Toggle', ud_get_wp_invoice()->domain ) ); ?>">
+      <input type="button" class="wpi_settings_view button-primary" value="<?php esc_attr( _e( 'Toggle', ud_get_wp_invoice()->domain ) ); ?>">
         <div class="wpi_settings_row hidden">
           <div class="wpi_scrollable_content">
             <h2>

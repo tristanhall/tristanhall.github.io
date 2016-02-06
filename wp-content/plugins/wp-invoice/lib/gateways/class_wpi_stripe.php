@@ -55,6 +55,12 @@ class wpi_stripe extends wpi_gateway_base {
                 'name' => 'city',
                 'label' => __('City', ud_get_wp_invoice()->domain)
             ),
+            'country' => array(
+                'type' => 'text',
+                'class' => 'text-input',
+                'name' => 'country',
+                'label' => __('Country', ud_get_wp_invoice()->domain)
+            ),
             'state' => array(
                 'type' => 'text',
                 'class' => 'text-input',
@@ -272,6 +278,7 @@ class wpi_stripe extends wpi_gateway_base {
               $invoice_obj->add_entry("attribute=invoice&note=$log&type=update");
               $invoice_obj->save_invoice();
 
+              send_notification( $invoice );
               update_post_meta( wpi_invoice_id_to_post_id( $invoice['invoice_id'] ), '_stripe_customer_id', $customer->id );
 
               $data['messages'][] = __( 'Stripe Subscription has been initiated. Do not pay this invoice again. Thank you.', ud_get_wp_invoice()->domain );
@@ -344,7 +351,7 @@ class wpi_stripe extends wpi_gateway_base {
               $success = __("Successfully processed by ", ud_get_wp_invoice()->domain).$_SERVER['REMOTE_ADDR'];
               $invoice_obj->add_entry("attribute=invoice&note=$success&type=update");
               //** Log payer */
-              $payer_card = __("STRIPE Card ID: ", ud_get_wp_invoice()->domain).$charge->card->id;
+              $payer_card = __("STRIPE Card ID: ", ud_get_wp_invoice()->domain).$charge->source->id;
               $invoice_obj->add_entry("attribute=invoice&note=$payer_card&type=update");
 
               $invoice_obj->save_invoice();
