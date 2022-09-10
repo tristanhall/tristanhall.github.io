@@ -1,3 +1,16 @@
-wp-content/w3tc-config
-wp-content/advanced-cache.php
-wp-content/object-cache.php
+# IntelliJ Project Files
+.idea/
+*.iml
+
+# Sass Cache Directory
+.sass-cache/
+
+# Mac hidden
+.DS_Store
+
+# Environment Config
+.env
+
+# Node Modules
+bower_components/
+node_modules/
