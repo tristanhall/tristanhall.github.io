@@ -1,45 +1,22 @@
-'use strict';
+const { dest, series, src, watch } = require('gulp');
+const sass = require('gulp-sass');
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
-var uglify = require('gulp-uglify');
-var util = require('gulp-util');
-var concat = require('gulp-concat');
+exports.js = () => {
+    src('node_modules/walkway.js/src/walkway.js')
+        .pipe(dest('assets/js'));
+};
 
-gulp.task('default', ['sass', 'js']);
-
-gulp.task('watch', ['sass:watch', 'js:watch']);
-
-gulp.task('sass', function() {
-    return gulp
-        .src('assets/scss/main.scss')
+exports.sass = () => {
+    return src('assets/scss/main.scss')
         .pipe(sass({
             compass: false,
             outputStyle: 'compressed'
-        }).on('error', sass.logError))
-        .pipe(gulp.dest('assets/css'));
-});
+        }).on('error', console.error))
+        .pipe(dest('assets/css'));
+};
 
-gulp.task('sass:watch', function() {
-    gulp.watch('assets/scss/**/*.scss', ['sass']);
-});
+exports.watch = () => {
+    watch('assets/scss/**/*.scss', ['sass']);
+};
 
-gulp.task('js', function() {
-    return gulp
-        .src([
-            'bower_components/jquery/dist/jquery.min.js',
-            'bower_components/slick-carousel/slick/slick.min.js',
-            'bower_components/angular/angular.min.js',
-            'bower_components/angular-slick/dist/slick.min.js',
-            'bower_components/walkway/walkway.min.js',
-            'assets/src/main.js'
-        ])
-        .pipe(concat('main.js'))
-        .pipe(uglify())
-        .on('error', util.log)
-        .pipe(gulp.dest('assets/js'));
-});
-
-gulp.task('js:watch', function() {
-    gulp.watch('assets/src/**/*.js', ['js']);
-});
+exports.default = series(exports.sass, exports.js);
